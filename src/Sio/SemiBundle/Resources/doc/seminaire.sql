@@ -83,6 +83,7 @@ CREATE TABLE `participant` (
   `role` varchar(50) DEFAULT NULL,
   `lastUpdate` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `dateCrea` timestamp NULL DEFAULT NULL,
+  `password` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `mail` (`mail`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3380 DEFAULT CHARSET=utf8;
