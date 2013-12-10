@@ -47,6 +47,7 @@ class DefaultController extends Controller
                		$session->set('cle',$form->get('cle_semi')->getData());
                    	return $this->redirect($this->generateUrl('connect_user'));
                }else{
+               		$session->getFlashBag()->add('notice','Clé non valide !');
                    	return $this->redirect($this->generateUrl('connect_semi'));
 					$session->remove('cle');
                }
