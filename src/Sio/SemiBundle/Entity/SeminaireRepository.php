@@ -12,14 +12,5 @@ use Doctrine\ORM\EntityRepository;
  */
 class SeminaireRepository extends EntityRepository
 {
-    public function existKey($cle){
-        $q = $this->createQueryBuilder('SELECT s FROM Seminaire s WHERE cle = :key')
-                ->setParameter('key', $cle)
-                ->getQuery();
-        if(!empty($q->getArrayResult())){
-            return true;
-        }else{
-            return false;
-        }
-    }
+    
 }

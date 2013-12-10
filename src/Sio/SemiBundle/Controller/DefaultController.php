@@ -35,21 +35,38 @@ class DefaultController extends Controller
         $form->handleRequest($request);
         if ($request->getMethod() == 'POST') {
             if ($form->isValid()) {
+            	$session = $this->get('session');
                 $data = $form->getData();
                 // TODO traitement pour savoir si la clé existe
                $exist = $this->getDoctrine()
                     ->getRepository('SioSemiBundle:Seminaire')
-                    ->existKey($form->get('cle_semi')->getData());
+					->findOneByCle($form->get('cle_semi')->getData());
+                    
                 
                if($exist){
-                   return $this->redirect($this->generateUrl('liste_semi'));
+               		$session->set('cle',$form->get('cle_semi')->getData());
+                   	return $this->redirect($this->generateUrl('connect_user'));
                }else{
-                   return $this->redirect($this->generateUrl('connect_semi'));
+                   	return $this->redirect($this->generateUrl('connect_semi'));
                }
             }
         }
         return $this->render('SioSemiBundle:Default:connectSemi.html.twig', array(
             'form' => $form->createView(),
         ));
+    }
+/**
+     * @Route("/connexion", name="connect_user")
+     * @Template()
+     */
+    public function connectUserAction(Request $request)
+    {
+       if($session->has('cle')){
+       		return $this->render('SioSemiBundle:Default:connectUser.html.twig', array(
+            	'session_cle'=> $session->get('cle'),
+        	));
+       }else{
+           	return $this->redirect($this->generateUrl('connect_semi'));
+       }
     }
 }
