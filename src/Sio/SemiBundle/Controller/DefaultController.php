@@ -48,6 +48,7 @@ class DefaultController extends Controller
                    	return $this->redirect($this->generateUrl('connect_user'));
                }else{
                    	return $this->redirect($this->generateUrl('connect_semi'));
+					$session->remove('cle');
                }
             }
         }
@@ -55,16 +56,14 @@ class DefaultController extends Controller
             'form' => $form->createView(),
         ));
     }
-/**
+	/**
      * @Route("/connexion", name="connect_user")
      * @Template()
      */
-    public function connectUserAction(Request $request)
+    public function connectUserAction()
     {
-       if($session->has('cle')){
-       		return $this->render('SioSemiBundle:Default:connectUser.html.twig', array(
-            	'session_cle'=> $session->get('cle'),
-        	));
+       if($this->get('session')->has('cle')){
+       		return $this->render('SioSemiBundle:Default:connectUser.html.twig', array());
        }else{
            	return $this->redirect($this->generateUrl('connect_semi'));
        }
