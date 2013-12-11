@@ -30,7 +30,7 @@ class Seance
 	/**
 	* @ORM\OneToMany(targetEntity="Inscription", mappedBy="seance", cascade={"remove", "persist"})
 	*/
-	protected $seance;
+	protected $participant;
 	
     /**
      * @var string

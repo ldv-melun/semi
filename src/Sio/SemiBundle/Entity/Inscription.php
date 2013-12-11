@@ -25,7 +25,7 @@ class Inscription
      * @var integer
      *
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Seminaire", inversedBy="participant", cascade={"remove"})
+     * @ORM\ManyToOne(targetEntity="Seance", inversedBy="participant", cascade={"remove"})
 	 * @ORM\JoinColumn(name="idSeance", referencedColumnName="id")
      */
     private $seance;

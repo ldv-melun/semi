@@ -3,6 +3,7 @@
 namespace Sio\SemiBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Participant
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="participant")
  * @ORM\Entity(repositoryClass="Sio\SemiBundle\Entity\ParticipantRepository")
  */
-class Participant
+class Participant implements UserInterface
 {
     /**
      * @var integer
@@ -79,7 +80,7 @@ class Participant
      *
      * @ORM\Column(name="role", type="string", length=50)
      */
-    private $role;
+    private $roles;
 
     /**
      * @var \DateTime
@@ -101,7 +102,17 @@ class Participant
      * @ORM\Column(name="password", type="string", length=255)
      */
     private $password;
-
+    
+    /**
+     * @ORM\Column(name="username", type="string", length=255,
+       unique=true)
+     */
+    private $username;
+    
+    /**
+     * @ORM\Column(name="salt", type="string", length=255)
+     */
+    private $salt;
 
     /**
      * Get id
@@ -251,28 +262,7 @@ class Participant
         return $this->resFamiliale;
     }
 
-    /**
-     * Set role
-     *
-     * @param string $role
-     * @return Participant
-     */
-    public function setRole($role)
-    {
-        $this->role = $role;
     
-        return $this;
-    }
-
-    /**
-     * Get role
-     *
-     * @return string 
-     */
-    public function getRole()
-    {
-        return $this->role;
-    }
 
     /**
      * Set lastUpdate
@@ -348,6 +338,7 @@ class Participant
     public function __construct()
     {
         $this->seance = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->roles = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
     /**
@@ -404,5 +395,60 @@ class Participant
     public function getSeance()
     {
         return $this->seance;
+    }
+
+    public function eraseCredentials() {
+        
+    }
+
+    public function getRoles() {
+        return $this->roles;
+    }
+
+    public function getSalt() {
+        return $this->salt;
+    }
+
+    public function getUsername() {
+        return $this->username;
+    }
+
+    /**
+     * Set roles
+     *
+     * @param string $roles
+     * @return Participant
+     */
+    public function setRoles($roles)
+    {
+        $this->roles = $roles;
+    
+        return $this;
+    }
+
+    /**
+     * Set username
+     *
+     * @param string $username
+     * @return Participant
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+    
+        return $this;
+    }
+
+    /**
+     * Set salt
+     *
+     * @param string $salt
+     * @return Participant
+     */
+    public function setSalt($salt)
+    {
+        $this->salt = $salt;
+    
+        return $this;
     }
 }

@@ -3,3 +3,8 @@ sio_semi:
     type:     annotation
     prefix:   /
 
+login_check:
+    pattern: /gestion/login_check
+logout:
+    pattern: /logout
+

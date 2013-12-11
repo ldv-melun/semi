@@ -315,4 +315,37 @@ class Seance
     {
         return $this->seance;
     }
+
+    /**
+     * Add participant
+     *
+     * @param \Sio\SemiBundle\Entity\Inscription $participant
+     * @return Seance
+     */
+    public function addParticipant(\Sio\SemiBundle\Entity\Inscription $participant)
+    {
+        $this->participant[] = $participant;
+    
+        return $this;
+    }
+
+    /**
+     * Remove participant
+     *
+     * @param \Sio\SemiBundle\Entity\Inscription $participant
+     */
+    public function removeParticipant(\Sio\SemiBundle\Entity\Inscription $participant)
+    {
+        $this->participant->removeElement($participant);
+    }
+
+    /**
+     * Get participant
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getParticipant()
+    {
+        return $this->participant;
+    }
 }
