@@ -22,16 +22,8 @@ class Participant implements UserInterface
      */
     private $id;
 	
-	/**
-	* @ORM\ManyToOne(targetEntity="Academie", inversedBy="participants", cascade={"remove"})
-	* @ORM\JoinColumn(name="idAcademie", referencedColumnName="id")
-	*/
-	protected $academie;
+
 	
-	/**
-	* @ORM\OneToMany(targetEntity="Inscription", mappedBy="particpant", cascade={"remove", "persist"})
-	*/
-	protected $seance;
 
     /**
      * @var string
@@ -46,6 +38,16 @@ class Participant implements UserInterface
      * @ORM\Column(name="prenom", type="string", length=50)
      */
     private $prenom;
+	
+	/**
+	* @ORM\ManyToOne(targetEntity="Academie", inversedBy="participants", cascade={"persist"})
+	* @ORM\JoinColumn(name="idAcademie", referencedColumnName="id")
+	*/
+	protected $academie;
+	/**
+	* @ORM\OneToMany(targetEntity="Inscription", mappedBy="particpant", cascade={"remove", "persist"})
+	*/
+	protected $seance;
 
     /**
      * @var string
@@ -104,8 +106,9 @@ class Participant implements UserInterface
     private $password;
     
     /**
-     * @ORM\Column(name="username", type="string", length=255,
-       unique=true)
+	 * @var string
+	 *
+     * @ORM\Column(name="username", type="string", length=255)
      */
     private $username;
     
@@ -114,6 +117,7 @@ class Participant implements UserInterface
      */
     private $salt;
 
+	
     /**
      * Get id
      *

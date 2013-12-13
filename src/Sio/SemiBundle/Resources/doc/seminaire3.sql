@@ -1,36 +1,118 @@
--- phpMyAdmin SQL Dump
--- version 3.5.1
--- http://www.phpmyadmin.net
---
--- Client: localhost
--- Généré le: Sam 07 Décembre 2013 à 10:43
--- Version du serveur: 5.5.24-log
--- Version de PHP: 5.3.13
-
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+-- -----------------------------------------------------
+-- Table `academie`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `academie` (
+  `id` INT(10) NOT NULL DEFAULT '0' ,
+  `nom` VARCHAR(50) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
---
--- Base de données: `seminaire`
---
 
--- --------------------------------------------------------
+-- -----------------------------------------------------
+-- Table `participant`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `participant` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `nom` VARCHAR(50) NULL DEFAULT NULL ,
+  `prenom` VARCHAR(50) NULL DEFAULT NULL ,
+  `idAcademie` INT(11) NULL DEFAULT NULL ,
+  `mail` VARCHAR(150) NULL DEFAULT NULL ,
+  `titre` VARCHAR(30) NULL DEFAULT NULL ,
+  `resAdministrative` VARCHAR(80) NULL DEFAULT NULL ,
+  `resFamilliale` VARCHAR(80) NULL DEFAULT NULL ,
+  `role` VARCHAR(50) NULL DEFAULT NULL ,
+  `lastUpdate` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ,
+  `dateCrea` TIMESTAMP NULL DEFAULT NULL ,
+  `password` VARCHAR(255) NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `mail` (`mail` ASC) ,
+  INDEX `participantAcademie` (`idAcademie` ASC) ,
+  CONSTRAINT `participantAcademie`
+    FOREIGN KEY (`idAcademie` )
+    REFERENCES `academie` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 3380
+DEFAULT CHARACTER SET = utf8;
 
---
--- Structure de la table `academie`
---
 
-CREATE TABLE IF NOT EXISTS `academie` (
-  `id` int(10) NOT NULL DEFAULT '0',
-  `nom` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- -----------------------------------------------------
+-- Table `seminaire`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `seminaire` (
+  `id` INT(10) NOT NULL AUTO_INCREMENT ,
+  `nom` VARCHAR(150) NULL DEFAULT NULL ,
+  `sousTitre` VARCHAR(150) NULL DEFAULT NULL ,
+  `lieu` VARCHAR(150) NULL DEFAULT NULL ,
+  `dateDebut` TIMESTAMP NULL DEFAULT NULL ,
+  `dateFin` TIMESTAMP NULL DEFAULT NULL ,
+  `commentaire` VARCHAR(300) NULL DEFAULT NULL ,
+  `cle` VARCHAR(255) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `cle` (`cle` ASC) )
+ENGINE = InnoDB
+AUTO_INCREMENT = 3
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `seance`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `seance` (
+  `id` INT(10) NOT NULL AUTO_INCREMENT ,
+  `idSeminaire` INT(11) NULL DEFAULT NULL ,
+  `libelle` VARCHAR(150) NULL DEFAULT NULL ,
+  `intervenants` VARCHAR(300) NULL DEFAULT NULL ,
+  `nbMax` INT(11) NULL DEFAULT NULL ,
+  `dateHeureDebut` TIMESTAMP NULL DEFAULT NULL ,
+  `dateHeureFin` TIMESTAMP NULL DEFAULT NULL ,
+  `type` VARCHAR(20) NULL DEFAULT NULL ,
+  `numRelatif` INT(11) NOT NULL DEFAULT '1' ,
+  PRIMARY KEY (`id`) ,
+  INDEX `seanceSeminaire` (`idSeminaire` ASC) ,
+  CONSTRAINT `seanceSeminaire`
+    FOREIGN KEY (`idSeminaire` )
+    REFERENCES `seminaire` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 45
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `inscription`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `inscription` (
+  `idParticipant` INT(11) NOT NULL ,
+  `idSeance` INT(10) NOT NULL ,
+  `dateInscr` TIMESTAMP NULL ,
+  PRIMARY KEY (`idParticipant`, `idSeance`) ,
+  INDEX `fk_participant_has_seance_seance1` (`idSeance` ASC) ,
+  INDEX `fk_participant_has_seance_participant1` (`idParticipant` ASC) ,
+  CONSTRAINT `fk_participant_has_seance_participant1`
+    FOREIGN KEY (`idParticipant` )
+    REFERENCES `participant` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_participant_has_seance_seance1`
+    FOREIGN KEY (`idSeance` )
+    REFERENCES `seance` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;
+
+
+
 
 --
 -- Contenu de la table `academie`
@@ -69,16 +151,7 @@ INSERT INTO `academie` (`id`, `nom`) VALUES
 
 -- --------------------------------------------------------
 
---
--- Structure de la table `inscription`
---
 
-CREATE TABLE IF NOT EXISTS `inscription` (
-  `idParticipant` int(10) NOT NULL DEFAULT '0',
-  `idSeance` int(11) NOT NULL DEFAULT '0',
-  `dateInscr` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`idParticipant`,`idSeance`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Contenu de la table `inscription`
@@ -2902,26 +2975,7 @@ INSERT INTO `inscription` (`idParticipant`, `idSeance`, `dateInscr`) VALUES
 
 -- --------------------------------------------------------
 
---
--- Structure de la table `participant`
---
 
-CREATE TABLE IF NOT EXISTS `participant` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nom` varchar(50) DEFAULT NULL,
-  `prenom` varchar(50) DEFAULT NULL,
-  `idAcademie` int(11) DEFAULT NULL,
-  `mail` varchar(150) DEFAULT NULL,
-  `titre` varchar(30) DEFAULT NULL,
-  `resAdministrative` varchar(80) DEFAULT NULL,
-  `resFamilliale` varchar(80) DEFAULT NULL,
-  `role` varchar(50) DEFAULT NULL,
-  `lastUpdate` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `dateCrea` timestamp NULL DEFAULT NULL,
-  `password` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `mail` (`mail`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3380 ;
 
 --
 -- Contenu de la table `participant`
@@ -3570,22 +3624,7 @@ INSERT INTO `participant` (`id`, `nom`, `prenom`, `idAcademie`, `mail`, `titre`,
 
 -- --------------------------------------------------------
 
---
--- Structure de la table `seance`
---
 
-CREATE TABLE IF NOT EXISTS `seance` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `idSeminaire` int(11) DEFAULT NULL,
-  `libelle` varchar(150) DEFAULT NULL,
-  `intervenants` varchar(300) DEFAULT NULL,
-  `nbMax` int(11) DEFAULT NULL,
-  `dateHeureDebut` timestamp NULL DEFAULT NULL,
-  `dateHeureFin` timestamp NULL DEFAULT NULL,
-  `type` varchar(20) DEFAULT NULL,
-  `numRelatif` int(11) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=45 ;
 
 --
 -- Contenu de la table `seance`
@@ -3636,22 +3675,7 @@ INSERT INTO `seance` (`id`, `idSeminaire`, `libelle`, `intervenants`, `nbMax`, `
 
 -- --------------------------------------------------------
 
---
--- Structure de la table `seminaire`
---
 
-CREATE TABLE IF NOT EXISTS `seminaire` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `nom` varchar(150) DEFAULT NULL,
-  `sousTitre` varchar(150) DEFAULT NULL,
-  `lieu` varchar(150) DEFAULT NULL,
-  `dateDebut` timestamp NULL DEFAULT NULL,
-  `dateFin` timestamp NULL DEFAULT NULL,
-  `commentaire` varchar(300) DEFAULT NULL,
-  `cle` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `cle` (`cle`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 --
 -- Contenu de la table `seminaire`
@@ -3663,6 +3687,8 @@ INSERT INTO `seminaire` (`id`, `nom`, `sousTitre`, `lieu`, `dateDebut`, `dateFin
 (1, 'sem1', 'La prise en compte du temps dans les décisions des organisations', 'CNAM Paris', '2013-10-13 22:00:00', '2013-10-15 21:59:00', 'Rendez-vous culturel et scientifique', 'SEM-1');
 
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

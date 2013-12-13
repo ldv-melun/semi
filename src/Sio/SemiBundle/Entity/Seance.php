@@ -22,8 +22,8 @@ class Seance
     private $id;
 
 	/**
-	* @ORM\ManyToOne(targetEntity="Seminaire", inversedBy="seances", cascade={"remove"})
-	* @ORM\JoinColumn(name="idSeminaire", referencedColumnName="id")
+	* @ORM\ManyToOne(targetEntity="Seminaire", inversedBy="seances", cascade={"persist"})
+	* @ORM\JoinColumn(name="idSeminaire", referencedColumnName="id", nullable=true)
 	*/
 	protected $seminaire;
 	

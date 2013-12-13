@@ -10,7 +10,7 @@ security:
 
     providers:
         main:
-            entity: { class: Sio\SemiBundle\Entity\User, property: mail }
+            entity: { class: Sio\SemiBundle\Entity\Participant, property: mail }
 
     firewalls:
         dev:
