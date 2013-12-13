@@ -1,0 +1,27 @@
+.left{
+    float: left;
+}
+body{
+    background: #c3c3c3;
+}
+.menuall{
+    height: 31px;   
+}
+.premenu{
+    width:28px;
+    height: 31px;  
+    background: url('../images/bg_menu_gauche.png')top left no-repeat ;
+}
+.postmenu{
+    width:28px;
+    height: 31px;  
+    background: url('../images/bg_menu_droite.png')top right no-repeat ;
+}
+.menu{
+    height: 31px;  
+    background: url('../images/bg_menu.png')top left repeat-x ;
+    line-height: 31px;
+}
+.menu a{
+    color: white;
+}

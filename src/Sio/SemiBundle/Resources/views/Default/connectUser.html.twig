@@ -1,2 +1,8 @@
-<h1>YEAH !!</h1>
-{{ app.session.get('cle') }}
+
+{% extends "::layout.html.twig" %}
+{% block content %}
+    
+    <div class="row span4 offset3">
+            <pre>{{ app.session.get('cle') }}</pre>
+    </div>
+{% endblock %}

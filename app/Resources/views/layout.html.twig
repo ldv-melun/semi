@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}E-Seminaire - gestion des inscriptions{% endblock %}</title>
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.min.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">
+        {% block stylesheets %}
+            
+        {% endblock %}
+        <script language="javascript" type="text/javascript" src="{{ asset('js/bootstrap.min.js') }}"></script>
+        {#<link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />#}
+    </head>
+    <body>
+        <div class="row">
+            <div class="span10 offset4 menuall">
+                <div class="premenu left"></div>
+                <div class="menu left">
+                    <ul class="inline">
+                        <li><a href="">Home</a></li>
+                        <li><a href="">A propos</a></li>
+                    </ul>
+                </div>
+                <div class="postmenu left"></div>
+            </div>
+        </div>
+        {% block content %}{% endblock %}
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

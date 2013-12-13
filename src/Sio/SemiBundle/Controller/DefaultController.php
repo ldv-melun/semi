@@ -31,7 +31,6 @@ class DefaultController extends Controller
         $defaultData = array();
         $form = $this->createFormBuilder($defaultData)
             ->add('cle_semi', 'text')
-            ->add('go','submit')
             ->getForm();
 
         $form->handleRequest($request);

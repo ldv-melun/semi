@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `academie` (
   `id` int(10) NOT NULL DEFAULT '0',
   `nom` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `academie`
@@ -3591,7 +3591,7 @@ CREATE TABLE IF NOT EXISTS `seance` (
   `numRelatif` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `seanceSeminaire` (`idSeminaire`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=45 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=45 ;
 
 --
 -- Contenu de la table `seance`
@@ -3657,7 +3657,7 @@ CREATE TABLE IF NOT EXISTS `seminaire` (
   `cle` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `cle` (`cle`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
 -- Contenu de la table `seminaire`

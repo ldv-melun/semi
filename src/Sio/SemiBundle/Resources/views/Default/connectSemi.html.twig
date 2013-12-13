@@ -1,8 +1,25 @@
+{% extends "::layout.html.twig" %}
+{% block content %}
+    
+    <div class="row span8 offset3">
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+            <fieldset>
+                <legend>Entrez une clé de séminaire</legend>
+                {% for flashMessage in app.session.flashbag.get('notice') %}
+                    <div class="alert alert-error">
+                        {{ flashMessage }}
+                    </div>
+                {% endfor %}
+                <div class="input-append">
+                    {{ form_label(form.cle_semi) }}
+                    {{ form_errors(form.cle_semi) }}
+                    {{ form_widget(form.cle_semi , {'attr': {'class': 'input-large'}}) }}
+                    <button type="submit" class="btn btn-inverse">Go !!</button>
+                </div>
+            </fieldset>
 
-
-{% for flashMessage in app.session.flashbag.get('notice') %}
-    <div class="alert alert-error">
-        {{ flashMessage }}
+        {{ form_end(form) }}
+    
     </div>
-{% endfor %}
-{{ form(form) }}
+{% endblock %}
