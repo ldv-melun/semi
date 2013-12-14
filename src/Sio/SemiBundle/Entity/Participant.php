@@ -45,7 +45,7 @@ class Participant implements UserInterface
 	*/
 	protected $academie;
 	/**
-	* @ORM\OneToMany(targetEntity="Inscription", mappedBy="particpant", cascade={"remove", "persist"})
+	* @ORM\OneToMany(targetEntity="Inscription", mappedBy="participant", cascade={"remove", "persist"})
 	*/
 	protected $seance;
 
