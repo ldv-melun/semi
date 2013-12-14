@@ -3,6 +3,22 @@
 {% block content %}
     
     <div class="row span4 offset3">
-            <pre>{{ app.session.get('cle') }}</pre>
+            <pre>{{ app.session.get('cle') }} <br/>Anais.Lamare@dodgit.com</pre>
+    </div>
+    <div class="row span8 offset3">
+        {% if error.message is defined%}
+            <div class="alert alert-error">{{ error.message|trans }}</div>
+        {% endif %}
+        {# Le formulaire, avec URL de soumission vers la route «login_check » comme on l'a vu #}
+        <form action="{{ path('login_check') }}" method="post">
+            <fieldset>
+                <legend>Veuillez vous connecter</legend>
+                <label for="mail">Mail :</label>
+                <input type="text" id="username" name="_username" value="{% if last_username is defined%}{{last_username }}{% endif %}" />
+                <label for="password">Mot de passe :</label>
+                <input type="password" id="password" name="_password" /><br/>
+                <button type="submit" class="btn btn-inverse">Connexion</button>
+            </fieldset>
+        </form>
     </div>
 {% endblock %}

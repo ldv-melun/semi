@@ -11,7 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Table(name="participant")
  * @ORM\Entity(repositoryClass="Sio\SemiBundle\Entity\ParticipantRepository")
  */
-class Participant implements UserInterface
+class Participant implements UserInterface, \Serializable
 {
     /**
      * @var integer
@@ -22,16 +22,8 @@ class Participant implements UserInterface
      */
     private $id;
 	
-	/**
-	* @ORM\ManyToOne(targetEntity="Academie", inversedBy="participants", cascade={"remove"})
-	* @ORM\JoinColumn(name="idAcademie", referencedColumnName="id")
-	*/
-	protected $academie;
+
 	
-	/**
-	* @ORM\OneToMany(targetEntity="Inscription", mappedBy="particpant", cascade={"remove", "persist"})
-	*/
-	protected $seance;
 
     /**
      * @var string
@@ -46,13 +38,23 @@ class Participant implements UserInterface
      * @ORM\Column(name="prenom", type="string", length=50)
      */
     private $prenom;
+	
+	/**
+	* @ORM\ManyToOne(targetEntity="Academie", inversedBy="participants", cascade={"persist"})
+	* @ORM\JoinColumn(name="idAcademie", referencedColumnName="id")
+	*/
+	protected $academie;
+	/**
+	* @ORM\OneToMany(targetEntity="Inscription", mappedBy="participant", cascade={"remove", "persist"})
+	*/
+	protected $seance;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="mail", type="string", length=150)
+     * @ORM\Column(name="mail", type="string", length=150, unique=true)
      */
-    private $mail;
+    protected $mail;
 
     /**
      * @var string
@@ -71,16 +73,16 @@ class Participant implements UserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="resFamiliale", type="string", length=80)
+     * @ORM\Column(name="resFamilliale", type="string", length=80)
      */
     private $resFamiliale;
 
     /**
-     * @var string
+     * @var array
      *
-     * @ORM\Column(name="role", type="string", length=50)
+     * @ORM\Column(name="roles", type="array")
      */
-    private $roles;
+    protected $roles;
 
     /**
      * @var \DateTime
@@ -101,19 +103,21 @@ class Participant implements UserInterface
      *
      * @ORM\Column(name="password", type="string", length=255)
      */
-    private $password;
+    protected $password;
     
     /**
-     * @ORM\Column(name="username", type="string", length=255,
-       unique=true)
+	 * @var string
+	 *
+     * @ORM\Column(name="username", type="string", length=255)
      */
-    private $username;
+    protected $username;
     
     /**
      * @ORM\Column(name="salt", type="string", length=255)
      */
     private $salt;
 
+	
     /**
      * Get id
      *
@@ -262,28 +266,7 @@ class Participant implements UserInterface
         return $this->resFamiliale;
     }
 
-    /**
-     * Set role
-     *
-     * @param string $role
-     * @return Participant
-     */
-    public function setRole($role)
-    {
-        $this->role = $role;
     
-        return $this;
-    }
-
-    /**
-     * Get role
-     *
-     * @return string 
-     */
-    public function getRole()
-    {
-        return $this->role;
-    }
 
     /**
      * Set lastUpdate
@@ -359,6 +342,8 @@ class Participant implements UserInterface
     public function __construct()
     {
         $this->seance = new \Doctrine\Common\Collections\ArrayCollection();
+        //$this->roles = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->roles = array();
     }
     
     /**
@@ -422,14 +407,66 @@ class Participant implements UserInterface
     }
 
     public function getRoles() {
-        
+        return $this->roles;
     }
 
     public function getSalt() {
-        
+        return $this->salt;
     }
 
     public function getUsername() {
-        
+        return $this->username;
     }
+
+    /**
+     * Set roles
+     *
+     * @param $roles
+     * @return Participant
+     */
+    public function setRoles(array $roles)
+    {
+        $this->roles = $roles;
+    
+        return $this;
+    }
+
+    /**
+     * Set username
+     *
+     * @param string $username
+     * @return Participant
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+    
+        return $this;
+    }
+
+    /**
+     * Set salt
+     *
+     * @param string $salt
+     * @return Participant
+     */
+    public function setSalt($salt)
+    {
+        $this->salt = $salt;
+    
+        return $this;
+    }
+    public function serialize() {
+            return serialize(array($this->getId(),$this->getMail()));
+        }
+
+
+
+    public function unserialize($serialized) {
+            $arr = unserialize($serialized);
+            $this->id = $arr[0];
+            $this->mail = $arr[1];
+
+        }
+     
 }

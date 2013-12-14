@@ -22,8 +22,8 @@ class Seance
     private $id;
 
 	/**
-	* @ORM\ManyToOne(targetEntity="Seminaire", inversedBy="seances", cascade={"remove"})
-	* @ORM\JoinColumn(name="idSeminaire", referencedColumnName="id")
+	* @ORM\ManyToOne(targetEntity="Seminaire", inversedBy="seances", cascade={"persist"})
+	* @ORM\JoinColumn(name="idSeminaire", referencedColumnName="id", nullable=true)
 	*/
 	protected $seminaire;
 	
@@ -314,5 +314,38 @@ class Seance
     public function getSeance()
     {
         return $this->seance;
+    }
+
+    /**
+     * Add participant
+     *
+     * @param \Sio\SemiBundle\Entity\Inscription $participant
+     * @return Seance
+     */
+    public function addParticipant(\Sio\SemiBundle\Entity\Inscription $participant)
+    {
+        $this->participant[] = $participant;
+    
+        return $this;
+    }
+
+    /**
+     * Remove participant
+     *
+     * @param \Sio\SemiBundle\Entity\Inscription $participant
+     */
+    public function removeParticipant(\Sio\SemiBundle\Entity\Inscription $participant)
+    {
+        $this->participant->removeElement($participant);
+    }
+
+    /**
+     * Get participant
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getParticipant()
+    {
+        return $this->participant;
     }
 }

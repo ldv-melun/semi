@@ -65,9 +65,66 @@ class DefaultController extends Controller
     public function connectUserAction()
     {
        if($this->get('session')->has('cle')){
-       		return $this->render('SioSemiBundle:Default:connectUser.html.twig', array());
+           
+                if ($this->get('security.context')
+                    ->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+                        return $this->redirect($this->generateUrl('gestion_home'));
+                }
+                
+                $request = $this->getRequest();
+                $session = $request->getSession();
+                
+                if ($request->attributes->has(SecurityContext::AUTHENTICATION_ERROR)) {
+                  
+                    $error = $request->attributes->get(SecurityContext::AUTHENTICATION_ERROR);
+                    
+                    $exist = $this->getDoctrine()
+                    ->getRepository('SioSemiBundle:Participant')
+					->findOneByMail($session->get(SecurityContext::LAST_USERNAME));
+                    
+                
+                    if($exist){
+                   	return $this->render('SioSemiBundle:Default:connectUser.html.twig', array(
+                            'last_username' => $session->get(SecurityContext::LAST_USERNAME),
+                            'error' => $error,
+                        ));
+                    }else{
+                        // renvoi vers pages d'inscription ( deux mail deux mot de passe )
+                   	//return $this->redirect($this->generateUrl('connect_semi'));
+					
+                    }
+                    
+                    
+                    
+                } else {
+                    $error = $session->get(SecurityContext::AUTHENTICATION_ERROR);
+                    $session->remove(SecurityContext::AUTHENTICATION_ERROR);
+                    //return $this->redirect($this->generateUrl('liste_semi'));
+                }
+
+       		return $this->render('SioSemiBundle:Default:connectUser.html.twig', array('last_username' => $session->get(SecurityContext::LAST_USERNAME),
+                            'error' => $error,));
        }else{
            	return $this->redirect($this->generateUrl('connect_semi'));
+           
        }
+       
     }
+    
+    /**
+     * @Route("/gestion", name="gestion_home")
+     * @Template()
+     */
+    public function gestionHomeAction()
+    {
+    	return array();
+    }
+       
+       
+       
+       
+       
+       
+       
+    
 }

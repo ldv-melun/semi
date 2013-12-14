@@ -11,7 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Table(name="participant")
  * @ORM\Entity(repositoryClass="Sio\SemiBundle\Entity\ParticipantRepository")
  */
-class Participant implements UserInterface
+class Participant implements UserInterface, \Serializable
 {
     /**
      * @var integer
@@ -52,9 +52,9 @@ class Participant implements UserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="mail", type="string", length=150)
+     * @ORM\Column(name="mail", type="string", length=150, unique=true)
      */
-    private $mail;
+    protected $mail;
 
     /**
      * @var string
@@ -73,16 +73,16 @@ class Participant implements UserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="resFamiliale", type="string", length=80)
+     * @ORM\Column(name="resFamilliale", type="string", length=80)
      */
     private $resFamiliale;
 
     /**
-     * @var string
+     * @var array
      *
-     * @ORM\Column(name="role", type="string", length=50)
+     * @ORM\Column(name="roles", type="array")
      */
-    private $roles;
+    protected $roles;
 
     /**
      * @var \DateTime
@@ -103,14 +103,14 @@ class Participant implements UserInterface
      *
      * @ORM\Column(name="password", type="string", length=255)
      */
-    private $password;
+    protected $password;
     
     /**
 	 * @var string
 	 *
      * @ORM\Column(name="username", type="string", length=255)
      */
-    private $username;
+    protected $username;
     
     /**
      * @ORM\Column(name="salt", type="string", length=255)
@@ -342,7 +342,8 @@ class Participant implements UserInterface
     public function __construct()
     {
         $this->seance = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->roles = new \Doctrine\Common\Collections\ArrayCollection();
+        //$this->roles = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->roles = array();
     }
     
     /**
@@ -420,10 +421,10 @@ class Participant implements UserInterface
     /**
      * Set roles
      *
-     * @param string $roles
+     * @param $roles
      * @return Participant
      */
-    public function setRoles($roles)
+    public function setRoles(array $roles)
     {
         $this->roles = $roles;
     
@@ -455,4 +456,17 @@ class Participant implements UserInterface
     
         return $this;
     }
+    public function serialize() {
+            return serialize(array($this->getId(),$this->getMail()));
+    }
+
+
+
+    public function unserialize($serialized) {
+            $arr = unserialize($serialized);
+            $this->id = $arr[0];
+            $this->mail = $arr[1];
+            $this->username = $arr[1];
+    }
+     
 }
