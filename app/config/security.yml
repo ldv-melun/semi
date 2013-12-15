@@ -39,5 +39,5 @@ security:
         
 
     access_control:
-        - { path: ^/gestion, roles: [ROLE_PARTICIPANT] }
+        - { path: ^/gestion, roles: ROLE_PARTICIPANT }
         #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }

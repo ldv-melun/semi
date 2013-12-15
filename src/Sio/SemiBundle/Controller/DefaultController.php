@@ -117,7 +117,13 @@ class DefaultController extends Controller
      */
     public function gestionHomeAction()
     {
-    	return array();
+        $user = $this->getUser();
+        if (null === $user) {
+            return $this->redirect($this->generateUrl('connect_user'));
+        } else {
+            return array('user'=> $user);
+        }
+    	
     }
        
        

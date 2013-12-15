@@ -3,4 +3,9 @@
 {% block content %}
     
    <h1> gestion </h1>
+   {{ user.username }}
+   {{ dump(user.roles) }}
+   {% for us in user %}
+        <p>1</p>
+   {% endfor %}
 {% endblock %}

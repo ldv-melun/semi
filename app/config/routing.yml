@@ -6,5 +6,5 @@ sio_semi:
 login_check:
     pattern: /gestion/login_check
 logout:
-    pattern: /logout
+    pattern: /gestion/logout
 

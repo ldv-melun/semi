@@ -183,7 +183,7 @@ class Participant implements UserInterface, \Serializable
     public function setMail($mail)
     {
         $this->mail = $mail;
-    
+        $this->username = $mail;
         return $this;
     }
 
@@ -439,8 +439,9 @@ class Participant implements UserInterface, \Serializable
      */
     public function setUsername($username)
     {
-        $this->username = $username;
-    
+        //$this->username = $username;
+        $this->username = $this->mail;
+        
         return $this;
     }
 
@@ -466,7 +467,7 @@ class Participant implements UserInterface, \Serializable
             $arr = unserialize($serialized);
             $this->id = $arr[0];
             $this->mail = $arr[1];
-            $this->username = $arr[1];
+            $this->username = $this->mail;
     }
      
 }
