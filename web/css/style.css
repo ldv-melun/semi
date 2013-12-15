@@ -16,6 +16,8 @@ body{
     width:28px;
     height: 31px;  
     background: url('../images/bg_menu_droite.png')top right no-repeat ;
+    position: relative;
+    z-index: 20;
 }
 .menu{
     height: 31px;  
@@ -24,4 +26,14 @@ body{
 }
 .menu a{
     color: white;
+}
+.menuannexe{
+    height: 31px;  
+    background: url('../images/bg_menuannexe.png')top left repeat-x ;
+    margin-left: -22px;
+    line-height: 31px;
+    padding-left: 20px;
+}
+.menuannexe a{
+    color: #333333;
 }

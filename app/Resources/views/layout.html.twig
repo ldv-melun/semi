@@ -17,11 +17,27 @@
                 <div class="premenu left"></div>
                 <div class="menu left">
                     <ul class="inline">
-                        <li><a href="">Home</a></li>
+                        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                            <li><a href="">Mes inscriptions</a></li>
+                            <li><a href="">Inscriptions</a></li>
+                            {% if is_granted("ROLE_GESTIONNAIRE") %}
+                               <li><a href="">Export</a></li> 
+                            {% endif%}
+                        {% else %}
+                            <li><a href="{{path('connect_semi')}}">Home</a></li>
+                        {% endif %} 
                         <li><a href="">A propos</a></li>
                     </ul>
                 </div>
                 <div class="postmenu left"></div>
+                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                    <div class="menuannexe left">
+                        <ul class="inline">
+                            <li><a href="">{{ app.user.prenom }} {{ app.user.nom }}</a></li>
+                            <li><a href="{{path('logout')}}">Déconnexion</a></li>
+                        </ul>
+                    </div>
+                {% endif%}
             </div>
         </div>
         {% block content %}{% endblock %}
