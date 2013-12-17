@@ -38,7 +38,6 @@ class DefaultController extends Controller
             if ($form->isValid()) {
             	$session = $this->get('session');
                 $data = $form->getData();
-                // TODO traitement pour savoir si la clé existe
                $exist = $this->getDoctrine()
                     ->getRepository('SioSemiBundle:Seminaire')
 					->findOneByCle($form->get('cle_semi')->getData());
@@ -64,33 +63,36 @@ class DefaultController extends Controller
      */
     public function connectUserAction()
     {
+    	$logger = $this->get('logger');
+		
        if($this->get('session')->has('cle')){
            
                 if ($this->get('security.context')
                     ->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
                         return $this->redirect($this->generateUrl('gestion_home'));
                 }
-                
+                $logger->info('1');
                 $request = $this->getRequest();
                 $session = $request->getSession();
                 
+                $logger->info($request);
                 if ($request->attributes->has(SecurityContext::AUTHENTICATION_ERROR)) {
-                  
+                  	$logger->info('2');
                     $error = $request->attributes->get(SecurityContext::AUTHENTICATION_ERROR);
-                    
+                    $logger->info($request->attributes->get(SecurityContext::AUTHENTICATION_ERROR));
                     $exist = $this->getDoctrine()
                     ->getRepository('SioSemiBundle:Participant')
 					->findOneByMail($session->get(SecurityContext::LAST_USERNAME));
                     
-                
+                	$logger->info('3 : '.$exist);
                     if($exist){
-                   	return $this->render('SioSemiBundle:Default:connectUser.html.twig', array(
+                   		return $this->render('SioSemiBundle:Default:connectUser.html.twig', array(
                             'last_username' => $session->get(SecurityContext::LAST_USERNAME),
                             'error' => $error,
                         ));
                     }else{
                         // renvoi vers pages d'inscription ( deux mail deux mot de passe )
-                   	//return $this->redirect($this->generateUrl('connect_semi'));
+                   		return $this->redirect($this->generateUrl('liste_semi'));
 					
                     }
                     
