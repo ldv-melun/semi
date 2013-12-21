@@ -37,3 +37,11 @@ body{
 .menuannexe a{
     color: #333333;
 }
+.radioinline input{
+    float: left;
+    margin-right: 5px;
+}
+.radioinline label{
+    float: left;
+    margin-right: 20px;
+}

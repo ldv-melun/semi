@@ -46,7 +46,7 @@ class ParticipantController extends Controller
                 
                 $request = $this->get('request');
                 // On vérifie qu'elle est de type POST
-               /* if ($request->getMethod() == 'POST') {
+                if ($request->getMethod() == 'POST') {
                 
                     $form->bind($request);
 
@@ -56,10 +56,17 @@ class ParticipantController extends Controller
                         $em->persist($userCurrent);
                         $em->flush();
 
-                        return $this->redirect();
+                        //return $this->redirect();
                     }
-                }*/
+                }
 		return array("form" => $form->createView());
 	}
-	
+	/**
+	 * @Route("/gestion/a-propos", name="about_gestion")
+	 * @Template()
+	 */
+	public function aboutAction()
+	{
+            return $this->render('SioSemiBundle:Default:about.html.twig', array());
+        }
 }

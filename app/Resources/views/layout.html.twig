@@ -23,10 +23,11 @@
                             {% if is_granted("ROLE_GESTIONNAIRE") %}
                                <li><a href="">Export</a></li> 
                             {% endif%}
+                            <li><a href="{{path( 'about_gestion' )}}">A propos</a></li>
                         {% else %}
-                            <li><a href="{{path('connect_semi')}}">Home</a></li>
+                            <li><a href="{{path('connect_semi')}}">Home</a></li> 
+                            <li><a href="{{path( 'about' )}}">A propos</a></li>
                         {% endif %} 
-                        <li><a href="">A propos</a></li>
                     </ul>
                 </div>
                 <div class="postmenu left"></div>

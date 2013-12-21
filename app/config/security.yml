@@ -19,6 +19,9 @@ security:
         main_cle:
             pattern:  ^/$
             anonymous: true
+        main_about:
+            pattern:  ^/a-propos$
+            anonymous: true
         main_login:
             pattern:  ^/connexion
             anonymous: true

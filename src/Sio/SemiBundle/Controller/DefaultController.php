@@ -71,13 +71,15 @@ class DefaultController extends Controller
                     ->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
                         return $this->redirect($this->generateUrl('gestion_home'));
                 }
-                $logger->info('1');
+                
                 $request = $this->getRequest();
                 $session = $request->getSession();
                 
                 $logger->info($request);
+                $logger->info('2'.$session->get(SecurityContext::LAST_USERNAME));
+                $logger->info('tag'.$session->get(SecurityContext::AUTHENTICATION_ERROR));
                 if ($request->attributes->has(SecurityContext::AUTHENTICATION_ERROR)) {
-                  	$logger->info('2');
+                    $logger->info('3');
                     $error = $request->attributes->get(SecurityContext::AUTHENTICATION_ERROR);
                     $logger->info($request->attributes->get(SecurityContext::AUTHENTICATION_ERROR));
                     $exist = $this->getDoctrine()
@@ -86,13 +88,13 @@ class DefaultController extends Controller
                     
                 	$logger->info('3 : '.$exist);
                     if($exist){
-                   		return $this->render('SioSemiBundle:Default:connectUser.html.twig', array(
+                                return $this->render('SioSemiBundle:Default:connectUser.html.twig', array(
                             'last_username' => $session->get(SecurityContext::LAST_USERNAME),
                             'error' => $error,
                         ));
                     }else{
                         // renvoi vers pages d'inscription ( deux mail deux mot de passe )
-                   		return $this->redirect($this->generateUrl('liste_semi'));
+                   	return $this->redirect($this->generateUrl('liste_semi'));
 					
                     }
                     
@@ -101,8 +103,21 @@ class DefaultController extends Controller
                 } else {
                     $error = $session->get(SecurityContext::AUTHENTICATION_ERROR);
                     $session->remove(SecurityContext::AUTHENTICATION_ERROR);
+                    $logger->info('5'.$session->get(SecurityContext::AUTHENTICATION_ERROR));
                     //return $this->redirect($this->generateUrl('liste_semi'));
                 }
+                
+                /*if($session->get(SecurityContext::LAST_USERNAME)!= ""){
+                   $exist = $this->getDoctrine()
+                    ->getRepository('SioSemiBundle:Participant')
+					->findOneByMail($session->get(SecurityContext::LAST_USERNAME));
+                    if(!$exist){
+                        // renvoi vers pages d'inscription ( deux mail deux mot de passe )
+                   	return $this->redirect($this->generateUrl('liste_semi'));
+                    } else{
+                        $error = $request->attributes->get(SecurityContext::AUTHENTICATION_ERROR);
+                    }
+                }*/
 
        		return $this->render('SioSemiBundle:Default:connectUser.html.twig', array('last_username' => $session->get(SecurityContext::LAST_USERNAME),
                             'error' => $error,));
@@ -126,6 +141,14 @@ class DefaultController extends Controller
             return array('user'=> $user);
         }
     	
+    }
+    /**
+     * @Route("/a-propos", name="about")
+     * @Template()
+     */
+    public function aboutAction()
+    {     
+            return array();	
     }
        
        
