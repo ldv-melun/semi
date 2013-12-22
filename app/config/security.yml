@@ -22,6 +22,9 @@ security:
         main_about:
             pattern:  ^/a-propos$
             anonymous: true
+        main_compte:
+            pattern:  ^/creation-compte
+            anonymous: true
         main_login:
             pattern:  ^/connexion
             anonymous: true

@@ -8,6 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\SecurityContext;
 use JMS\SecurityExtraBundle\Annotation\Secure;
+use Sio\SemiBundle\Entity\Participant;
 
 class DefaultController extends Controller
 {
@@ -78,7 +79,7 @@ class DefaultController extends Controller
                 $logger->info($request);
                 $logger->info('2'.$session->get(SecurityContext::LAST_USERNAME));
                 $logger->info('tag'.$session->get(SecurityContext::AUTHENTICATION_ERROR));
-                if ($request->attributes->has(SecurityContext::AUTHENTICATION_ERROR)) {
+                if ($session->get(SecurityContext::AUTHENTICATION_ERROR)) {
                     $logger->info('3');
                     $error = $request->attributes->get(SecurityContext::AUTHENTICATION_ERROR);
                     $logger->info($request->attributes->get(SecurityContext::AUTHENTICATION_ERROR));
@@ -86,7 +87,6 @@ class DefaultController extends Controller
                     ->getRepository('SioSemiBundle:Participant')
 					->findOneByMail($session->get(SecurityContext::LAST_USERNAME));
                     
-                	$logger->info('3 : '.$exist);
                     if($exist){
                                 return $this->render('SioSemiBundle:Default:connectUser.html.twig', array(
                             'last_username' => $session->get(SecurityContext::LAST_USERNAME),
@@ -94,7 +94,10 @@ class DefaultController extends Controller
                         ));
                     }else{
                         // renvoi vers pages d'inscription ( deux mail deux mot de passe )
-                   	return $this->redirect($this->generateUrl('liste_semi'));
+                        $session->set('email', $session->get(SecurityContext::LAST_USERNAME) );
+                        $session->remove(SecurityContext::AUTHENTICATION_ERROR);
+                        $session->remove(SecurityContext::LAST_USERNAME);
+                   	return $this->redirect($this->generateUrl('create_account'));
 					
                     }
                     
@@ -107,17 +110,7 @@ class DefaultController extends Controller
                     //return $this->redirect($this->generateUrl('liste_semi'));
                 }
                 
-                /*if($session->get(SecurityContext::LAST_USERNAME)!= ""){
-                   $exist = $this->getDoctrine()
-                    ->getRepository('SioSemiBundle:Participant')
-					->findOneByMail($session->get(SecurityContext::LAST_USERNAME));
-                    if(!$exist){
-                        // renvoi vers pages d'inscription ( deux mail deux mot de passe )
-                   	return $this->redirect($this->generateUrl('liste_semi'));
-                    } else{
-                        $error = $request->attributes->get(SecurityContext::AUTHENTICATION_ERROR);
-                    }
-                }*/
+                
 
        		return $this->render('SioSemiBundle:Default:connectUser.html.twig', array('last_username' => $session->get(SecurityContext::LAST_USERNAME),
                             'error' => $error,));
@@ -149,6 +142,91 @@ class DefaultController extends Controller
     public function aboutAction()
     {     
             return array();	
+    }
+    
+    /**
+     * @Route("/creation-compte", name="create_account")
+     * @Template()
+     */
+    public function creaAccountAction(Request $request)
+    {     
+            $session = $this->getRequest()->getSession();
+            if($session->get('email')){
+                $defaultData = array();
+                $form = $this->createFormBuilder($defaultData)
+                    ->add('mail', 'text', array(
+                                    'label' => 'Mail',
+                                    'data' => $session->get('email'),
+                                    'read_only' => true,
+                          ))
+                    ->add('password', 'password', array('label'=>'Mot de passe'))
+                    ->add('repassword', 'password', array('label'=>'Veuillez retaper votre mot de passe'))
+                    ->getForm();
+
+                $form->handleRequest($request);
+                if ($request->getMethod() == 'POST') {
+                    if ($form->isValid()) {
+                        if($form->get('password')->getData() === $form->get('repassword')->getData()){
+                            $session->set('valid', 'on');
+                            $session->set('pass',$form->get('password')->getData());
+                            return $this->redirect($this->generateUrl('renseignement_new_account'));
+                        }else{
+                            $erreur = 'Les mots de passe ne correspondent pas';
+                            return array(
+                                'form' => $form->createView(),
+                                'erreur' => $erreur,
+                            );
+                        }
+                    }
+                 }
+                 return array(
+                     'form' => $form->createView(),
+                 );
+            }
+            
+            return $this->redirect($this->generateUrl('connect_user'));
+    }
+    
+    /**
+     * @Route("/creation-compte-renseignement", name="renseignement_new_account")
+     * @Template()
+     */
+    public function infNewAccountAction()
+    {     
+             if($this->get('session')->has('valid')){
+                $participant = new Participant();
+                $participant->setMail($this->get('session')->get('email'))
+                        ->setPassword($this->get('session')->get('pass'))
+                        ->setRoles(array('ROLE_PARTICIPANT'));
+                $form = $this->createFormBuilder($participant)
+                    ->add('nom', 'text')
+                    ->add('prenom', 'text')
+                    ->add('mail', 'text',array(
+                        'read_only' => true,
+                    ))
+                    ->add('academie', 'entity', array(
+                        'class'    => 'SioSemiBundle:Academie',
+                        'property' => 'nom',
+                        'multiple' => false,
+                        'expanded' => false)
+                    )
+                    ->add('resFamiliale', 'text')
+                    ->add('resAdministrative', 'text')                    
+                    ->add('titre', 'choice', array(
+                        'choices'   => array(
+                            'professeur'   => 'Professeur',
+                            'ipr' => 'IA-IPR',
+                            'ien'   => 'IEN',
+                            'autre'   => 'Autre',
+                        ),
+                        'multiple'  => false,
+                        'expanded' => true,
+                    ))
+                    ->getForm();
+                  return array('form'=>$form->createView());
+             }
+             return $this->redirect($this->generateUrl('connect_user'));
+    	
     }
        
        
