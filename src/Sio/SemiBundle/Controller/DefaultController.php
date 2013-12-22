@@ -223,6 +223,27 @@ class DefaultController extends Controller
                         'expanded' => true,
                     ))
                     ->getForm();
+                
+                    $request = $this->get('request');
+                    // On vérifie qu'elle est de type POST
+                    if ($request->getMethod() == 'POST') {
+                
+                        $form->bind($request);
+
+                        if ($form->isValid()) {
+
+                            $em = $this->getDoctrine()->getManager();
+                            $participant->setSalt("");
+                            $participant->setDateCrea(new \DateTime());
+                            $em->persist($participant);
+                            $em->flush();
+                            $this->get('session')->remove('email');
+                            $this->get('session')->remove('pass');
+                            $this->get('session')->remove('valid');
+                            //return $this->redirect();
+                            return $this->redirect($this->generateUrl('connect_user'));
+                        }
+                    }
                   return array('form'=>$form->createView());
              }
              return $this->redirect($this->generateUrl('connect_user'));
