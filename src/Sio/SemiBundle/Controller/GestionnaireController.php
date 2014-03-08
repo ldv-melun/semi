@@ -17,7 +17,13 @@ class GestionnaireController extends Controller
      */
     public function exportAction()
     {
-    	return array();
+    	$lesSeminaire = $this->getDoctrine()
+    	->getRepository("SioSemiBundle:seminaire")
+        ->findAll();
+    	
+    	 
+    	return array ('lesSeminaire' => $lesSeminaire);
+    	
     }
 
 }
