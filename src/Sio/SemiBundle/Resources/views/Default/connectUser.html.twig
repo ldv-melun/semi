@@ -1,7 +1,13 @@
 
 {% extends "::layout.html.twig" %}
 {% block content %}
-    
+    {% if semi_active is defined %}
+        <div class="row">
+                <div class="span9 offset3">
+                        <p class="aff-warning">ATTENTION ! : Le séminaire <cite>{{ app.session.get('cle') }}</cite> est terminé</p>
+                </div>
+        </div>
+    {% endif %}
     <div class="row">
 	    <div class="span5 offset3">
 	            <pre>{{ app.session.get('cle') }} <br/>Anais.Lamare@dodgit.com participant<br/>Yseult.Sylvain@dodgit.com  gestionnaire</pre>

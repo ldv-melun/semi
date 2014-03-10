@@ -67,6 +67,15 @@ class DefaultController extends Controller
     	$logger = $this->get('logger');
 		
        if($this->get('session')->has('cle')){
+                /* verification de l'ouverture du seminaire */
+                $seminaire = $this->getDoctrine()
+                                    ->getRepository('SioSemiBundle:Seminaire')
+                                    ->findOneByCle($this->get('session')->get('cle'));
+                $now = new \DateTime();
+                $diff = $seminaire->getDateFin()->diff($now);
+                $semi_active = (($diff->format('%s') > 0)?true:false);
+           
+           
            
                 if ($this->get('security.context')
                     ->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
@@ -91,6 +100,7 @@ class DefaultController extends Controller
                                 return $this->render('SioSemiBundle:Default:connectUser.html.twig', array(
                             'last_username' => $session->get(SecurityContext::LAST_USERNAME),
                             'error' => $error,
+                            'semi_active' => $semi_active,
                         ));
                     }else{
                         // renvoi vers pages d'inscription ( deux mail deux mot de passe )
@@ -109,11 +119,12 @@ class DefaultController extends Controller
                     $logger->info('5'.$session->get(SecurityContext::AUTHENTICATION_ERROR));
                     //return $this->redirect($this->generateUrl('liste_semi'));
                 }
-                
+                      
                 
 
        		return $this->render('SioSemiBundle:Default:connectUser.html.twig', array('last_username' => $session->get(SecurityContext::LAST_USERNAME),
-                            'error' => $error,));
+                            'error' => $error,
+                            'semi_active' => $semi_active,));
        }else{
            	return $this->redirect($this->generateUrl('connect_semi'));
            

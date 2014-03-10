@@ -4,6 +4,15 @@
 body{
     background: #c3c3c3;
 }
+.aff-warning{
+    background: #e5a7a7;
+    border-radius: 5px;
+    border: 1px solid #cc8787;
+    padding: 7px;
+    height: 30px;
+    line-height: 30px;
+    color: #5d0404;
+}
 .menuall{
     height: 31px;   
 }
@@ -45,3 +54,4 @@ body{
     float: left;
     margin-right: 20px;
 }
+
