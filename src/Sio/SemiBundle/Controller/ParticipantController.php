@@ -69,4 +69,15 @@ class ParticipantController extends Controller
 	{
             return $this->render('SioSemiBundle:Default:about.html.twig', array());
         }
+        
+        /**
+	 * @Route("/gestion/supprimer", name="supprimer_profil_gestion")
+	 * @Template()
+	 */
+	public function supprimerProfilAction()
+	{
+            $userCurrent = $this->getUser();
+            $userCurrent->delete();
+            return $this->redirect($this->generateUrl('connect_semi'));
+        }
 }

@@ -20,8 +20,18 @@
                 <div class="radioinline">{{ form_widget(form.titre) }}</div>
             </fieldset>
             <button type="submit" class="btn btn-inverse">Valider</button>
+            <button class="btn btn-danger" onclick="deleteProfil();">Supprimer mon compte</button>
            
         {{ form_end(form) }}
     </div>
 </div>
+{% endblock %}
+{% block javascripts %}
+<script type="text/javascript">
+    function deleteProfil(){
+        if(confirm("Voulez vous supprimer votre profil ?")){
+            document.location.href = "{{ path('supprimer_profil_gestion')}}";
+        }
+    }
+</script>
 {% endblock %}

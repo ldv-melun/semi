@@ -75,6 +75,13 @@ class Seminaire
      * @ORM\Column(name="cle", type="string", length=255)
      */
     private $cle;
+    
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="inscription_actif", type="integer", length=1)
+     */
+    private $inscriptionActif;
 
 
     /**
@@ -286,5 +293,28 @@ class Seminaire
     public function getSeances()
     {
         return $this->seances;
+    }
+
+    /**
+     * Set inscriptionActif
+     *
+     * @param integer $inscriptionActif
+     * @return Seminaire
+     */
+    public function setInscriptionActif($inscriptionActif)
+    {
+        $this->inscriptionActif = $inscriptionActif;
+    
+        return $this;
+    }
+
+    /**
+     * Get inscriptionActif
+     *
+     * @return integer 
+     */
+    public function getInscriptionActif()
+    {
+        return $this->inscriptionActif;
     }
 }

@@ -204,60 +204,60 @@ class DefaultController extends Controller
      */
     public function infNewAccountAction()
     {     
-             if($this->get('session')->has('valid')){
-                $participant = new Participant();
-                $participant->setMail($this->get('session')->get('email'))
-                        ->setPassword($this->get('session')->get('pass'))
-                        ->setRoles(array('ROLE_PARTICIPANT'));
-                $form = $this->createFormBuilder($participant)
-                    ->add('nom', 'text')
-                    ->add('prenom', 'text')
-                    ->add('mail', 'text',array(
-                        'read_only' => true,
-                    ))
-                    ->add('academie', 'entity', array(
-                        'class'    => 'SioSemiBundle:Academie',
-                        'property' => 'nom',
-                        'multiple' => false,
-                        'expanded' => false)
-                    )
-                    ->add('resFamiliale', 'text')
-                    ->add('resAdministrative', 'text')                    
-                    ->add('titre', 'choice', array(
-                        'choices'   => array(
-                            'professeur'   => 'Professeur',
-                            'ipr' => 'IA-IPR',
-                            'ien'   => 'IEN',
-                            'autre'   => 'Autre',
-                        ),
-                        'multiple'  => false,
-                        'expanded' => true,
-                    ))
-                    ->getForm();
-                
-                    $request = $this->get('request');
-                    // On vérifie qu'elle est de type POST
-                    if ($request->getMethod() == 'POST') {
-                
-                        $form->bind($request);
+        if($this->get('session')->has('valid')){
+           $participant = new Participant();
+           $participant->setMail($this->get('session')->get('email'))
+                   ->setPassword($this->get('session')->get('pass'))
+                   ->setRoles(array('ROLE_PARTICIPANT'));
+           $form = $this->createFormBuilder($participant)
+               ->add('nom', 'text')
+               ->add('prenom', 'text')
+               ->add('mail', 'text',array(
+                   'read_only' => true,
+               ))
+               ->add('academie', 'entity', array(
+                   'class'    => 'SioSemiBundle:Academie',
+                   'property' => 'nom',
+                   'multiple' => false,
+                   'expanded' => false)
+               )
+               ->add('resFamiliale', 'text')
+               ->add('resAdministrative', 'text')                    
+               ->add('titre', 'choice', array(
+                   'choices'   => array(
+                       'professeur'   => 'Professeur',
+                       'ipr' => 'IA-IPR',
+                       'ien'   => 'IEN',
+                       'autre'   => 'Autre',
+                   ),
+                   'multiple'  => false,
+                   'expanded' => true,
+               ))
+               ->getForm();
 
-                        if ($form->isValid()) {
+               $request = $this->get('request');
+               // On vérifie qu'elle est de type POST
+               if ($request->getMethod() == 'POST') {
 
-                            $em = $this->getDoctrine()->getManager();
-                            $participant->setSalt("");
-                            $participant->setDateCrea(new \DateTime());
-                            $em->persist($participant);
-                            $em->flush();
-                            $this->get('session')->remove('email');
-                            $this->get('session')->remove('pass');
-                            $this->get('session')->remove('valid');
-                            //return $this->redirect();
-                            return $this->redirect($this->generateUrl('connect_user'));
-                        }
-                    }
-                  return array('form'=>$form->createView());
-             }
-             return $this->redirect($this->generateUrl('connect_user'));
+                   $form->bind($request);
+
+                   if ($form->isValid()) {
+
+                       $em = $this->getDoctrine()->getManager();
+                       $participant->setSalt("");
+                       $participant->setDateCrea(new \DateTime());
+                       $em->persist($participant);
+                       $em->flush();
+                       $this->get('session')->remove('email');
+                       $this->get('session')->remove('pass');
+                       $this->get('session')->remove('valid');
+                       //return $this->redirect();
+                       return $this->redirect($this->generateUrl('connect_user'));
+                   }
+               }
+             return array('form'=>$form->createView());
+        }
+        return $this->redirect($this->generateUrl('connect_user'));
     	
     }
        
