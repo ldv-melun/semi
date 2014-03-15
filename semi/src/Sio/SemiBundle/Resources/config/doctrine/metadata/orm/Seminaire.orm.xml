@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Seminaire" table="seminaire">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="nom" type="string" column="nom" length="150" nullable="true"/>
+    <field name="soustitre" type="string" column="sousTitre" length="150" nullable="true"/>
+    <field name="lieu" type="string" column="lieu" length="150" nullable="true"/>
+    <field name="datedebut" type="datetime" column="dateDebut" nullable="true"/>
+    <field name="datefin" type="datetime" column="dateFin" nullable="true"/>
+    <field name="commentaire" type="string" column="commentaire" length="300" nullable="true"/>
+    <field name="cle" type="string" column="cle" length="255" nullable="true"/>
+  </entity>
+</doctrine-mapping>
