@@ -1,0 +1,14 @@
+{% extends "SioSemiBundle::layout.html.twig" %}
+
+{% block title %}SioSemiBundle:Participant:index{% endblock %}
+
+{% block content %}
+<h1>Welcome to the Participant:index page</h1>
+
+   <ul id="seminaire">
+{% for Participant in lesParticipant %}
+<li> {{ Participant.id }} - {{ Participant.nom }} - {{Participant.idacademie}}</li>
+{% endfor %}
+</ul>
+
+{% endblock %}

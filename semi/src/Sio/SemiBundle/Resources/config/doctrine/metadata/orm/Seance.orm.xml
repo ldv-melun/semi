@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Seance" table="seance">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="idseminaire" type="integer" column="idSeminaire" nullable="true"/>
+    <field name="libelle" type="string" column="libelle" length="150" nullable="true"/>
+    <field name="intervenants" type="string" column="intervenants" length="300" nullable="true"/>
+    <field name="nbmax" type="integer" column="nbMax" nullable="true"/>
+    <field name="dateheuredebut" type="datetime" column="dateHeureDebut" nullable="true"/>
+    <field name="dateheurefin" type="datetime" column="dateHeureFin" nullable="true"/>
+    <field name="type" type="string" column="type" length="20" nullable="true"/>
+    <field name="numrelatif" type="integer" column="numRelatif" nullable="false"/>
+  </entity>
+</doctrine-mapping>

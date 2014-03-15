@@ -1,0 +1,16 @@
+{% extends "SioSemiBundle::layout.html.twig" %}
+
+{% block title %}SioSemiBundle:Gestionnaire:export{% endblock %}
+
+{% block content%}
+<h1>Welcome to the Gestionnaire:export page {{lesSeminaire}}</h1>
+
+
+   
+   <ul id="seminaire">
+{% for Seminaire in lesSeminaire %}
+<li> {{ Seminaire.nom }} - {{ Seminaire.soustitre }} - {{Seminaire.dateDebut|date('d/m/Y')}}</li>
+{% endfor %}
+</ul>
+   
+{% endblock %}

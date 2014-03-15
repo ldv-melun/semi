@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Participant" table="participant">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="nom" type="string" column="nom" length="50" nullable="true"/>
+    <field name="prenom" type="string" column="prenom" length="50" nullable="true"/>
+    <field name="idacademie" type="integer" column="idAcademie" nullable="true"/>
+    <field name="mail" type="string" column="mail" length="150" nullable="true"/>
+    <field name="titre" type="string" column="titre" length="30" nullable="true"/>
+    <field name="resadministrative" type="string" column="resAdministrative" length="80" nullable="true"/>
+    <field name="resfamilliale" type="string" column="resFamilliale" length="80" nullable="true"/>
+    <field name="role" type="string" column="role" length="50" nullable="true"/>
+    <field name="lastupdate" type="datetime" column="lastUpdate" nullable="true"/>
+    <field name="datecrea" type="datetime" column="dateCrea" nullable="true"/>
+  </entity>
+</doctrine-mapping>
