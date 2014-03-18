@@ -22,7 +22,7 @@ class Seance
     private $id;
 
 	/**
-	* @ORM\ManyToOne(targetEntity="Seminaire", inversedBy="seances", cascade={"persist"})
+	* @ORM\ManyToOne(targetEntity="Seminaire", inversedBy="seance", cascade={"persist"})
 	* @ORM\JoinColumn(name="idSeminaire", referencedColumnName="id", nullable=true)
 	*/
 	protected $seminaire;
@@ -30,7 +30,7 @@ class Seance
 	/**
 	* @ORM\OneToMany(targetEntity="Inscription", mappedBy="seance", cascade={"remove", "persist"})
 	*/
-	protected $participant;
+	protected $participants;
 	
     /**
      * @var string

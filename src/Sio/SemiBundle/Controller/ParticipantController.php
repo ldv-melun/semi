@@ -76,8 +76,10 @@ class ParticipantController extends Controller
 	 */
 	public function supprimerProfilAction()
 	{
+            
+            $em = $this->getDoctrine()->getManager();
             $userCurrent = $this->getUser();
-            $userCurrent->delete();
+            $em->delete($userCurrent);
             return $this->redirect($this->generateUrl('connect_semi'));
         }
 }

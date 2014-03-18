@@ -40,14 +40,14 @@ class Participant implements UserInterface, \Serializable
     private $prenom;
 	
 	/**
-	* @ORM\ManyToOne(targetEntity="Academie", inversedBy="participants", cascade={"persist"})
+	* @ORM\ManyToOne(targetEntity="Academie", inversedBy="participant", cascade={"persist"})
 	* @ORM\JoinColumn(name="idAcademie", referencedColumnName="id")
 	*/
 	protected $academie;
 	/**
 	* @ORM\OneToMany(targetEntity="Inscription", mappedBy="participant", cascade={"remove", "persist"})
 	*/
-	protected $seance;
+	protected $seances;
 
     /**
      * @var string

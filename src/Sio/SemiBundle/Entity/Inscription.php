@@ -16,8 +16,8 @@ class Inscription
      * @var integer
      *
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Participant", inversedBy="seance", cascade={"remove"})
-	 * @ORM\JoinColumn(name="idParticipant", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Participant", inversedBy="seances", cascade={"remove"})
+     * @ORM\JoinColumn(name="idParticipant", referencedColumnName="id")
      * 
      */
     private $participant;
@@ -25,8 +25,8 @@ class Inscription
      * @var integer
      *
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Seance", inversedBy="participant", cascade={"remove"})
-	 * @ORM\JoinColumn(name="idSeance", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Seance", inversedBy="participants", cascade={"remove"})
+     * @ORM\JoinColumn(name="idSeance", referencedColumnName="id")
      */
     private $seance;
 	
