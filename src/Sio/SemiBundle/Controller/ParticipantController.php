@@ -78,8 +78,11 @@ class ParticipantController extends Controller
 	{
             
             $em = $this->getDoctrine()->getManager();
+           //$u =  $em->getRepository('SioSemiBundle:Participant')->findById($this->getUser()->getId());
             $userCurrent = $this->getUser();
-            $em->delete($userCurrent);
+            
+            $em->remove($userCurrent);
+            $em->flush();
             return $this->redirect($this->generateUrl('connect_semi'));
         }
 }

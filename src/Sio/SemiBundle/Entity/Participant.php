@@ -342,6 +342,7 @@ class Participant implements UserInterface, \Serializable
     public function __construct()
     {
         $this->seance = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->lastUpdate = new \DateTime();
         //$this->roles = new \Doctrine\Common\Collections\ArrayCollection();
         $this->roles = array();
     }

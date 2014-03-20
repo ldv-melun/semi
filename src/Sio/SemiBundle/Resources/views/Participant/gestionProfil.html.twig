@@ -20,7 +20,7 @@
                 <div class="radioinline">{{ form_widget(form.titre) }}</div>
             </fieldset>
             <button type="submit" class="btn btn-inverse">Valider</button>
-            <button class="btn btn-danger" onclick="deleteProfil();">Supprimer mon compte</button>
+            <a class="btn btn-danger"  href="{{ path('supprimer_profil_gestion')}}" onclick="return confirm('Voulez vous supprimer votre profil ?');">Supprimer mon compte</a>
            
         {{ form_end(form) }}
     </div>
