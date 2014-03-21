@@ -9,7 +9,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * Participant
  *
  * @ORM\Table(name="participant")
- * @ORM\Entity(repositoryClass="Sio\SemiBundle\Entity\ParticipantRepository")
+ * @ORM\Entity(repositoryClass="Sio\SemiBundle\Entity\ParticipantRepository") 
  */
 class Participant implements UserInterface, \Serializable
 {
