@@ -5,6 +5,8 @@ namespace Sio\SemiBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\Request;
+use Sio\SemiBundle\Entity\Participant;
 
 /**
  * 
@@ -71,11 +73,11 @@ class ParticipantController extends Controller
         }
         
         /**
-	 * @Route("/gestion/supprimer", name="supprimer_profil_gestion")
-	 * @Template()
-	 */
-	public function supprimerProfilAction()
-	{
+        * @Route("/gestion/supprimer", name="supprimer_profil_gestion")
+        * @Template()
+        */
+       public function supprimerProfilAction()
+       {
             
             $em = $this->getDoctrine()->getManager();
            //$u =  $em->getRepository('SioSemiBundle:Participant')->findById($this->getUser()->getId());
@@ -85,4 +87,6 @@ class ParticipantController extends Controller
             $em->flush();
             return $this->redirect($this->generateUrl('connect_semi'));
         }
+        
+        
 }

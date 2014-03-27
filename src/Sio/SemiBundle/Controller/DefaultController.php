@@ -261,7 +261,40 @@ class DefaultController extends Controller
     	
     }
        
-       
+       /**
+        * @Route("/mdp-oublie", name="pass_oublie_gestion")
+        * @Template()
+        */
+       public function passOublieAction(Request $request)
+       {
+            if($this->get('session')->has('valid')){
+           $defaultData = new Participant();
+            $form = $this->createFormBuilder($defaultData)
+            ->add('mail', 'text')
+            ->getForm();
+
+        $form->handleRequest($request);
+        if ($request->getMethod() == 'POST') {
+            if ($form->isValid()) {
+               $data = $form->getData();
+               $exist = $this->getDoctrine()
+                    ->getRepository('SioSemiBundle:Seminaire')
+	->findOneByMail($form->get('mail')->getData());
+                    
+                
+               if($exist){
+                
+               }else{
+               	
+               }
+            }
+        }
+        return $this->render('SioSemiBundle:Participant:passOublie.html.twig', array(
+            'form' => $form->createView(),
+        ));
+            }  
+          
+        }
        
        
        
