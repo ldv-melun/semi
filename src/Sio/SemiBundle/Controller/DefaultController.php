@@ -279,12 +279,12 @@ class DefaultController extends Controller
                     if ($form->isValid()) {
                        $data = $form->getData();
                        $exist = $this->getDoctrine()
-                            ->getRepository('SioSemiBundle:Seminaire')
+                            ->getRepository('SioSemiBundle:Participant')
                             ->findOneByMail($form->get('mail')->getData());
 
 
                        if($exist){
-
+                             
                        }else{
 
                        }
@@ -297,7 +297,18 @@ class DefaultController extends Controller
           
         }
        
-       
+       private function genereMdp(){
+             $mdp = "";
+
+             $possible = "123467890abcdfghjkmnpqrtvwxyzABCDFGHJKLMNPQRTVWXYZ";
+             
+             for($i =0; $i< 9;$i++){
+                 $mdp .= substr($possible, mt_rand(0, strlen($possible)-1), 1);   
+             }
+ 
+   
+           return $mdp;
+       }
        
        
        
