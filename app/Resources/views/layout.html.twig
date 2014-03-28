@@ -31,7 +31,7 @@
                     </ul>
                 </div>
                 <div class="postmenu left"></div>
-                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+               {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                     <div class="menuannexe left">
                         <ul class="inline">
                             <li><a href="{{path('gestion_profil')}}">{{ app.user.prenom }} {{ app.user.nom }}</a></li>

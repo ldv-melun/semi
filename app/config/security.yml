@@ -25,6 +25,9 @@ security:
         main_compte:
             pattern:  ^/creation-compte
             anonymous: true
+        main_mdp_oublie:
+            pattern:  ^/mdp
+            anonymous: true
         main_login:
             pattern:  ^/connexion
             anonymous: true
@@ -47,3 +50,4 @@ security:
     access_control:
         - { path: ^/gestion, roles: ROLE_PARTICIPANT }
         #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
+        - { path: /.*, role: IS_AUTHENTICATED_ANONYMOUSLY }
