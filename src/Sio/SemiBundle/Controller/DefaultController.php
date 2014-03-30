@@ -278,13 +278,24 @@ class DefaultController extends Controller
                 if ($request->getMethod() == 'POST') {
                     if ($form->isValid()) {
                        $data = $form->getData();
-                       $exist = $this->getDoctrine()
+                       $user = $this->getDoctrine()
                             ->getRepository('SioSemiBundle:Participant')
                             ->findOneByMail($form->get('mail')->getData());
 
 
-                       if($exist){
-                             
+                       if($user){
+                          $newMdp = genereMdp();
+                          
+                          $message = \Swift_Message::newInstance()
+                            ->setSubject('Prjet séminaire : nouveau mot de passe')
+                            ->setFrom('moi@moi.fr')
+                            ->setTo($user->getMail())
+                            ->setBody('nouveau mdp : '.$newMdp);
+                            $this->get('mailer')->send($message);
+                           
+                            $em = $this->getDoctrine()->getEntityManager();
+                            $em->persist($user);
+                            $em->flush();
                        }else{
 
                        }
