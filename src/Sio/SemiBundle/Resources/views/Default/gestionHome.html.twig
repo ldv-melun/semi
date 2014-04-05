@@ -2,10 +2,9 @@
 {% extends "::layout.html.twig" %}
 {% block content %}
     
-   <h1> gestion </h1>
-   {{ user.username }}
-   {{ dump(user.roles) }}
-   {% for us in user %}
-        <p>1</p>
-   {% endfor %}
+   {# {{ dump(user) }} #}
+    <div class="row span8 offset3">
+        <h3>Bonjour {{user.prenom}} {{user.nom|upper}}</h3>
+        
+    </div>
 {% endblock %}
