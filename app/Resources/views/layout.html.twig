@@ -22,6 +22,7 @@
                             <li><a href="">Inscriptions</a></li>
                             {% if is_granted("ROLE_GESTIONNAIRE") %}
                                <li><a href="">Export</a></li> 
+                               <li><a href="{{path('ajout_participant')}}">Ajout participant</a></li> 
                             {% endif%}
                             <li><a href="{{path( 'about_gestion' )}}">A propos</a></li>
                         {% else %}

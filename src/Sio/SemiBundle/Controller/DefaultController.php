@@ -103,12 +103,12 @@ class DefaultController extends Controller
                             'semi_active' => $semi_active,
                         ));
                     }else{
-                        // renvoi vers pages d'inscription ( deux mail deux mot de passe )
+                    /* // renvoi vers pages d'inscription ( deux mail deux mot de passe )
                         $session->set('email', $session->get(SecurityContext::LAST_USERNAME) );
                         $session->remove(SecurityContext::AUTHENTICATION_ERROR);
                         $session->remove(SecurityContext::LAST_USERNAME);
                    	return $this->redirect($this->generateUrl('create_account'));
-					
+	*/				
                     }
                     
                     
@@ -308,7 +308,7 @@ class DefaultController extends Controller
           
         }
        
-       private function genereMdp(){
+       public static function genereMdp(){
              $mdp = "";
 
              $possible = "123467890abcdfghjkmnpqrtvwxyzABCDFGHJKLMNPQRTVWXYZ";

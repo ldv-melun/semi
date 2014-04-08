@@ -1,0 +1,33 @@
+{% extends "::layout.html.twig" %}
+
+
+
+{% block content %}
+<div class="row">
+    {% if informations is defined %}
+    <div class="row">
+	    <div class="span5 offset3">
+                            <pre>
+                            <blockquote>Informations à transmettre</blockquote>
+                                <p>Mail : {{informations.mail}}</p>
+                                <p>Mot de passe : {{informations.mdp}}</p>
+                                <p>Clé de séminaire : {{informations.cle}}</p>
+                            </pre>
+	    </div>
+    </div>
+    {% endif %}
+    <div class="span8 offset3">
+        {{ form_start(form) }}
+            <fieldset>
+                <legend>Ajout d'un participant</legend>
+                {{ form_errors(form) }}
+                <blockquote>Veuillez entrer le mail à ajouter</blockquote>
+                {{ form_widget(form.mail) }}
+                
+            </fieldset>
+            <button type="submit" class="btn btn-inverse">Ajouter</button>
+           
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}
