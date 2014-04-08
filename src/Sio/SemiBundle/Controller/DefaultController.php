@@ -310,7 +310,7 @@ class DefaultController extends Controller
        
        public static function genereMdp(){
              $mdp = "";
-
+  
              $possible = "123467890abcdfghjkmnpqrtvwxyzABCDFGHJKLMNPQRTVWXYZ";
              
              for($i =0; $i< 9;$i++){
