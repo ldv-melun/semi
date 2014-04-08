@@ -1,0 +1,36 @@
+
+{% extends "::layout.html.twig" %}
+{% block content %}
+    {% if semi_active is defined %}
+        <div class="row">
+                <div class="span9 offset3">
+                        <p class="aff-warning">ATTENTION ! : Le séminaire <cite>{{ app.session.get('cle') }}</cite> est terminé</p>
+                </div>
+        </div>
+    {% endif %}
+    <div class="row">
+	    <div class="span5 offset3">
+	            <pre>{{ app.session.get('cle') }} <br/>Anais.Lamare@dodgit.com participant<br/>Yseult.Sylvain@dodgit.com  gestionnaire</pre>
+	    </div>
+    </div>
+    <div class="row">
+	    <div class="span8 offset3">
+	        {% if error.message is defined%}
+	            <div class="alert alert-error">{{ error.message|trans }}</div>
+	        {% endif %}
+	        {# Le formulaire, avec URL de soumission vers la route «login_check » comme on l'a vu #}
+	        <form action="{{ path('login_check') }}" method="post">
+	            <fieldset>
+	                <legend>Veuillez vous connecter</legend>
+	                <label for="mail">Mail :</label>
+	                <input type="text" id="username" name="_username" value="{% if last_username is defined%}{{last_username }}{% endif %}" />
+	                <label for="password">Mot de passe :</label>
+	                <input type="password" id="password" name="_password" /><br/>
+	                <button type="submit" class="btn btn-inverse">Connexion</button>
+                                  <a href="{{ path('pass_oublie_gestion')}}">Mot de passe oublié ?</a>
+	            </fieldset>
+	        </form>
+	    </div>
+    </div>
+
+{% endblock %}

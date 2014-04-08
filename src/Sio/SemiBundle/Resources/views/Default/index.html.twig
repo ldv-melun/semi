@@ -1,1 +1,4 @@
-Hello {{ name }}!
+
+{% for seminaire in seminaires %}
+	<p>{{ seminaire.nom }} - {{ seminaire.cle }} - {{ seminaire.dateDebut|date("d/m/Y") }}</p>
+{% endfor %}

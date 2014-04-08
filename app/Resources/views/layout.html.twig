@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}E-Seminaire - gestion des inscriptions{% endblock %}</title>
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.min.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">
+        {% block stylesheets %}
+            
+        {% endblock %}
+        <script language="javascript" type="text/javascript" src="{{ asset('js/bootstrap.min.js') }}"></script>
+        {#<link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />#}
+    </head>
+    <body>
+        <div class="row">
+            <div class="span10 offset4 menuall">
+                <div class="premenu left"></div>
+                <div class="menu left">
+                    <ul class="inline">
+                        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                            <li><a href="">Mes inscriptions</a></li>
+                            <li><a href="">Inscriptions</a></li>
+                            {% if is_granted("ROLE_GESTIONNAIRE") %}
+                               <li><a href="">Export</a></li> 
+                               <li><a href="{{path('ajout_participant')}}">Ajout participant</a></li> 
+                            {% endif%}
+                            <li><a href="{{path( 'about_gestion' )}}">A propos</a></li>
+                        {% else %}
+                            <li><a href="{{path('connect_semi')}}">Home</a></li> 
+                            <li><a href="{{path( 'about' )}}">A propos</a></li>
+                        {% endif %} 
+                    </ul>
+                </div>
+                <div class="postmenu left"></div>
+               {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                    <div class="menuannexe left">
+                        <ul class="inline">
+                            <li><a href="{{path('gestion_profil')}}">{{ app.user.prenom }} {{ app.user.nom }}</a></li>
+                            <li><a href="{{path('logout')}}">Déconnexion</a></li>
+                        </ul>
+                    </div>
+                {% endif%}
+            </div>
+        </div>
+        {% block content %}{% endblock %}
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

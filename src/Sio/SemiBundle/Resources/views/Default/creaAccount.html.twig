@@ -1,0 +1,25 @@
+{% extends "::layout.html.twig" %}
+
+
+
+{% block content %}
+<div class="row">
+    <div class="span8 offset3">
+        {% if erreur is defined%}
+	    <div class="alert alert-error">{{ erreur }}</div>
+	{% endif %}
+        {{ form_start(form) }}
+            <fieldset>
+                <legend>Création d'un compte</legend>
+                {{ form_errors(form) }}
+
+                {{ form_row(form.mail) }}
+                {{ form_row(form.password) }}
+                {{ form_row(form.repassword) }}
+            </fieldset>
+            <button type="submit" class="btn btn-inverse">Valider</button>
+           
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}

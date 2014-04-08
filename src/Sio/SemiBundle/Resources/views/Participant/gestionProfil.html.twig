@@ -1,0 +1,37 @@
+{% extends "::layout.html.twig" %}
+
+
+
+{% block content %}
+<div class="row">
+    <div class="span8 offset3">
+        {{ form_start(form) }}
+            <fieldset>
+                <legend>Vos informations personnelles</legend>
+                {{ form_errors(form) }}
+
+                {{ form_row(form.nom) }}
+                {{ form_row(form.prenom) }}
+                {{ form_row(form.mail) }}
+                {{ form_row(form.academie) }}
+                {{ form_row(form.resAdministrative) }}
+                {{ form_row(form.resFamiliale) }}
+                {{ form_label(form.titre) }}
+                <div class="radioinline">{{ form_widget(form.titre) }}</div>
+            </fieldset>
+            <button type="submit" class="btn btn-inverse">Valider</button>
+            <a class="btn btn-danger"  href="{{ path('supprimer_profil_gestion')}}" onclick="return confirm('Voulez vous supprimer votre profil ?');">Supprimer mon compte</a>
+           
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+<script type="text/javascript">
+    function deleteProfil(){
+        if(confirm("Voulez vous supprimer votre profil ?")){
+          document.location.href = "{{ path('supprimer_profil_gestion')}}";
+        }
+    }
+</script>
+{% endblock %}

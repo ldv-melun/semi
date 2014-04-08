@@ -1,0 +1,18 @@
+{% extends "::layout.html.twig" %}
+
+{% block content %}
+<div class="row">
+    <div class="span8 offset3">
+        {{ form_start(form) }}
+            <fieldset>
+                <legend>Mot de passe oublié</legend>
+                {{ form_errors(form) }}
+
+                {{ form_row(form.mail) }}    
+            </fieldset>
+            <button type="submit" class="btn btn-inverse">Recevoir mon mot de passe</button>
+           
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+
+{% extends "::layout.html.twig" %}
+{% block content %}
+    
+   {# {{ dump(user) }} #}
+    <div class="row span8 offset3">
+        <h3>Bonjour {{user.prenom}} {{user.nom|upper}}</h3>
+        
+    </div>
+{% endblock %}
