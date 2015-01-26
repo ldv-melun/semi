@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="SemiRegistration" table="semi_registration">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="dateregistration" type="datetime" column="dateRegistration" nullable="true"/>
+    <many-to-one field="idmeeting" target-entity="SemiMeeting">
+      <join-columns>
+        <join-column name="idMeeting" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="iduser" target-entity="SemiUser">
+      <join-columns>
+        <join-column name="idUser" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

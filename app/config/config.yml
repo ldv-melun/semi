@@ -1,10 +1,14 @@
 imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
+    - { resource: "@SioSemiBundle/Resources/config/services.yml" }
+    - { resource: service.yml }
+    # The area above have to be edited to start your project.
+    - { resource: globals.yml }
 
 framework:
-    #esi:             ~
-    #translator:      { fallback: %locale% }
+    #esi:            ~
+    translator:      ~
     secret:          %secret%
     router:
         resource: "%kernel.root_dir%/config/routing.yml"

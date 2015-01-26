@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="SemiUser" table="semi_user">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="lastname" type="string" column="lastName" length="50" nullable="true"/>
+    <field name="firstname" type="string" column="firstName" length="50" nullable="true"/>
+    <field name="mail" type="string" column="mail" length="150" nullable="true"/>
+    <field name="title" type="string" column="title" length="30" nullable="true"/>
+    <field name="admincity" type="string" column="adminCity" length="80" nullable="true"/>
+    <field name="familycity" type="string" column="familyCity" length="80" nullable="true"/>
+    <field name="role" type="string" column="role" length="50" nullable="true"/>
+    <field name="lastupdate" type="datetime" column="lastUpdate" nullable="true"/>
+    <field name="datecrea" type="datetime" column="dateCrea" nullable="true"/>
+    <many-to-one field="idacademy" target-entity="SemiAcademy">
+      <join-columns>
+        <join-column name="idAcademy" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

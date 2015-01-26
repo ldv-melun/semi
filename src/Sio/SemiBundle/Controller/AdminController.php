@@ -12,11 +12,17 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class AdminController extends Controller
 {
     /**
-     * @Route("/index")
+     * @Route("/", name="_semi_admin_index")
      * @Template()
      */
     public function indexAction()
     {
+        /* EXAMPLE
+        if (false === $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException();
+        }
+         * 
+         */
     	return array();
     }
 
