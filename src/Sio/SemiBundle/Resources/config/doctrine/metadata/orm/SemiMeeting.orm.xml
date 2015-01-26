@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="SemiMeeting" table="semi_meeting">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="description" type="string" column="description" length="255" nullable="true"/>
+    <field name="shortdescription" type="string" column="shortDescription" length="50" nullable="true"/>
+    <field name="stakeholders" type="string" column="stakeholders" length="300" nullable="true"/>
+    <field name="maxseats" type="integer" column="maxSeats" nullable="true"/>
+    <field name="datestart" type="datetime" column="dateStart" nullable="true"/>
+    <field name="dateend" type="datetime" column="dateEnd" nullable="true"/>
+    <field name="type" type="string" column="type" length="20" nullable="true"/>
+    <field name="relativenumber" type="integer" column="relativeNumber" nullable="false"/>
+    <many-to-one field="idseminar" target-entity="SemiSeminar">
+      <join-columns>
+        <join-column name="idSeminar" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

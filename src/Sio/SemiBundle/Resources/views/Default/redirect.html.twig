@@ -1,0 +1,11 @@
+{% extends "SioSemiBundle::layout.html.twig" %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <center><h2>Connexion réussie !</h2></center>
+            <hr>
+            <p style="text-indent:35px;">Vous vous êtes correctement connecté(e) à l'application, {{ firstName }} ! Vous allez être redirigé dans 5 secondes. Si ce n'est pas le cas, <a href="{{ role }}">cliquez ici</a>.</p>
+        </div>
+    </div>
+{% endblock %}

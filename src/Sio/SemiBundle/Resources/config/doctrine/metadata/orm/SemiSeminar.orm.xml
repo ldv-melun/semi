@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="SemiSeminar" table="semi_seminar">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="name" type="string" column="name" length="150" nullable="true"/>
+    <field name="description" type="string" column="description" length="150" nullable="true"/>
+    <field name="location" type="string" column="location" length="150" nullable="true"/>
+    <field name="datestart" type="datetime" column="dateStart" nullable="true"/>
+    <field name="dateend" type="datetime" column="dateEnd" nullable="true"/>
+    <field name="comment" type="string" column="comment" length="300" nullable="true"/>
+    <field name="keyseminar" type="string" column="keySeminar" length="255" nullable="true"/>
+    <field name="stateseminar" type="string" column="stateSeminar" length="20" nullable="true"/>
+  </entity>
+</doctrine-mapping>
