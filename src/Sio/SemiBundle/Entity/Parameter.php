@@ -24,9 +24,9 @@ class Parameter
     /**
      * @var string
      *
-     * @ORM\Column(name="key", type="string", length=150, nullable=true)
+     * @ORM\Column(name="clef", type="string", length=150, nullable=true)
      */
-    private $key;
+    private $clef;
 
     /**
      * @var string
@@ -48,26 +48,26 @@ class Parameter
     }
 
     /**
-     * Set key
+     * Set clef
      *
-     * @param string $key
+     * @param string $clef
      * @return Parameter
      */
-    public function setKey($key)
+    public function setClef($clef)
     {
-        $this->key = $key;
+        $this->clef = $clef;
     
         return $this;
     }
 
     /**
-     * Get key
+     * Get clef
      *
      * @return string 
      */
-    public function getKey()
+    public function getClef()
     {
-        return $this->key;
+        return $this->clef;
     }
 
     /**
