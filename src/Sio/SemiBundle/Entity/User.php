@@ -386,7 +386,7 @@ class User implements UserInterface
     /**
      * Set organisation
      *
-     * @param \Sio\SemiBundle\Entity\SemiOrganisation $organisation
+     * @param \Sio\SemiBundle\Entity\Organisation $organisation
      * @return User
      */
     public function setOrganisation(\Sio\SemiBundle\Entity\Organisation $organisation = null)
