@@ -1,7 +1,6 @@
 imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
-    - { resource: "@SioSemiBundle/Resources/config/services.yml" }
     - { resource: service.yml }
     # The area above have to be edited to start your project.
     - { resource: globals.yml }
