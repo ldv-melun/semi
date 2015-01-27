@@ -85,9 +85,9 @@ class Seminar
     private $key;
 
     /**
-     * @var string
+     * @var integer
      *
-     * @ORM\Column(name="state", type="string", length=20, nullable=true)
+     * @ORM\Column(name="state", type="integer", nullable=false)
      */
     private $state;
 
