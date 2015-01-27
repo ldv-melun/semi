@@ -177,6 +177,28 @@ class User implements UserInterface
     {
         return $this->id;
     }
+    
+    /**
+     * Set roles
+     *
+     * @param string $roles
+     * @return User
+     */
+    public function setRoles($roles)
+    {
+        $this->roles = $roles;
+    
+        return $this;
+    }
+    
+    /**
+     * Get roles
+     *
+     * @return string 
+     */
+    public function getRoles() {
+        return array($this->roles);
+    }
 
     /**
      * Set lastName
@@ -245,6 +267,28 @@ class User implements UserInterface
     public function getMail()
     {
         return $this->mail;
+    }
+    
+    /**
+     * Set password
+     *
+     * @param string $password
+     * @return User
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    
+        return $this;
+    }
+    
+    /**
+     * Get password
+     *
+     * @return string 
+     */
+    public function getPassword() {
+        return $this->password;
     }
 
     /**
@@ -411,14 +455,6 @@ class User implements UserInterface
     public function __construct()
     {
         $this->dateCrea = new \DateTime();
-    }
-
-    public function getPassword() {
-        return $this->password;
-    }
-
-    public function getRoles() {
-        return array($this->roles);
     }
 
     public function getSalt() {
