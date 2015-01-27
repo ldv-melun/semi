@@ -31,54 +31,42 @@ class DefaultController extends Controller
         // Redirect the user. In this route we will also update ipLastLogin & dateLastLogin.
         $response = new Response();
         $response->setStatusCode(200);
+        
+        if($this->get('security.context')->isGranted('IS_AUTHENTICATED_REMEMBERED'))
+        {
+            // ipLastLogin & dateLastLogin
+            $user = $this->getUser();
+            $user->setIpLastLogin($this->container->get('request')->getClientIp());
+            $user->setDateLastLogin(new \DateTime('now'));
+            $manager = $this->getDoctrine()->getManager();
+            $manager->persist($user);
+            $manager->flush();
+            
+            if(true === $this->get('security.context')->isGranted('ROLE_ADMIN'))
+            {
+                $response->headers->set('Refresh', '5; url='.$this->generateUrl('_semi_admin_index'));
+                $response->send();
 
-        if(true === $this->get('security.context')->isGranted('ROLE_ADMIN'))
-        {
-            $response->headers->set('Refresh', '5; url='.$this->generateUrl('_semi_admin_index'));
-            $response->send();
-            $user = $this->getUser();
-            
-            // ipLastLogin & dateLastLogin
-            $user->setIpLastLogin($this->container->get('request')->getClientIp());
-            $user->setDateLastLogin(new \DateTime('now'));
-            $manager = $this->getDoctrine()->getManager();
-            $manager->persist($user);
-            $manager->flush();
-            
-            return array('firstName' => $user->getFirstName(), 'role' => $this->generateUrl('_semi_admin_index'));
-        }
-        elseif(true === $this->get('security.context')->isGranted('ROLE_MANAGER'))
-        {
-            $response->headers->set('Refresh', '5; url='.$this->generateUrl('_semi_manager_index'));
-            $response->send();
-            $user = $this->getUser();
-            
-            // ipLastLogin & dateLastLogin
-            $user->setIpLastLogin($this->container->get('request')->getClientIp());
-            $user->setDateLastLogin(new \DateTime('now'));
-            $manager = $this->getDoctrine()->getManager();
-            $manager->persist($user);
-            $manager->flush();
-            
-            return array('firstName' => $user->getFirstName(), 'role' => $this->generateUrl('_semi_manager_index'));
-        }
-        elseif(true === $this->get('security.context')->isGranted('ROLE_USER'))
-        {
-            $response->headers->set('Refresh', '5; url='.$this->generateUrl('_semi_user_index'));
-            $response->send();
-            $user = $this->getUser();
-            
-            // ipLastLogin & dateLastLogin
-            $user->setIpLastLogin($this->container->get('request')->getClientIp());
-            $user->setDateLastLogin(new \DateTime('now'));
-            $manager = $this->getDoctrine()->getManager();
-            $manager->persist($user);
-            $manager->flush();
-            
-            return array('firstName' => $user->getFirstName(), 'role' => $this->generateUrl('_semi_user_index'));
+                return array('firstName' => $user->getFirstName(), 'role' => $this->generateUrl('_semi_admin_index'));
+            }
+            elseif(true === $this->get('security.context')->isGranted('ROLE_MANAGER'))
+            {
+                $response->headers->set('Refresh', '5; url='.$this->generateUrl('_semi_manager_index'));
+                $response->send();
+
+                return array('firstName' => $user->getFirstName(), 'role' => $this->generateUrl('_semi_manager_index'));
+            }
+            elseif(true === $this->get('security.context')->isGranted('ROLE_USER'))
+            {
+                $response->headers->set('Refresh', '5; url='.$this->generateUrl('_semi_user_index'));
+                $response->send();
+
+                return array('firstName' => $user->getFirstName(), 'role' => $this->generateUrl('_semi_user_index'));
+            }
         }
         else
         {
+            // Access trough ROLE_ANONYMOUS.
             return $this->redirect($this->generateUrl('_semi_default_index'));
         }
     }
