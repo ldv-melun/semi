@@ -119,7 +119,7 @@ class DefaultController extends Controller
                 $newUser->setJobCity($jobCity);
                 $newUser->setHomeCity($homeCity);
                 $newUser->setMail($mail1);
-                $newUser->setPassword(md5($pass1));
+                $newUser->setPassword(password_hash($pass1, PASSWORD_BCRYPT, array('cost' => 12)));
                 $newUser->setRoles("ROLE_USER");
                 
                 // Get the Organisation.
@@ -151,7 +151,7 @@ class DefaultController extends Controller
         }
         
         $organisations = $this->getDoctrine()->getRepository('SioSemiBundle:Organisation')->findAll();
-        $paramOrganisation = $this->getDoctrine()->getRepository('SioSemiBundle:Parameter')->findOneBy(array('key' => 'organisation'));
+        $paramOrganisation = $this->getDoctrine()->getRepository('SioSemiBundle:Parameter')->findOneBy(array('clef' => 'organisation'));
         return array('mail' => $mail, 'key' => $key, 'organisations' => $organisations, 'paramOrganisation' => $paramOrganisation);
     }
     
