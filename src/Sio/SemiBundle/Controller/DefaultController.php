@@ -131,7 +131,8 @@ class DefaultController extends Controller
                 $newUser->setJobCity($jobCity);
                 $newUser->setHomeCity($homeCity);
                 $newUser->setMail($mail1);
-                $newUser->setPass(md5($pass1));
+                $newUser->setPassword(md5($pass1));
+                $newUser->setRoles("ROLE_USER");
                 
                 // Get the Organisation.
                 $organisationQuery = $this->getDoctrine()->getRepository('SioSemiBundle:Organisation')->findOneBy(array('id' => $organisation));
