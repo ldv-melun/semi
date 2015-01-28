@@ -81,7 +81,7 @@ class User implements UserInterface
      /**
      * @var string
      *
-     * @ORM\Column(name="password", type="string", length=50, nullable=true)
+     * @ORM\Column(name="password", type="string", length=255, nullable=true)
      * @Assert\NotBlank(message="Veuillez entrer un mot de passe", groups={"Registration", "Profile"})
      * @Assert\Length(
      *     min="4",
