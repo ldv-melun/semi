@@ -9,7 +9,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * User
  *
  * @ORM\Table(name="semi_user")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Sio\SemiBundle\Entity\UserRepository")
  */
 class User implements UserInterface
 {
@@ -455,6 +455,7 @@ class User implements UserInterface
     public function __construct()
     {
         $this->dateCrea = new \DateTime();
+        $this->salt     = md5(uniqid(null, true)); 
     }
 
     public function getSalt() {

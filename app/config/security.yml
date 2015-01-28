@@ -3,9 +3,7 @@
 security:
     # http://symfony.com/doc/current/book/security.html#encoding-the-user-s-password
     encoders:
-        Sio\SemiBundle\Entity\User:
-            algorithm: bcrypt
-            cost: 12
+        Sio\SemiBundle\Entity\User: sha512
 
     # http://symfony.com/doc/current/book/security.html#hierarchical-roles
     role_hierarchy:
@@ -17,7 +15,7 @@ security:
     # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
     providers:
         main:
-            entity: { class: SioSemiBundle:User, property: mail }
+            entity: { class: SioSemiBundle:User }
 
     # the main part of the security, where you can set up firewalls
     # for specific sections of your app

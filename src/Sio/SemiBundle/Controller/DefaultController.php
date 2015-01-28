@@ -119,7 +119,10 @@ class DefaultController extends Controller
                 $newUser->setJobCity($jobCity);
                 $newUser->setHomeCity($homeCity);
                 $newUser->setMail($mail1);
-                $newUser->setPassword(password_hash($pass1, PASSWORD_BCRYPT, array('cost' => 12)));
+                $factory = $this->get('security.encoder_factory');
+                $encoder = $factory->getEncoder($newUser);
+                $password = $encoder->encodePassword($pass1, $newUser->getSalt());
+                $newUser->setPassword($password);
                 $newUser->setRoles("ROLE_USER");
                 
                 // Get the Organisation.
