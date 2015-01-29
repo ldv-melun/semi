@@ -10,10 +10,7 @@ use Sio\SemiBundle\Entity\Parameter as Parameter;
 
 /*
  * [FR ONLY]
- * Note : Pour l'instant, l'envoit de plusieurs clés optionnelles non natives
- * cause un problème : le système affiche tout de même l'erreur que la clé
- * n'a pas pu être enregistré. Mais si "clef" est null, il devrait l'ignorer.
- * A corriger.
+ * TODO : Protéger les clés contre l'override.
  * 
  * Note : Les clefs natives sont FIXES. C'est pour ça qu'elles ne possèdent
  * pas d'attribut "rememberX". A l'inverse, les chefs optionnelles peuvent
@@ -93,7 +90,6 @@ class AdminController extends Controller
                 {
                     // Update the native key.
                     $param = $this->getDoctrine()->getRepository("SioSemiBundle:Parameter")->findOneBy(array('clef' => $request->get('clef'.$i)));
-                    $param->setClef($request->get('clef'.$i));
                     $param->setValue($request->get('value'.$i));
                     $manager = $this->getDoctrine()->getManager();
                     $manager->persist($param);
@@ -101,10 +97,10 @@ class AdminController extends Controller
                 }
             }
             // Optional key.
-            elseif(null !== $request->get('clefOpt'.$i))
+            elseif(null !== $request->get('clefOpt'.$i) && $request->get('clefOpt'.$i) != "")
             {
                 // Got a non-null, optional ID key.
-                if(null == $request->get('valueOpt'.$i) && $request->get('clefOpt'.$i) != "")
+                if(null == $request->get('valueOpt'.$i))
                 {
                     // Optional key value can't be null.
                     $this->get('session')->getFlashBag()->add('warning', 'La clé '.$request->get('clefOpt'.$i).' n\'a pas été sauvegardée : sa valeur n\'a pas été indiquée !');
