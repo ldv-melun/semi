@@ -70,8 +70,7 @@ function addParam()
                         + '<span class="input-group-addon" id="basic-addon1">Valeur</span>'
                         + '<input name="valueOpt'+init+'" type="text" class="form-control" placeholder="Valeur" aria-describedby="basic-addon1">'
                         + '</div>';
-        var html = $('div#optParamContainer').html();
-        $('div#optParamContainer').html(html+''+WriteCouple);
+        $('div#optParamContainer').append(WriteCouple);
     }
     else 
     {
@@ -83,6 +82,6 @@ function addParam()
                         + '<span class="input-group-addon" id="basic-addon1">Valeur</span>'
                         + '<input name="valueOpt'+init+'" type="text" class="form-control" placeholder="Valeur" aria-describedby="basic-addon1">'
                         + '</div>';
-        $('div#optParamContainer').html(WriteCouple);
+        $('div#optParamContainer').append(WriteCouple);
     }
 }
