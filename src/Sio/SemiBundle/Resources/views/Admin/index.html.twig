@@ -1,7 +1,27 @@
-{% extends "::base.html.twig" %}
+{% extends "SioSemiBundle::layout.html.twig" %}
 
-{% block title %}SioSemiBundle:Admin:index{% endblock %}
-
-{% block body %}
-<h1>Welcome to the Admin:index page</h1>
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <center><h2>Administration</h2></center>
+            <hr>
+            <ul class="nav nav-tabs nav-justified">
+                <li role="presentation"><a href="#">Fonctions utilisateur</a></li>
+                <li role="presentation"><a href="#">Fonctions gestionnaire</a></li>
+                <li role="presentation" class="active"><a href="#">Fonctions administrateur</a></li>
+            </ul>
+            <div id="adminMenu"><hr>
+                <div class="list-group">
+                    <a href="{{ path('_semi_admin_parameter') }}" class="list-group-item" onMouseOver="overMenu($(this));" onMouseOut="outMenu($(this));">
+                        <h4 class="list-group-item-heading">Paramètres</h4>
+                        <p class="list-group-item-text">Réglez les paramètres de votre application : les paramètres non natifs à l'application pourront être accessible depuis l'entité Parameter, via son couple clé/valeur.</p>
+                    </a>
+                    <a href="#" class="list-group-item" onMouseOver="overMenu($(this));" onMouseOut="outMenu($(this));">
+                        <h4 class="list-group-item-heading">Exemple</h4>
+                        <p class="list-group-item-text">...</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

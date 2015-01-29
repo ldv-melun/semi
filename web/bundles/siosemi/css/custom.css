@@ -1,0 +1,13 @@
+.connexion
+{
+    text-decoration:underline;
+    text-align:right;
+    cursor:pointer;
+    color:white;
+}
+
+.help
+{
+    text-align:left;
+    color:white;
+}
