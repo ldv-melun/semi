@@ -25,7 +25,7 @@ use Sio\SemiBundle\Entity\Parameter as Parameter;
  * @Route("/admin")
  */
 class AdminController extends Controller
-{
+{   
     /**
      * @Route("/", name="_semi_admin_index")
      * @Template()
@@ -104,7 +104,7 @@ class AdminController extends Controller
             elseif(null !== $request->get('clefOpt'.$i))
             {
                 // Got a non-null, optional ID key.
-                if(null == $request->get('valueOpt'.$i))
+                if(null == $request->get('valueOpt'.$i) && $request->get('clefOpt'.$i) != "")
                 {
                     // Optional key value can't be null.
                     $this->get('session')->getFlashBag()->add('warning', 'La clé '.$request->get('clefOpt'.$i).' n\'a pas été sauvegardée : sa valeur n\'a pas été indiquée !');
