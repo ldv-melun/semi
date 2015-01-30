@@ -27,7 +27,8 @@ class UserSeminar
      *
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumns({
-     *@ORM\JoinColumn(name="idUser", referencedColumnName="id")
+     *    @ORM\JoinColumn(name="idUser", referencedColumnName="id")
+     * })
      */
     private $user;
 
@@ -36,7 +37,8 @@ class UserSeminar
      *
      * @ORM\ManyToOne(targetEntity="Seminar")
      * @ORM\JoinColumns({
-     *@ORM\JoinColumn(name="idSeminar", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="idSeminar", referencedColumnName="id")
+     * })
      */
     private $seminar;
     
@@ -45,7 +47,8 @@ class UserSeminar
      *
      * @ORM\ManyToOne(targetEntity="Status")
      * @ORM\JoinColumns({
-     *@ORM\JoinColumn(name="idStatus", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="idStatus", referencedColumnName="id")
+     * })
      */
     private $status;
 
