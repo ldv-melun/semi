@@ -20,6 +20,16 @@ class Meeting
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
+    
+    /**
+     * @var \Seminar
+     *
+     * @ORM\ManyToOne(targetEntity="Seminar")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="idSeminar", referencedColumnName="id")
+     * })
+     */
+    private $seminar;
 
     /**
      * @var string
@@ -76,18 +86,6 @@ class Meeting
      * @ORM\Column(name="relativeNumber", type="integer", nullable=false)
      */
     private $relativeNumber;
-
-    /**
-     * @var \Seminar
-     *
-     * @ORM\ManyToOne(targetEntity="Seminar")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="idSeminar", referencedColumnName="id")
-     * })
-     */
-    private $seminar;
-
-
 
     /**
      * Get id

@@ -22,13 +22,6 @@ class Registration
     private $id;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="dateRegistration", type="datetime", nullable=true)
-     */
-    private $dateRegistration;
-
-    /**
      * @var \User
      *
      * @ORM\ManyToOne(targetEntity="User")
@@ -48,7 +41,12 @@ class Registration
      */
     private $meeting;
 
-
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="dateRegistration", type="datetime", nullable=true)
+     */
+    private $dateRegistration;
 
     /**
      * Get id
