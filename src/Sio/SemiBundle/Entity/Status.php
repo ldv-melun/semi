@@ -26,7 +26,8 @@ class Status {
      *
      * @ORM\ManyToOne(targetEntity="Seminar")
      * @ORM\JoinColumns({
-     *@ORM\JoinColumn(name="idSeminar", referencedColumnName="id")
+     *    @ORM\JoinColumn(name="idSeminar", referencedColumnName="id")
+     * ))
      */
     private $seminar;
     
@@ -48,7 +49,7 @@ class Status {
     }
     
      /**
-     * Set Seminar
+     * Set seminar
      *
      * @param \Sio\SemiBundle\Entity\Seminar $seminar
      * @return Status
@@ -61,7 +62,7 @@ class Status {
     }
 
     /**
-     * Get Seminar
+     * Get seminar
      *
      * @return \Sio\SemiBundle\Entity\Seminar
      */
