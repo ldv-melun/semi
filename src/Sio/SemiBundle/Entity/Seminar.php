@@ -85,9 +85,12 @@ class Seminar
     private $clef;
 
     /**
-     * @var integer
+     * @var \State
      *
-     * @ORM\Column(name="state", type="integer", nullable=false)
+     * @ORM\ManyToOne(targetEntity="State")
+     * @ORM\JoinColumns({
+     *    @ORM\JoinColumn(name="idState", referencedColumnName="id")
+     * })
      */
     private $state;
 
@@ -265,22 +268,22 @@ class Seminar
     }
 
     /**
-     * Set state
+     * Set seminar
      *
-     * @param string $state
+     * @param \Sio\SemiBundle\Entity\State $state
      * @return Seminar
      */
-    public function setState($state)
+    public function setState(\Sio\SemiBundle\Entity\State $state = null)
     {
         $this->state = $state;
-    
+   
         return $this;
     }
-
+    
     /**
      * Get state
      *
-     * @return string 
+     * @return \Sio\SemiBundle\Entity\State
      */
     public function getState()
     {
