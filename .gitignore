@@ -1,3 +1,6 @@
+# Bootstrap
+app/bootstrap.php.cache
+
 # Symfony directories
 vendor/*
 */logs/*
