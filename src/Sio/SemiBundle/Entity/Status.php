@@ -27,7 +27,7 @@ class Status {
      * @ORM\ManyToOne(targetEntity="Seminar")
      * @ORM\JoinColumns({
      *    @ORM\JoinColumn(name="idSeminar", referencedColumnName="id")
-     * ))
+     * })
      */
     private $seminar;
     
