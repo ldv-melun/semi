@@ -7,10 +7,10 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * UserSeminar
  *
- * @ORM\Table(name="userSeminar")
+ * @ORM\Table(name="semi_user_seminar")
  * @ORM\Entity
  */
-class userSeminar
+class UserSeminar
 {
     /**
      * @var integer
@@ -23,31 +23,31 @@ class userSeminar
    
     
     /**
-     * @var \user
+     * @var \User
      *
-     * @ORM\ManyToOne(targetEntity="user")
+     * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumns({
      *@ORM\JoinColumn(name="idUser", referencedColumnName="id")
      */
-    private $idUser;
+    private $user;
 
     /**
-     * @var \seminar
+     * @var \Seminar
      *
-     * @ORM\ManyToOne(targetEntity="seminar")
+     * @ORM\ManyToOne(targetEntity="Seminar")
      * @ORM\JoinColumns({
      *@ORM\JoinColumn(name="idSeminar", referencedColumnName="id")
      */
-    private $idSeminar;
+    private $seminar;
     
     /**
-     * @var \status
+     * @var \Status
      *
-     * @ORM\ManyToOne(targetEntity="status")
+     * @ORM\ManyToOne(targetEntity="Status")
      * @ORM\JoinColumns({
      *@ORM\JoinColumn(name="idStatus", referencedColumnName="id")
      */
-    private $idStatus;
+    private $status;
 
     /**
      * Get id
@@ -75,7 +75,7 @@ class userSeminar
     /**
      * Get user
      *
-     * @return \Sio\SemiBundle\Entity\user 
+     * @return \Sio\SemiBundle\Entity\User 
      */
     public function getUser()
     {
@@ -84,7 +84,7 @@ class userSeminar
     
 
     /**
-     * Set Seminar
+     * Set seminar
      *
      * @param \Sio\SemiBundle\Entity\Seminar $seminar
      * @return UserSeminar
@@ -97,7 +97,7 @@ class userSeminar
     }
 
     /**
-     * Get Seminar
+     * Get seminar
      *
      * @return \Sio\SemiBundle\Entity\Seminar
      */
@@ -108,20 +108,20 @@ class userSeminar
     
 
     /**
-     * Set Status
+     * Set status
      *
      * @param \Sio\SemiBundle\Entity\Status $status
      * @return UserSeminar
      */
     public function setStatus(\Sio\SemiBundle\Entity\Status $status = null)
     {
-        $this->Status = $status;
+        $this->status = $status;
    
         return $this;
     }
 
     /**
-     * Get Status
+     * Get status
      *
      * @return \Sio\SemiBundle\Entity\Status
      */
