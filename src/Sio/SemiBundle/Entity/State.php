@@ -24,7 +24,7 @@ class State
     /**
      * @var string
      *
-     * @ORM\Column(name="state", type="string", length=50, nullable=true)
+     * @ORM\Column(name="name", type="string", length=50, nullable=true)
      */
     private $name;
 

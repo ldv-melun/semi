@@ -3,7 +3,7 @@
 /**
  * Seminar
  *
- * @ORM\Table(name="semi_seminarStatus")
+ * @ORM\Table(name="semi_seminar_status")
  * @ORM\Entity
  */
 class SeminarStatus

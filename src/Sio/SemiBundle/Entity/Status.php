@@ -18,6 +18,15 @@ class Status {
     private $id;
     
     /**
+     * @var \seminar
+     *
+     * @ORM\ManyToOne(targetEntity="Seminar")
+     * @ORM\JoinColumns({
+     *@ORM\JoinColumn(name="idSeminar", referencedColumnName="id")
+     */
+    private $seminar;
+    
+    /**
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=50, nullable=true)
@@ -34,11 +43,34 @@ class Status {
         return $this->id;
     }
     
+     /**
+     * Set Seminar
+     *
+     * @param \Sio\SemiBundle\Entity\Seminar $seminar
+     * @return Status
+     */
+    public function setSeminar(\Sio\SemiBundle\Entity\Seminar $seminar = null)
+    {
+        $this->seminar = $seminar;
+   
+        return $this;
+    }
+
+    /**
+     * Get Seminar
+     *
+     * @return \Sio\SemiBundle\Entity\Seminar
+     */
+    public function getSeminar()
+    {
+        return $this->seminar;
+    }
+    
     /**
      * Set status
      *
      * @param string $status
-     * @return SeminarStatus
+     * @return Status
      */
     public function setStatus($status)
     {

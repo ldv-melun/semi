@@ -21,16 +21,6 @@ class User implements UserInterface
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-
-    /**
-     * @ORM\Column(name="salt", type="string", length=255)
-     */
-    private $salt;
-
-    /**
-     * @ORM\Column(name="role", type="string")
-     */
-    private $roles;
     
     /**
      * @var string
@@ -82,16 +72,13 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(name="password", type="string", length=255, nullable=true)
-     * @Assert\NotBlank(message="Veuillez entrer un mot de passe", groups={"Registration", "Profile"})
-     * @Assert\Length(
-     *     min="4",
-     *     max="30",
-     *     minMessage="Votre mot de passe est trop court",
-     *     maxMessage="Votre mot de passe est trop long",
-     *     groups={"Registration", "Profile"}
-     * )
      */
     protected $password;
+    
+    /**
+     * @ORM\Column(name="role", type="string")
+     */
+    private $roles;
 
     /**
      * @var string
@@ -162,6 +149,11 @@ class User implements UserInterface
      * @Assert\NotBlank(message="Veuillez entrer votre nom", groups={"Registration", "Profile"})
      */
     private $ipLastLogin;
+    
+    /**
+     * @ORM\Column(name="salt", type="string", length=255)
+     */
+    private $salt;
 
     public function eraseCredentials()
     {

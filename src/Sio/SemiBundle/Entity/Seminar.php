@@ -80,9 +80,9 @@ class Seminar
     /**
      * @var string
      *
-     * @ORM\Column(name="key", type="string", length=255, nullable=true)
+     * @ORM\Column(name="clef", type="string", length=255, nullable=true)
      */
-    private $key;
+    private $clef;
 
     /**
      * @var integer
@@ -201,7 +201,7 @@ class Seminar
      * @param \DateTime $dateEnd
      * @return Seminar
      */
-    public function setDateend($dateEnd)
+    public function setDateEnd($dateEnd)
     {
         $this->dateEnd = $dateEnd;
     
@@ -242,26 +242,26 @@ class Seminar
     }
 
     /**
-     * Set key
+     * Set clef
      *
-     * @param string $key
+     * @param string $clef
      * @return Seminar
      */
-    public function setKey($key)
+    public function setClef($clef)
     {
-        $this->key = $key;
+        $this->clef = $clef;
     
         return $this;
     }
 
     /**
-     * Get key
+     * Get clef
      *
      * @return string 
      */
-    public function getKey()
+    public function getClef()
     {
-        return $this->key;
+        return $this->clef;
     }
 
     /**
@@ -270,7 +270,7 @@ class Seminar
      * @param string $state
      * @return Seminar
      */
-    public function setStateseminar($state)
+    public function setState($state)
     {
         $this->state = $state;
     
