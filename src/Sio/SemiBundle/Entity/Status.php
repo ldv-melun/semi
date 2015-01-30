@@ -1,5 +1,9 @@
 <?php
 
+namespace Sio\SemiBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * Status
  *
