@@ -81,7 +81,7 @@ class DefaultController extends Controller
         
         // Can be obtained from main page or register page.
         $mail = $request->get('mail', NULL);
-        $key = $request->get('key', NULL);
+        $clef = $request->get('clef', NULL);
         
         // Below is obtained only by the register page.
         $lastName = $request->get('lastname', NULL);
@@ -134,7 +134,7 @@ class DefaultController extends Controller
                 $manager->flush();
                 
                 $this->get('session')->getFlashBag()->add('success', 'Votre compte a bien été créé, '.$firstName.' ! Vous pouvez dès à présent vous connecter à l\'application !');
-                $key = NULL;
+                $clef = NULL;
             }
             else
             {
@@ -143,19 +143,19 @@ class DefaultController extends Controller
         }
         else
         {
-            // User came from main page. We can verify the key now.
-            $getAllKey = $this->getDoctrine()->getRepository('SioSemiBundle:Seminar')->findOneBy(array('key' => $key));
-            if(!$getAllKey && $key != NULL)
+            // User came from main page. We can verify the clef now.
+            $getAllClef = $this->getDoctrine()->getRepository('SioSemiBundle:Seminar')->findOneBy(array('clef' => $clef));
+            if(!$getAllClef && $clef != NULL)
             {
-                // Case where the key is incorrect.
+                // Case where the clef is incorrect.
                 $this->get('session')->getFlashBag()->add('warning', 'La clé d\'inscription que vous avez entré est invalide !');
-                $key = NULL;
+                $clef = NULL;
             }
         }
         
         $organisations = $this->getDoctrine()->getRepository('SioSemiBundle:Organisation')->findAll();
         $paramOrganisation = $this->getDoctrine()->getRepository('SioSemiBundle:Parameter')->findOneBy(array('clef' => 'organisation'));
-        return array('mail' => $mail, 'key' => $key, 'organisations' => $organisations, 'paramOrganisation' => $paramOrganisation);
+        return array('mail' => $mail, 'clef' => $clef, 'organisations' => $organisations, 'paramOrganisation' => $paramOrganisation);
     }
     
     /**
