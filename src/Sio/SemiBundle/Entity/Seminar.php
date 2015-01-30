@@ -268,7 +268,7 @@ class Seminar
     }
 
     /**
-     * Set seminar
+     * Set state
      *
      * @param \Sio\SemiBundle\Entity\State $state
      * @return Seminar
