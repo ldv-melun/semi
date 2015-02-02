@@ -85,3 +85,40 @@ function addParam()
         $('div#optParamContainer').append(WriteCouple);
     }
 }
+
+function getMeetings(i)
+{
+    showMeetings(i);
+    
+    // Reset all the UL & LI.
+    $('ul').css("height", "0px");
+    $('ul').css("visibility", "hidden");
+    $('li').css("height", "0px");
+    $('li').css("visibility", "hidden");
+    
+    // Get the new one.
+    $('ul#meeting'+i).css("height", "auto");
+    $('ul#meeting'+i).css("visibility", "visible");
+    
+    $('ul#meeting'+i+' li').css("height", "auto");
+    $('ul#meeting'+i+' li').css("visibility", "visible");
+    $('ul#meeting'+i).prependTo('div#contentMeetings');
+    $('html,body').animate({scrollTop: ($('#meetings').offset().top - ($('nav').css("height").replace(/[^-\d\.]/g, '')) - 15)}, 'slow');
+}
+
+function showMeetings(i)
+{
+    if($('ul#meeting1').length)
+    {
+        if($('div#meetings').css("height") === "0px")
+        {
+            $('div#meetings').css("height", "auto");
+            $('div#meetings').css("visibility", "visible");
+            $('div#meetings').animate({ opacity: 1}, 500);
+        }
+    }
+    else
+    {
+        alert('Une erreur est survenue. Contactez un administrateur.');
+    }
+}
