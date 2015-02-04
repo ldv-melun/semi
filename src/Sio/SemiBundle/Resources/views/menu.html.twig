@@ -27,7 +27,6 @@
         <ul class="nav navbar-nav">
             <li><a href="{{ path('_semi_default_index') }}">Accueil</a></li>
             <li><a href="{{ path('_semi_default_login') }}">Connexion</a></li>
-            <li><a href="{{ path('_semi_default_register') }}">Inscription</a></li>
     {% endif %}
 {# LOG OUT OPTION #}
     {% if is_granted('ROLE_USER') or is_granted('ROLE_MANAGER') or is_granted('ROLE_ADMIN') %}

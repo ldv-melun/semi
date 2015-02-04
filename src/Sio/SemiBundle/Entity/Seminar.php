@@ -220,6 +220,52 @@ class Seminar
     {
         return $this->dateEnd;
     }
+    
+    /**
+     * Set beginRegistering
+     *
+     * @param \DateTime $beginRegistering
+     * @return Seminar
+     */
+    public function setBeginRegistering($beginRegistering)
+    {
+        $this->beginRegistering = $beginRegistering;
+    
+        return $this;
+    }
+
+    /**
+     * Get beginRegistering
+     *
+     * @return \DateTime 
+     */
+    public function getBeginRegistering()
+    {
+        return $this->beginRegistering;
+    }
+    
+    /**
+     * Set endRegistering
+     *
+     * @param \DateTime $endRegistering
+     * @return Seminar
+     */
+    public function setEndRegistering($endRegistering)
+    {
+        $this->endRegistering = $endRegistering;
+    
+        return $this;
+    }
+
+    /**
+     * Get endRegistering
+     *
+     * @return \DateTime 
+     */
+    public function getEndRegistering()
+    {
+        return $this->endRegistering;
+    }
 
     /**
      * Set comment
