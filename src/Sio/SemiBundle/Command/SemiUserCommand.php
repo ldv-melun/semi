@@ -71,7 +71,6 @@ class SemiUserCommand extends ContainerAwareCommand {
         }
         $em->persist($user);
         $em->flush();
-
         $output->writeln(sprintf('Added user with %s mail, password %s and %s roles', $userMail, $password, $userRoles));
     }
 }
