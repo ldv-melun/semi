@@ -110,7 +110,7 @@ class DefaultController extends Controller
                     $this->get('session')->getFlashBag()->add('danger', 'La clé d\'inscription est correcte mais semble être expiré, ou alors, le séminaire n\'a pas encore atteint sa date de début d\'inscription ! La date de début d\'inscription est le '.$getSeminar->getBeginRegistering()->format("d/m/Y").' et la date de fin d\'inscription est le '.$getSeminar->getEndRegistering()->format("d/m/Y").'.');
                     return $this->redirect($this->generateUrl('_semi_default_index'));
                 }
-                elseif(!preg_match("#^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$#", $mail))
+                elseif(!preg_match("#^[A-Za-z0-9._-]+@[A-Za-z0-9._-]{2,}\.[a-z]{2,4}$#", $mail))
                 {
                     // The mail is incorrect.
                     $this->get('session')->getFlashBag()->add('danger', 'L\'email que vous avez entrer semble invalide !');
