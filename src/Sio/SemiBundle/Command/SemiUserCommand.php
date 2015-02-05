@@ -43,6 +43,7 @@ class SemiUserCommand extends ContainerAwareCommand {
             ->setDescription('Add Semi users')
             ->addArgument('mail', InputArgument::REQUIRED, 'The mail')
             ->addArgument('password', InputArgument::REQUIRED, 'The password')
+            ->addArgument('roles', InputArgument::REQUIRED, 'The roles')    
         ;
     }
     
@@ -50,19 +51,27 @@ class SemiUserCommand extends ContainerAwareCommand {
     {
         $userMail = $input->getArgument('mail');
         $password = $input->getArgument('password');
- 
+        $userRoles = $input->getArgument('roles');
+        
         $em = $this->getContainer()->get('doctrine')->getEntityManager();
  
         $user = new User();
         $user->setMail($userMail);
+
         // encode the password
         $factory = $this->getContainer()->get('security.encoder_factory');
         $encoder = $factory->getEncoder($user);
         $encodedPassword = $encoder->encodePassword($password, $user->getSalt());
         $user->setPassword($encodedPassword);
+        
+        if ($userRoles == "ROLE_ANONYMOUS" OR $userRoles == "ROLE_USER" OR $userRoles == "ROLE_MANAGER" OR $userRoles == "ROLE_ADMIN" ) {
+            $user->setRoles($userRoles);
+        } else {
+            echo "Valeur non reconnus par le système";
+        }
         $em->persist($user);
         $em->flush();
- 
-        $output->writeln(sprintf('Added user with %s mail and password %s', $userMail, $password));
+
+        $output->writeln(sprintf('Added user with %s mail, password %s and %s roles', $userMail, $password, $userRoles));
     }
 }
