@@ -8,26 +8,44 @@
             <div class="thumbnail" style="padding:1em;">
                 <form action="register" method="post">
                     
-                    <p>Informations générales :</p>
-                    <div class="input-group">
-                        <span class="input-group-addon" id="basic-addon1">A<br><br><br><br>R<br><br>E<br><br>M<br><br>P<br><br>L<br><br>I<br><br>R</span>
-                        <input type="text" name="lastname" class="form-control" placeholder="Nom" aria-describedby="basic-addon1"><br>
-                        <input type="text" name="firstname" class="form-control" placeholder="Prénom" aria-describedby="basic-addon1"><br>
-                        <input type="password" name="pass1" class="form-control" placeholder="Mot de passe" aria-describedby="basic-addon1"><br>
-                        <input type="password" name="pass2" class="form-control" placeholder="Confirmer le mot de passe" aria-describedby="basic-addon1"><br>
-                        <select class="form-control" name="organisation">
-                            <option disabled selected>Sélectionner votre {{ paramOrganisation.value }}</option>
-                            <option disabled></option>
-                            {% for organisation in organisations %}
-                                <option value="{{ organisation.id }}">{{ organisation.name }}</option>
-                            {% endfor %}
-                        </select><br>
-                        <input type="text" name="adminCity" class="form-control" placeholder="Ville de la résidence personnelle" aria-describedby="basic-addon1"><br>
-                        <input type="text" name="familyCity" class="form-control" placeholder="Ville de la résidence administrative" aria-describedby="basic-addon1"><br>
-                        <input type="text" name="mail1" class="form-control" placeholder="E-Mail" aria-describedby="basic-addon1" value="{{ mail }}"><br>
-                        <input type="text" name="mail2" class="form-control" placeholder="Confirmer l'E-mail" aria-describedby="basic-addon1"><br>
-                        <input type="text" name="clfe" class="form-control" placeholder="Clé d'inscription" aria-describedby="basic-addon1" value="{{ clef }}"><br>
-                    </div>
+                    <span class="input-group-addon">
+                    <h1>Informations générales :</h1>
+                        <div class="input-group" style="width:100%;">
+                            <span class="input-group-addon" id="basic-addon1">A<br><br><br><br>R<br><br>E<br><br>M<br><br>P<br><br>L<br><br>I<br><br>R</span>
+                            <input type="text" name="lastname" class="form-control" placeholder="Nom" aria-describedby="basic-addon1"><br>
+                            <input type="text" name="firstname" class="form-control" placeholder="Prénom" aria-describedby="basic-addon1"><br>
+                            <input type="password" name="pass1" class="form-control" placeholder="Mot de passe" aria-describedby="basic-addon1"><br>
+                            <input type="password" name="pass2" class="form-control" placeholder="Confirmer le mot de passe" aria-describedby="basic-addon1"><br>
+                            <select class="form-control" name="organisation">
+                                <option disabled selected>Sélectionner votre {{ paramOrganisation.value }}</option>
+                                <option disabled></option>
+                                {% for organisation in organisations %}
+                                    <option value="{{ organisation.id }}">{{ organisation.name }}</option>
+                                {% endfor %}
+                            </select><br>
+                            <input type="text" name="adminCity" class="form-control" placeholder="Ville de la résidence personnelle" aria-describedby="basic-addon1"><br>
+                            <input type="text" name="familyCity" class="form-control" placeholder="Ville de la résidence administrative" aria-describedby="basic-addon1"><br>
+                            <input type="text" name="mail" class="form-control" placeholder="E-Mail" aria-describedby="basic-addon1" value="{{ mail }}"><br>
+                            <input type="text" name="mail2" class="form-control" placeholder="Confirmer l'E-mail" aria-describedby="basic-addon1"><br>
+                            <input type="text" name="clef" class="form-control" placeholder="Clé d'inscription" aria-describedby="basic-addon1" value="{{ clef }}" readonly><br>
+                        </div>
+                    </span>
+                        
+                    <br>
+                    
+                    <span class="input-group-addon"><h1>Qu'êtes-vous ?</h1>
+                    {% for tab in allStatus %}
+                        {% for object in tab %}
+                        <div class="input-group" style="width:100%;">
+                            <span class="input-group-addon">
+                                <input type="radio" name="status" value="{{ object.status }}">
+                            </span>
+                            <input type="text" class="form-control" value="{{ object.status }}" disabled>
+                            <br>
+                        </div><!-- /input-group -->
+                        {% endfor %}
+                    {% endfor %}
+                    </span>
                     <br>
                     <input type="submit" class="btn btn-sm btn-success" style="width:100%;" value="S'enregistrer">
                 </form>
