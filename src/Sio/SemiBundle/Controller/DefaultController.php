@@ -22,6 +22,16 @@ class DefaultController extends Controller
     {
         return array();
     }
+
+    /**
+     * @Route("/index2", name="_semi_default_index2")
+     * @Template()
+     */
+    public function index2Action()
+    {
+        return array();
+    }
+
     
     /**
      * @Route("/redirect", name="_semi_default_redirect")
@@ -76,6 +86,7 @@ class DefaultController extends Controller
      * @Route("/register", name="_semi_default_register")
      * @Template()
      */
+    /*
     public function registerAction()
     {
         $request = Request::createFromGlobals();
@@ -257,13 +268,17 @@ class DefaultController extends Controller
         $paramOrganisation = $this->getDoctrine()->getRepository('SioSemiBundle:Parameter')->findOneBy(array('clef' => 'organisation'));
         return array('mail' => $mail, 'clef' => $clef, 'organisations' => $organisations, 'paramOrganisation' => $paramOrganisation, 'allStatus' => $status);
     }
+    */
     
     /**
      * @Route("/registerajax", name="_semi_default_registerajax")
      * @Template()
      */
+    /*
     public function registerAjaxAction(Request $request)
     {
+     * 
+     */
         /*
          * Jquery SEMI
          * 5 Statements available for [action] :
@@ -279,7 +294,7 @@ class DefaultController extends Controller
          * That means that you can send more than one command to Jquery. Ex :
          * add|password|warning|You must login to do this action !
          */
-        
+       /* 
         $mail = $request->get('mail', NULL);
         $clef = $request->get('clef', NULL);
         $pass = $request->get('password', NULL);
@@ -341,11 +356,13 @@ class DefaultController extends Controller
             return array("return" => "error|Veuillez remplir les champs mail et clé !");
         }
     }
+    */
     
     /**
-     * @Route("/login", name="_semi_default_login")
+     * @Route("/login2", name="_semi_default_login")
      * @Template()
      */
+    /*
     public function loginAction(Request $request)
     {
         // Si le visiteur est déjà identifié, on le redirige vers l'accueil
@@ -373,4 +390,6 @@ class DefaultController extends Controller
             'error'         => $error,
         ));
     }
+      */
+     
 }

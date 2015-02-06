@@ -67,3 +67,15 @@ swiftmailer:
     username:  %mailer_user%
     password:  %mailer_password%
     spool:     { type: memory }
+    
+fos_user:
+    db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
+    firewall_name: main
+    user_class: Sio\SemiBundle\Entity\User    
+    
+# see security.yml (providers)    
+services:
+    sio_semi.user_provider.email:
+        class:        "Sio\SemiBundle\Security\EmailProvider"
+        arguments:    ["@fos_user.user_manager"]
+        

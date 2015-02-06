@@ -26,11 +26,25 @@
     <div id="navbar" class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
             <li><a href="{{ path('_semi_default_index') }}">Accueil</a></li>
-            <li><a href="{{ path('_semi_default_login') }}">Connexion</a></li>
+            <li><a href="{{ path('fos_user_security_login') }}">Connexion</a></li>
     {% endif %}
 {# LOG OUT OPTION #}
-    {% if is_granted('ROLE_USER') or is_granted('ROLE_MANAGER') or is_granted('ROLE_ADMIN') %}
-            <li><a href="{{ path('logout') }}">Déconnexion</a></li>
-    {% endif %}
+         {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                {{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }} |
+                <li><a href="{{ path('fos_user_security_logout') }}">
+                    {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}
+                  </a></li>
+            {% else %}
+              <li><a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a></li>
+            {% endif %}
         </ul>
     </div><!--/.nav-collapse -->
+    
+   
+    {# TODO voir l'usage du fos_user_content - provient de la doc #}
+    {# https://github.com/FriendsOfSymfony/FOSUserBundle/blob/master/Resources/doc/overriding_templates.md #}
+    
+        <div>
+            {% block fos_user_content %}
+            {% endblock fos_user_content %}
+        </div>

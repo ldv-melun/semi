@@ -3,7 +3,7 @@
 security:
     # http://symfony.com/doc/current/book/security.html#encoding-the-user-s-password
     encoders:
-        Sio\SemiBundle\Entity\User: sha512
+        FOS\UserBundle\Model\UserInterface: sha512
 
     # http://symfony.com/doc/current/book/security.html#hierarchical-roles
     role_hierarchy:
@@ -14,27 +14,25 @@ security:
 
     # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
     providers:
-        main:
-            entity: { class: SioSemiBundle:User }
+        fos_userbundle:
+            id: sio_semi.user_provider.email
 
     # the main part of the security, where you can set up firewalls
     # for specific sections of your app
     firewalls:
         main:
             pattern:   ^/
-            anonymous: true
-            provider:  main
             form_login:
-                login_path: _semi_default_login
-                check_path: login_check
-                always_use_default_target_path: true
+                provider:  fos_userbundle
+                csrf_provider: form.csrf_provider
                 default_target_path: /redirect
-            logout:
-                path:   logout
-                target: _semi_default_index
-        
+            logout:    true                          
+            anonymous: true
 
     access_control:
+        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin, role: ROLE_ADMIN }
         - { path: ^/manager, role: ROLE_MANAGER }
         - { path: ^/user, role: ROLE_USER }

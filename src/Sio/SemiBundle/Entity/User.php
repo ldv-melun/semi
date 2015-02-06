@@ -3,7 +3,7 @@
 namespace Sio\SemiBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Security\Core\User\UserInterface;
+use FOS\UserBundle\Model\User as BaseUser;
 
 /**
  * User
@@ -11,16 +11,16 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Table(name="semi_user")
  * @ORM\Entity(repositoryClass="Sio\SemiBundle\Entity\UserRepository")
  */
-class User implements UserInterface
+class User extends BaseUser
 {
     /**
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
     
     /**
      * @var string
@@ -52,33 +52,6 @@ class User implements UserInterface
      * )
      */
     private $firstName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="mail", type="string", length=150, nullable=true)
-     * @Assert\NotBlank(message="Veuillez entrer votre E-Mail", groups={"Registration", "Profile"})
-     * @Assert\Length(
-     *     min="5",
-     *     max="150",
-     *     minMessage="Votre E-mail est trop court",
-     *     maxMessage="Votre E-mail est trop long",
-     *     groups={"Registration", "Profile"}
-     * )
-     */
-    private $mail;
-    
-     /**
-     * @var string
-     *
-     * @ORM\Column(name="password", type="string", length=255, nullable=true)
-     */
-    protected $password;
-    
-    /**
-     * @ORM\Column(name="role", type="string")
-     */
-    private $roles;
 
     /**
      * @var string
@@ -136,13 +109,6 @@ class User implements UserInterface
     private $organisation;
     
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="dateLastLogin", type="datetime", nullable=true)
-     */
-    private $dateLastLogin;
-    
-    /**
      * @var string
      *
      * @ORM\Column(name="ipLastLogin", type="string", length=75, nullable=true)
@@ -150,15 +116,6 @@ class User implements UserInterface
      */
     private $ipLastLogin;
     
-    /**
-     * @ORM\Column(name="salt", type="string", length=255)
-     */
-    private $salt;
-
-    public function eraseCredentials()
-    {
-        
-    }
 
     /**
      * Get id
@@ -170,28 +127,6 @@ class User implements UserInterface
         return $this->id;
     }
     
-    /**
-     * Set roles
-     *
-     * @param string $roles
-     * @return User
-     */
-    public function setRoles($roles)
-    {
-        $this->roles = $roles;
-    
-        return $this;
-    }
-    
-    /**
-     * Get roles
-     *
-     * @return string 
-     */
-    public function getRoles() {
-        return array($this->roles);
-    }
-
     /**
      * Set lastName
      *
@@ -238,50 +173,6 @@ class User implements UserInterface
         return $this->firstName;
     }
 
-    /**
-     * Set mail
-     *
-     * @param string $mail
-     * @return User
-     */
-    public function setMail($mail)
-    {
-        $this->mail = $mail;
-    
-        return $this;
-    }
-
-    /**
-     * Get mail
-     *
-     * @return string 
-     */
-    public function getMail()
-    {
-        return $this->mail;
-    }
-    
-    /**
-     * Set password
-     *
-     * @param string $password
-     * @return User
-     */
-    public function setPassword($password)
-    {
-        $this->password = $password;
-    
-        return $this;
-    }
-    
-    /**
-     * Get password
-     *
-     * @return string 
-     */
-    public function getPassword() {
-        return $this->password;
-    }
 
     /**
      * Set jobCity
@@ -446,21 +337,8 @@ class User implements UserInterface
     
     public function __construct()
     {
-        $this->dateCrea = new \DateTime();
-        $this->salt     = md5(uniqid(null, true)); 
-    }
-
-    public function getSalt() {
-        return $this->salt;
-    }
-
-    public function getUsername() {
-        
-    }
-    
-    public function __sleep(){
-        // Override : don't delete.
-        return array('id', 'mail');
+      parent::__construct();
+      $this->dateCrea = new \DateTime();
     }
 
 }

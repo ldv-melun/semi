@@ -2,7 +2,7 @@
 
 {% block content %}
 
-{% if error %}
+  {% if error is defined %}
     <div class="alert alert-danger">Combinaison E-mail/mot de passe incorrecte !</div>
 {% endif %}
   
