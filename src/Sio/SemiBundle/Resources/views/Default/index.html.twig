@@ -8,17 +8,18 @@
                     <hr>
                     
                     <div id="login-register-form">
-                        <form action="register" method="post">
+                        
                             <div class="input-group">
                                 <span class="input-group-addon" id="basic-addon1">></span>
-                                <input type="text" name="mail" class="form-control" placeholder="E-Mail" aria-describedby="basic-addon1"><br>
+                                <input type="text" id="mail" name="mail" class="form-control" placeholder="E-Mail" aria-describedby="basic-addon1"><br>
                             </div>
                             <div class="input-group">
                                 <span class="input-group-addon" id="basic-addon">></span>
-                                <input type="text" name="clef" class="form-control" placeholder="Clé d'inscription *" aria-describedby="basic-addon2">
+                                <input type="text" id="clef" name="clef" class="form-control" placeholder="Clé d'inscription *" aria-describedby="basic-addon2">
                             </div>
-                            <input type="submit" class="btn btn-sm btn-success" style="width:100%;" value="S'enregistrer">
-                        </form>
+                            <div id="input-group" class="input-group"></div>
+                            <input type="submit" class="btn btn-sm btn-success" style="width:100%;" value="S'enregistrer" onClick="semiRegisterAjax();">
+                        
                     </div>
                     
                     <hr>
