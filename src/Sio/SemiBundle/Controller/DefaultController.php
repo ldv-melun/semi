@@ -82,6 +82,30 @@ class DefaultController extends Controller
         
         $mail = $request->get('mail', NULL);
         $clef = $request->get('clef', NULL);
+        $pass = $request->get('password', NULL); // Will be used to recognize the case where the user already exist. [FROM INDEX]
+        
+        if($pass != NULL)
+        {
+            // CASE WHERE THE USER IS ALREADY REGISTERED. We will ignore the rest of the code below.
+            $getStatus = $request->get('status', NULL);
+            if($getStatus == NULL)
+            {
+                
+                // The user just came from the index.
+                $getSeminar = $this->getDoctrine()->getRepository('SioSemiBundle:Seminar')->findOneBy(array('clef' => $clef));
+                $getSeminarStatus = $this->getDoctrine()->getRepository("SioSemiBundle:SeminarStatus")->findBy(array("seminar" => $getSeminar->getId()));
+                foreach($getSeminarStatus as $seminarStatus)
+                {
+                    $status[] = $this->getDoctrine()->getRepository("SioSemiBundle:Status")->findBy(array("id" => $seminarStatus->getStatus()));
+                }
+                return array("mail" => $mail, "clef" => $clef, "fastRegister" => true, 'allStatus' => $status);
+            }
+            else
+            {
+                // The user will now try to register a now UserSeminar Entity.
+                
+            }
+        }
         
         // Below is obtained only by the register page.
         $lastName = $request->get('lastname', NULL);
@@ -123,7 +147,7 @@ class DefaultController extends Controller
                     if($getUser)
                     {
                         // User exist.
-                        $this->get('session')->getFlashBag()->add('danger', 'User exist !');
+                        $this->get('session')->getFlashBag()->add('danger', 'Cet utilisateur existe déjà !');
                         return $this->redirect($this->generateUrl('_semi_default_index'));
                     }
                     else
@@ -232,6 +256,90 @@ class DefaultController extends Controller
         $organisations = $this->getDoctrine()->getRepository('SioSemiBundle:Organisation')->findAll();
         $paramOrganisation = $this->getDoctrine()->getRepository('SioSemiBundle:Parameter')->findOneBy(array('clef' => 'organisation'));
         return array('mail' => $mail, 'clef' => $clef, 'organisations' => $organisations, 'paramOrganisation' => $paramOrganisation, 'allStatus' => $status);
+    }
+    
+    /**
+     * @Route("/registerajax", name="_semi_default_registerajax")
+     * @Template()
+     */
+    public function registerAjaxAction(Request $request)
+    {
+        /*
+         * Jquery SEMI
+         * 5 Statements available for [action] :
+         * add => Add an input. ("password" is a valid argument)
+         * redirect => Redirect the user. ("register" is a valid argument (WITH POST !), also, you can put an URL)
+         * error => Show an error.
+         * success => Show a success.
+         * warning => Show a warning.
+         * 
+         * Structure is :
+         * action|argument
+         * 
+         * That means that you can send more than one command to Jquery. Ex :
+         * add|password|warning|You must login to do this action !
+         */
+        
+        $mail = $request->get('mail', NULL);
+        $clef = $request->get('clef', NULL);
+        $pass = $request->get('password', NULL);
+        if($mail != NULL && $clef != NULL && $pass != NULL)
+        {
+            // Receive a password. Checking for the user. We will also verify the clef again.
+            $getUser = $this->getDoctrine()->getRepository('SioSemiBundle:User')->findOneBy(array("mail" => $mail, "password" => $pass));
+            $getClef = $this->getDoctrine()->getRepository('SioSemiBundle:Seminar')->findOneBy(array("clef" => $clef));
+            if($getClef)
+            {
+                if($getUser)
+                {
+                    return array("return" => "redirect|fastRegister");
+                }
+                else
+                {
+                    return array("return" => "error|Votre mot de passe ou votre E-mail ne semble pas bon.");
+                }
+            }
+            else
+            {
+                return array("return" => "error|La clé semble invalide !");
+            }
+        }
+        elseif($mail != NULL && $clef != NULL && $pass == NULL)
+        {
+            // Verify that the user exist.
+            $getMail = $this->getDoctrine()->getRepository('SioSemiBundle:User')->findOneBy(array("mail" => $mail));
+            $getClef = $this->getDoctrine()->getRepository('SioSemiBundle:Seminar')->findOneBy(array("clef" => $clef));
+            if($getMail)
+            {
+                // User exist. We have to verify the clef first.
+                if($getClef)
+                {
+                    // The key is correct. We have to register the new UserSeminar. For that, we must show the password field.
+                    return array("return" => "add|password|warning|La clé est valide, mais ce compte existe déjà. Veuillez taper votre mot de passe pour continuer.");
+                }
+                else
+                {
+                    // The key is not correct. It is not usefull to show the password field.
+                    return array("return" => "error|Votre clé d'inscription semble invalide.");
+                }
+            }
+            else
+            {
+                // User does not exist. We have to verify the clef.
+                if($getClef)
+                {
+                    return array("return" => "redirect|register");
+                }
+                else
+                {
+                    return array("return" => "error|Votre clé d'inscription semble invalide.");
+                }
+            }
+        }
+        else
+        {
+            return array("return" => "error|Veuillez remplir les champs mail et clé !");
+        }
     }
     
     /**
