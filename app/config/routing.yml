@@ -1,3 +1,9 @@
+
+# sio_user:
+#    resource: "@SioUserBundle/Controller/"
+#    type:     annotation
+#    prefix:   /
+
 sio_semi:
     resource: "@SioSemiBundle/Controller/"
     type:     annotation

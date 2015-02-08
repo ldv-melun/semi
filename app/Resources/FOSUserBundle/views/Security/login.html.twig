@@ -1,0 +1,188 @@
+{% extends "FOSUserBundle::layout.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block fos_user_content %}
+  
+  {% if error %}
+    
+    {# TODO revoir la presentation des erreurs #}
+    
+    <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+  
+  {% endif %}
+
+  <script>
+    /**
+     * @param response is an objet JSon with 3 boolean properties:
+     *   {clefOk: true|false, userKnown: true|false, emailSyntaxOk: true|false}
+     * 
+     * update UI from response server (after ajax command)
+     * 
+     * TODO : design show errors 
+     * 
+     */
+    function login_doCheckKeyAndEmail(response) {
+      var errors = '';
+      console.log(response);
+      if (response.clefOk) {
+        // Seminar key is good 
+        console.log('clef OK');
+        if (response.userKnown) {
+          // user connect
+          console.log('user OK');
+          login_directConnect(true);
+          
+        } else if (response.emailSyntaxOk) {
+          // user register
+          console.log('new user ?');
+          $('#_submit').hide();
+          $('#btn-reset').hide();
+          $('#btn-fbcheckclef').hide();
+          $('#btn-register').show();
+        } else {
+          // clef ok but : 
+          //   unknown user
+          //   and bad email syntax
+          // stay here
+          errors = "L'email n\'est PAS bon";
+        }
+      }
+      else {
+        errors = "La clé n\'est PAS bonne";
+        if (!response.emailSyntaxOk) {
+           errors = errors + "\nL'email n\'est PAS bon";
+        }
+      }
+      if (errors)
+         alert(errors);
+    }
+    
+    /**
+     * 
+     * TODO
+     * @return
+     */
+    function login_verifKeyAndEmail() {
+    var seminarClef = $('#seminar-clef').val();
+    var emailUser = $('#login-username').val();
+    $.ajax({
+     url : "checkclef",
+     type : 'POST',
+     cache : false,
+     dataType : 'json', // la donnée reçue sera parsée automatiquement en objet JS par JQuery
+          data: {"seminar-clef": seminarClef, "email-user" : emailUser}, // passage d'arguments à la requête HTTP
+          success: function (responseJson, status) {
+            // responseJson est la réponse reçue (preparsé en JSon par JQ)
+            login_doCheckKeyAndEmail(responseJson);
+          }
+        });
+      }
+      
+   function login_userRegister() {
+     window.location = "register";
+   }
+   
+   function login_directConnect(withClef) {
+      $('#btn-register').hide();
+      $('#btn-fbcheckclef').hide();
+      $('#btn-reset').hide();
+      $('#div-password').show();
+      $('#_submit').show();          
+      $('#forgot-pw').show();
+      if (withClef) {
+        $('#div-seminar-clef').show();
+        $('#login-panel-title').html('Inscription à un séminaire');
+      }else{ 
+        $('#login-panel-title').html('Se connecter');
+        $('#div-seminar-clef').hide();
+        $('#a-inscr-seminar').show();
+        $('#a-direct-connect').hide();
+      }
+   }
+   
+   function login_inputInscrSeminar() {
+      $('#btn-register').hide();
+      $('#btn-fbcheckclef').show();
+      $('#btn-reset').show();
+      $('#div-seminar-clef').show();
+      $('#div-password').hide();
+      $('#_submit').hide();          
+      $('#forgot-pw').hide();  
+      $('#a-inscr-seminar').hide();
+      $('#a-direct-connect').show();
+      $('#login-panel-title').html('Inscription à un séminaire');
+   }
+   
+  </script>
+  
+  <div  style="margin-top:20px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">                    
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <div id="login-panel-title" class="panel-title">Inscription à un séminaire</div>
+        <div id="forgot-pw" style="float:right; font-size: 80%; position: relative; top:-10px; display:none"><a href="{{ path('fos_user_resetting_request') }}"><span class="glyphicon glyphicon-question-sign"> </span> Forgot password ?</a></div>
+      </div>     
+
+      <div style="padding-top:20px" class="panel-body">
+
+        <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
+
+        <form action="{{ path("fos_user_security_check") }}" method="post" id="loginform" class="form-horizontal" role="form">
+         <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+        
+          <div style="margin-bottom: 20px" class="input-group">
+            <span class="input-group-addon">@</span>
+            <input id="login-username" type="email" class="form-control" name="_username" value="{{ last_username }}" placeholder="email">
+          </div>
+          
+          <div id="div-seminar-clef" style="margin-bottom: 20px" class="input-group">
+            <span class="input-group-addon"><span class='glyphicon glyphicon-hand-right' aria-hidden="true"></span></span>
+            <input id="seminar-clef" type="password" class="form-control" name="_clef" placeholder="clef">
+          </div>
+          
+          {# default hidden #}
+          <div id="div-password" style="margin-bottom: 20px; display:none" class="input-group">
+            <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+            <input id="login-password" type="password" class="form-control" name="_password" placeholder="password" required="required">
+          </div>
+                 
+          <div class="input-group">
+            <div class="checkbox">
+              <label>
+                <input id="login-remember" type="checkbox" name="_remember_me" value="on"> {{ 'security.login.remember_me'|trans }}
+              </label>
+            </div>
+          </div>
+    
+          <div style="margin-top:10px" class="form-group">
+            <!-- Button -->
+
+            <div class="col-sm-12 controls">
+              <input class="btn btn-default" type="reset" id="btn-reset" name="reset" value="Reset" />
+              <input class="btn btn-success" type="submit" id="_submit" style="display:none" name="_submit" value="Connexion" />
+              <a id="btn-fbcheckclef" href="#" class="btn btn-primary" onClick='login_verifKeyAndEmail()'>Valider</a>
+              <a id="btn-register" href="#" class="btn btn-primary"  style="display:none" onClick='login_userRegister()'>Créer un compte ?</a>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-md-12 control">
+              <div style="border-top: 1px solid#888; padding-top:15px; font-size:85%">
+                Or
+                <a id="a-direct-connect" href="#" onclick="login_directConnect(false)">
+                   connexion
+                </a>
+                <a id="a-inscr-seminar" style="display:none" href="#" onclick="login_inputInscrSeminar()">
+                   inscr. seminar
+                </a>
+                
+                <span class="pull-right">
+                <a href="#"  > need help ? </a> </span>
+              </div>
+            </div>
+          </div>    
+        </form>     
+      </div>                     
+    </div>  
+              
+  {% endblock fos_user_content %}

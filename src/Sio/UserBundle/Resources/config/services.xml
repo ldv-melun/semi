@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <!--
+    <parameters>
+        <parameter key="sio_user.example.class">Sio\UserBundle\Example</parameter>
+    </parameters>
+
+    <services>
+        <service id="sio_user.example" class="%sio_user.example.class%">
+            <argument type="service" id="service_id" />
+            <argument>plain_value</argument>
+            <argument>%parameter_name%</argument>
+        </service>
+    </services>
+    -->
+    <services>
+
+        <service id="sio_user.registration.form.type" class="Sio\UserBundle\Form\Type\RegistrationFormType">
+            <tag name="form.type" alias="sio_user_registration" />
+        </service>
+
+        <service id="sio.user_provider.email" class="Sio\UserBundle\Security\EmailProvider">
+             <argument type="service" id="fos_user.user_manager"/>
+        </service>
+    
+    </services>
+    
+<!--
+services:
+    sio_semi.user_provider.email:
+        class:        "Sio\SemiBundle\Security\EmailProvider"
+        arguments:    ["@fos_user.user_manager"]
+-->        
+
+</container>
+ 

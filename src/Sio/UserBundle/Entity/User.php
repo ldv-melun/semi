@@ -1,6 +1,8 @@
 <?php
 
-namespace Sio\SemiBundle\Entity;
+namespace Sio\UserBundle\Entity;
+
+use Sio\SemiBundle\Entity\Organisation as Organisation;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use FOS\UserBundle\Model\User as BaseUser;
@@ -9,7 +11,7 @@ use FOS\UserBundle\Model\User as BaseUser;
  * User
  *
  * @ORM\Table(name="semi_user")
- * @ORM\Entity(repositoryClass="Sio\SemiBundle\Entity\UserRepository")
+ * @ORM\Entity(repositoryClass="Sio\UserBundle\Entity\UserRepository")
  */
 class User extends BaseUser
 {
@@ -100,7 +102,7 @@ class User extends BaseUser
     /**
      * @var \Organisation
      *
-     * @ORM\ManyToOne(targetEntity="Organisation")
+     * @ORM\ManyToOne(targetEntity="Sio\SemiBundle\Entity\Organisation")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="idOrganisation", referencedColumnName="id")
      * })

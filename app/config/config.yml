@@ -1,7 +1,7 @@
 imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
-    - { resource: service.yml }
+    
     # The area above have to be edited to start your project.
     - { resource: globals.yml }
 
@@ -71,11 +71,9 @@ swiftmailer:
 fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
     firewall_name: main
-    user_class: Sio\SemiBundle\Entity\User    
+    user_class: Sio\UserBundle\Entity\User  
     
-# see security.yml (providers)    
-services:
-    sio_semi.user_provider.email:
-        class:        "Sio\SemiBundle\Security\EmailProvider"
-        arguments:    ["@fos_user.user_manager"]
+    registration:
+        form:
+            type: sio_user_registration # see UserBundle From Type, Services.xml
         

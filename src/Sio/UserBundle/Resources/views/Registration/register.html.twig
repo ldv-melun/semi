@@ -6,7 +6,7 @@
         <div class="col-md-8">
             <h2>Inscription</h2>
             <div class="thumbnail" style="padding:1em;">
-                <form action="register" method="post">
+                <form action="{{ path('fos_user_registration_register') }}" method="post">
                     {% if fastRegister is not defined %}
                         <span class="input-group-addon">
                         <h1>Informations générales :</h1>
@@ -48,7 +48,7 @@
                         <br>
                     {% endif %}
                     
-                    <span class="input-group-addon"><h1>Qu'êtes-vous ?</h1>
+                    <span class="input-group-addon"><h2>Pour ce séminaire, vous participez en tant que ?</h2>
                     {% for tab in allStatus %}
                         {% for object in tab %}
                         <div class="input-group" style="width:100%;">

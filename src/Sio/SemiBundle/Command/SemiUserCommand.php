@@ -27,10 +27,16 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 
 use Symfony\Component\Console\Output\OutputInterface;
-use Sio\SemiBundle\Entity\User;
+use Sio\UserBundle\Entity\User;
 
 /**
  * Description of SemiUserCommand
+ * 
+ * 
+ * OBSOLETE depuis l'intergration de FOSUser !!
+ * TODO : A REDEFINIR 
+ * 
+ * 
  * @see http://symfony.com/fr/doc/current/cookbook/console/console_command.html
  * 
  */

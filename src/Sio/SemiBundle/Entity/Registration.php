@@ -4,6 +4,7 @@ namespace Sio\SemiBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+
 /**
  * Registration
  *
@@ -24,7 +25,7 @@ class Registration
     /**
      * @var \User
      *
-     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="Sio\UserBundle\Entity\User")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="idUser", referencedColumnName="id")
      * })
@@ -84,10 +85,10 @@ class Registration
     /**
      * Set user
      *
-     * @param \Sio\SemiBundle\Entity\User $user
+     * @param \Sio\UserBundle\Entity\User $user
      * @return Registration
      */
-    public function setUser(\Sio\SemiBundle\Entity\User $user = null)
+    public function setUser(\Sio\UserBundle\Entity\User $user = null)
     {
         $this->user = $user;
     
@@ -97,7 +98,7 @@ class Registration
     /**
      * Get user
      *
-     * @return \Sio\SemiBundle\Entity\User 
+     * @return \Sio\UserBundle\Entity\User 
      */
     public function getUser()
     {

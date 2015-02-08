@@ -3,6 +3,7 @@
 namespace Sio\SemiBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Sio\UserBundle\Entity\User as User;
 
 /**
  * UserSeminar
@@ -25,7 +26,7 @@ class UserSeminar
     /**
      * @var \User
      *
-     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="\Sio\UserBundle\Entity\User")
      * @ORM\JoinColumns({
      *    @ORM\JoinColumn(name="idUser", referencedColumnName="id")
      * })
@@ -65,10 +66,10 @@ class UserSeminar
     /**
      * Set user
      *
-     * @param \Sio\SemiBundle\Entity\User $user
+     * @param \Sio\UserBundle\Entity\User $user
      * @return UserSeminar
      */
-    public function setUser(\Sio\SemiBundle\Entity\User $user = null)
+    public function setUser(\Sio\UserBundle\Entity\User $user = null)
     {
         $this->user = $user;
     
@@ -78,7 +79,7 @@ class UserSeminar
     /**
      * Get user
      *
-     * @return \Sio\SemiBundle\Entity\User 
+     * @return \Sio\UserBundle\Entity\User 
      */
     public function getUser()
     {
