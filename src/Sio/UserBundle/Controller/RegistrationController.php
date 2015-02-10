@@ -35,11 +35,14 @@ class RegistrationController extends BaseController {
     $clef = $session->get('seminarClef');
 
     // We will verify the clef and the seminar linked to it now and for all cases.
-    $seminar = $this->getDoctrine()->getRepository('SioSemiBundle:Seminar')->findOneBy(array('clef' => $clef));
-    if(!($this->checkIfSeminarExist($seminar)))
-    {
-        $this->get('session')->getFlashBag()->add('danger', 'La clé d\'inscription que vous avez entré est invalide !');
-        return $this->redirect($this->generateUrl(self::ROUTE_LOGIN));
+    $seminar = $this->getDoctrine()
+        ->getRepository('SioSemiBundle:Seminar')
+        ->findOneBy(array('clef' => $clef));
+    if (!($this->checkIfSeminarExist($seminar))) {
+      $this->get('session')
+          ->getFlashBag()
+          ->add('danger', 'La clé d\'inscription est invalide !');
+      return $this->redirect($this->generateUrl(self::ROUTE_LOGIN));
     }
 
     // We wil get the seminar and all status from that Seminar for all cases.
@@ -57,12 +60,20 @@ class RegistrationController extends BaseController {
       return $this->redirect($this->generateUrl('_semi_user_index'));
     }
 
-    $organisations = $this->getDoctrine()->getRepository('SioSemiBundle:Organisation')->findAll();
+    $organisations = $this->getDoctrine()
+        ->getRepository('SioSemiBundle:Organisation')
+        ->findAll();
     //TODO renommer organisation par typeOrganisation dans parameter
-    $typeOrganisation = $this->getDoctrine()->getRepository('SioSemiBundle:Parameter')->findOneBy(array('clef' => 'organisation'));
+    $typeOrganisation = $this->getDoctrine()
+        ->getRepository('SioSemiBundle:Parameter')
+        ->findOneBy(array('clef' => 'organisation'));
 
-    $toview = array('mail' => $mail, 'clef' => $clef, 'organisations' => $organisations, 'paramOrganisation' => $typeOrganisation, 'allStatus' => $allStatus);
-    return $this->render('SioUserBundle:Registration:register.html.twig', $toview);
+    $toview = array('mail' => $mail, 'clef' => $clef,
+        'organisations' => $organisations,
+        'paramOrganisation' => $typeOrganisation,
+        'allStatus' => $allStatus);
+    return $this
+        ->render('SioUserBundle:Registration:register.html.twig', $toview);
   }
 
   /**
@@ -90,7 +101,7 @@ class RegistrationController extends BaseController {
   }
 
   /**
-   * Persist a user in the database and return that user to the controller.
+   * Persist a user in the database and return that user
    * @param String $mail
    * @param String $lastName
    * @param String $firstName
@@ -116,7 +127,9 @@ class RegistrationController extends BaseController {
     $newUser->setEnabled(true);
 
     // Get the Organisation.
-    $organisationQuery = $this->getDoctrine()->getRepository('SioSemiBundle:Organisation')->findOneBy(array('id' => $organisation));
+    $organisationQuery = $this->getDoctrine()
+        ->getRepository('SioSemiBundle:Organisation')
+        ->findOneBy(array('id' => $organisation));
     $newUser->setOrganisation($organisationQuery);
 
     $this->managerPersist($newUser);
@@ -125,15 +138,19 @@ class RegistrationController extends BaseController {
 
   /**
    * Persist a new UserSeminar. [See registerUser()]s
-   * @param \Seminar $seminar
+   * @param Seminar $seminar
    * @param String $status
    * @param String $mail
    */
   function registerUserSeminar($seminar, $status, $mail) {
-    $newUserSeminar = new UserSeminar();
+    $userStatus = $this->getDoctrine()
+        ->getRepository('SioSemiBundle:Status')
+        ->findOneBy(array("status" => $status));
+    $user = $this->getDoctrine()
+        ->getRepository('SioUserBundle:User')
+        ->findOneBy(array("email" => $mail));
 
-    $userStatus = $this->getDoctrine()->getRepository('SioSemiBundle:Status')->findOneBy(array("status" => $status));
-    $user = $this->getDoctrine()->getRepository('SioUserBundle:User')->findOneBy(array("email" => $mail));
+    $newUserSeminar = new UserSeminar();
     $newUserSeminar->setSeminar($seminar);
     $newUserSeminar->setStatus($userStatus);
     $newUserSeminar->setUser($user);
@@ -148,20 +165,26 @@ class RegistrationController extends BaseController {
    */
   function checkIfSeminarExist($seminar) {
     if ($seminar) {
-        return true;
+      return true;
     }
     return false;
   }
 
   /**
+   * TODO : pourquoi la boucle foreach ?
+   * 
+   * 
    * Return all status of a seminar.
    * @param \Seminar $seminar
    * @return Array
    */
   function getAllStatusForSeminar($seminar) {
-    $seminarStatus = $this->getDoctrine()->getRepository("SioSemiBundle:SeminarStatus")->findBy(array("seminar" => $seminar->getId()));
+    $seminarStatus = $this->getDoctrine()
+        ->getRepository("SioSemiBundle:SeminarStatus")
+        ->findBy(array("seminar" => $seminar->getId()));
     foreach ($seminarStatus as $object) {
-      $status[] = $this->getDoctrine()->getRepository("SioSemiBundle:Status")->findBy(array("id" => $object->getStatus()));
+      $status[] = $this->getDoctrine()->getRepository("SioSemiBundle:Status")
+          ->findBy(array("id" => $object->getStatus()));
     }
     return $status;
   }
@@ -184,11 +207,21 @@ class RegistrationController extends BaseController {
    * @return ?
    */
   function showRegisterPage($mail, $clef, $status) {
-    $this->get('session')->getFlashBag()->add('success', 'Veuillez remplir les champs ci-contre pour vous inscrire !');
-    $organisations = $this->getDoctrine()->getRepository('SioSemiBundle:Organisation')->findAll();
-    $paramOrganisation = $this->getDoctrine()->getRepository('SioSemiBundle:Parameter')->findOneBy(array('clef' => 'organisation'));
-    $toview = array('mail' => $mail, 'clef' => $clef, 'organisations' => $organisations, 'paramOrganisation' => $paramOrganisation, 'allStatus' => $status);
-    return $this->render('SioUserBundle:Registration:register.html.twig', $toview);
+    $this->get('session')->getFlashBag()
+        ->add('success', 'Veuillez remplir les champs ci-contre pour vous inscrire !');
+    $organisations = $this->getDoctrine()
+        ->getRepository('SioSemiBundle:Organisation')
+        ->findAll();
+    $paramOrganisation = $this->getDoctrine()
+        ->getRepository('SioSemiBundle:Parameter')
+        ->findOneBy(array('clef' => 'organisation'));
+    $toview = array('mail' => $mail,
+        'clef' => $clef,
+        'organisations' => $organisations,
+        'paramOrganisation' => $paramOrganisation,
+        'allStatus' => $status);
+    return $this
+            ->render('SioUserBundle:Registration:register.html.twig', $toview);
   }
 
   /**
@@ -200,9 +233,10 @@ class RegistrationController extends BaseController {
    * @return ?
    */
   function startRegister($seminar, $mail, $clef, $status) {
-    if (!($this->allowRegistration($seminar->getBeginRegistering(), $seminar->getEndRegistering()))) {
+    if (!($this->allowRegistration(
+            $seminar->getBeginRegistering(), $seminar->getEndRegistering()))) {
       // Verify the beginRegistering/endRegistering validity of the seminar.
-      $return = array("danger", 'La clé d\'inscription est correcte mais semble être expiré, ou alors, le séminaire n\'a pas encore atteint sa date de début d\'inscription ! La date de début d\'inscription est le ' . $seminar->getBeginRegistering()->format("d/m/Y") . ' et la date de fin d\'inscription est le ' . $seminar->getEndRegistering()->format("d/m/Y") . '.');
+      $return = array("danger", 'La clé d\'inscription est correcte mais semble être expirée, ou alors, le séminaire n\'a pas encore atteint sa date de début d\'inscription ! La date de début d\'inscription est le ' . $seminar->getBeginRegistering()->format("d/m/Y") . ' et la date de fin d\'inscription est le ' . $seminar->getEndRegistering()->format("d/m/Y") . '.');
     } elseif (!preg_match("#^[A-Za-z0-9._-]+@[A-Za-z0-9._-]{2,}\.[a-z]{2,4}$#", $mail)) {
       // The mail is incorrect.
       $return = array("danger", 'L\'email que vous avez entrer semble invalide !');
@@ -227,7 +261,6 @@ class RegistrationController extends BaseController {
    * @return ?
    */
   function endRegister($postRequest, $seminar) {
-
     $lastName = $postRequest->get('lastname', NULL);
     $firstName = $postRequest->get('firstname', NULL);
     $pass1 = $postRequest->get('pass1', NULL);
