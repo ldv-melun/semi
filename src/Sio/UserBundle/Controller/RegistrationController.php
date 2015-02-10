@@ -34,38 +34,34 @@ class RegistrationController extends BaseController {
     $mail = $session->get('emailUser');
     $clef = $session->get('seminarClef');
 
-    // We will verify the clef now and for all cases.
-    $getSeminar = $this->checkClef($clef);
+    // We will verify the clef and the seminar linked to it now and for all cases.
+    $seminar = $this->getDoctrine()->getRepository('SioSemiBundle:Seminar')->findOneBy(array('clef' => $clef));
+    if(!($this->checkIfSeminarExist($seminar)))
+    {
+        $this->get('session')->getFlashBag()->add('danger', 'La clé d\'inscription que vous avez entré est invalide !');
+        return $this->redirect($this->generateUrl(self::ROUTE_LOGIN));
+    }
 
     // We wil get the seminar and all status from that Seminar for all cases.
-    $status = $this->getAllStatusForSeminar($getSeminar);
-
-    // Will be used to recognize the case where the user already exist.
-    $pass = $postRequest->get('password', NULL);
-
-    if ($pass != NULL) {
-      // User already exist. He want to register with another key 
-      // or connect with one he already register with.
-      $getStatus = $postRequest->get('status', NULL);
-      $this->fastRegister($getStatus);
-    }
+    $allStatus = $this->getAllStatusForSeminar($seminar);
 
     // Below is obtained only by the classic register page.
     $lastName = $postRequest->get('lastname', NULL);
 
     if ($lastName == NULL) {
       // User does not exist and doesn't have fill the form
-      $this->startRegister($getSeminar, $mail, $clef, $status);
+      $this->startRegister($seminar, $mail, $clef, $allStatus);
     } else {
       // User does not exist and have fill the form.
-      $this->endRegister($postRequest);
+      $this->endRegister($postRequest, $seminar);
+      return $this->redirect($this->generateUrl('_semi_user_index'));
     }
 
     $organisations = $this->getDoctrine()->getRepository('SioSemiBundle:Organisation')->findAll();
     //TODO renommer organisation par typeOrganisation dans parameter
     $typeOrganisation = $this->getDoctrine()->getRepository('SioSemiBundle:Parameter')->findOneBy(array('clef' => 'organisation'));
 
-    $toview = array('mail' => $mail, 'clef' => $clef, 'organisations' => $organisations, 'paramOrganisation' => $typeOrganisation, 'allStatus' => $status);
+    $toview = array('mail' => $mail, 'clef' => $clef, 'organisations' => $organisations, 'paramOrganisation' => $typeOrganisation, 'allStatus' => $allStatus);
     return $this->render('SioUserBundle:Registration:register.html.twig', $toview);
   }
 
@@ -77,14 +73,15 @@ class RegistrationController extends BaseController {
    */
   function allowRegistration($dateStart, $dateEnd) {
     $now = new \DateTime();
-    return $dateStart >= $now && $now <= $dateEnd;
-
-//        if ($dateStart < new \DateTime() && new \DateTime() < $dateEnd) {
-//            return true;
-//        }
-//        return false;
+    return $dateStart <= $now && $now <= $dateEnd;
   }
 
+  /**
+   * Compare 2 values and return a boolean.
+   * @param String $value1
+   * @param String value2
+   * @return boolean
+   */
   function checkIfEquals($value1, $value2) {
     if ($value1 == $value2) {
       return true;
@@ -92,6 +89,17 @@ class RegistrationController extends BaseController {
     return false;
   }
 
+  /**
+   * Persist a user in the database and return that user to the controller.
+   * @param String $mail
+   * @param String $lastName
+   * @param String $firstName
+   * @param String $jobCity
+   * @param String $homeCity
+   * @param String $pass
+   * @param String $organisation
+   * @return User
+   */
   function registerUser($mail, $lastName, $firstName, $jobCity, $homeCity, $pass, $organisation) {
     $newUser = new User();
     $newUser->setUsername($mail); // FOSUser say not null (and unique ? so we put mail)
@@ -115,32 +123,45 @@ class RegistrationController extends BaseController {
     return $newUser;
   }
 
+  /**
+   * Persist a new UserSeminar. [See registerUser()]s
+   * @param \Seminar $seminar
+   * @param String $status
+   * @param String $mail
+   */
   function registerUserSeminar($seminar, $status, $mail) {
     $newUserSeminar = new UserSeminar();
 
-    $getStatus = $this->getDoctrine()->getRepository('SioSemiBundle:Status')->findOneBy(array("status" => $status));
-    $getUser = $this->getDoctrine()->getRepository('SioUserBundle:User')->findOneBy(array("email" => $mail));
+    $userStatus = $this->getDoctrine()->getRepository('SioSemiBundle:Status')->findOneBy(array("status" => $status));
+    $user = $this->getDoctrine()->getRepository('SioUserBundle:User')->findOneBy(array("email" => $mail));
     $newUserSeminar->setSeminar($seminar);
-    $newUserSeminar->setStatus($getStatus);
-    $newUserSeminar->setUser($getUser);
+    $newUserSeminar->setStatus($userStatus);
+    $newUserSeminar->setUser($user);
 
     $this->managerPersist($newUserSeminar);
   }
 
-  // TODO : à revoir, cette fonction a trop de responsabilités
-  function checkClef($clef) {
-    $getSeminar = $this->getDoctrine()->getRepository('SioSemiBundle:Seminar')->findOneBy(array('clef' => $clef));
-    if (!$getSeminar) {
-      $this->get('session')->getFlashBag()->add('danger', 'La clé d\'inscription que vous avez entré est invalide !');
-      return $this->redirect($this->generateUrl(self::ROUTE_LOGIN));
+  /**
+   * Check if a Seminar exist and return a boolean.
+   * @param \Seminar $seminar
+   * @return boolean
+   */
+  function checkIfSeminarExist($seminar) {
+    if ($seminar) {
+        return true;
     }
-    return $getSeminar;
+    return false;
   }
 
+  /**
+   * Return all status of a seminar.
+   * @param \Seminar $seminar
+   * @return Array
+   */
   function getAllStatusForSeminar($seminar) {
-    $getSeminarStatus = $this->getDoctrine()->getRepository("SioSemiBundle:SeminarStatus")->findBy(array("seminar" => $seminar->getId()));
-    foreach ($getSeminarStatus as $seminarStatus) {
-      $status[] = $this->getDoctrine()->getRepository("SioSemiBundle:Status")->findBy(array("id" => $seminarStatus->getStatus()));
+    $seminarStatus = $this->getDoctrine()->getRepository("SioSemiBundle:SeminarStatus")->findBy(array("seminar" => $seminar->getId()));
+    foreach ($seminarStatus as $object) {
+      $status[] = $this->getDoctrine()->getRepository("SioSemiBundle:Status")->findBy(array("id" => $object->getStatus()));
     }
     return $status;
   }
@@ -155,6 +176,13 @@ class RegistrationController extends BaseController {
     $manager->flush();
   }
 
+  /**
+   * Show the register page [?]
+   * @param String $mail
+   * @param String $clef
+   * @param \Status $status
+   * @return ?
+   */
   function showRegisterPage($mail, $clef, $status) {
     $this->get('session')->getFlashBag()->add('success', 'Veuillez remplir les champs ci-contre pour vous inscrire !');
     $organisations = $this->getDoctrine()->getRepository('SioSemiBundle:Organisation')->findAll();
@@ -163,17 +191,14 @@ class RegistrationController extends BaseController {
     return $this->render('SioUserBundle:Registration:register.html.twig', $toview);
   }
 
-  // Case : User exist, new UserSeminar to persist.
-  function fastRegister($status) {
-    if ($status == NULL) {
-      // The user just came from the index.
-      $toview = array("mail" => $mail, "clef" => $clef, "fastRegister" => true, 'allStatus' => $status);
-      return $this->render('SioUserBundle:Registration:register.html.twig', $toview);
-    } else {
-      // TODO : The user will now try to register a new UserSeminar Entity.
-    }
-  }
-
+  /**
+   * Start part registration of a new user.
+   * @param \Seminar $seminar
+   * @param String $mail
+   * @param String $clef
+   * @param \Status $status
+   * @return ?
+   */
   function startRegister($seminar, $mail, $clef, $status) {
     if (!($this->allowRegistration($seminar->getBeginRegistering(), $seminar->getEndRegistering()))) {
       // Verify the beginRegistering/endRegistering validity of the seminar.
@@ -196,8 +221,14 @@ class RegistrationController extends BaseController {
     return $this->redirect($this->generateUrl(self::ROUTE_LOGIN));
   }
 
-  function endRegister($postRequest) {
+  /**
+   * End part registration of a new user.
+   * @param Request $postRequest
+   * @return ?
+   */
+  function endRegister($postRequest, $seminar) {
 
+    $lastName = $postRequest->get('lastname', NULL);
     $firstName = $postRequest->get('firstname', NULL);
     $pass1 = $postRequest->get('pass1', NULL);
     $pass2 = $postRequest->get('pass2', NULL);
@@ -208,7 +239,7 @@ class RegistrationController extends BaseController {
       $organisation = $postRequest->get('organisation', NULL);
       $jobCity = $postRequest->get('adminCity', NULL);
       $homeCity = $postRequest->get('familyCity', NULL);
-
+      $status = $postRequest->get('status', NULL);
       // Verify that the mail is not used.. because the mail can be changed on the view. (For Edition, if the user have a misstake)
       $aUser = $this->getDoctrine()->getRepository('SioUserBundle:User')->findOneBy(array("email" => $mail));
       if (!$aUser) {
@@ -220,8 +251,6 @@ class RegistrationController extends BaseController {
         $this->get('session')->getFlashBag()->add('success', 'Votre compte a bien été créé, ' . $firstName . ' ! Vous avez été automatiquement connecté(e) à l\'application !');
         $token = new UsernamePasswordToken($newUser, null, 'main', $newUser->getRoles());
         $this->get('security.context')->setToken($token);
-        // TODO:  seminarClef is in session, so user can go direct to seminar
-        return $this->redirect($this->generateUrl('_semi_user_index'));
       } else {
         $this->get('session')->getFlashBag()->add('warning', 'Cet E-mail est déjà utilisé ! Peut être souhaitiez-vous vous connecter ?');
       }
