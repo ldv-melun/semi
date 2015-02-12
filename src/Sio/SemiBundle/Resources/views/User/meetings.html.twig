@@ -11,12 +11,12 @@
             <div id="content">
                 {% set i, classSeancesParalleles, oddEvenclass = 0, 'odd_row', 'event_row' %}
                 {% for jour, seances in meetings %}
-                    <h3><a href="#">{{ jour }} : {{ seances|length }} séances</a></h3>
+                    <h3 id="{{ jour }}"><a href="#{{ jour }}">{{ jour }} : {{ seances|length }} séances</a></h3>
                     <div>
                         <table class="table table-hover table-bordered">
                             <thead>
                                 <tr>
-                                    <th class="dataTableHeader" style="width:10%;">Je m'inscris</th>
+                                    {% if stateSeminar == 'Open' %}<th class="dataTableHeader" style="width:10%;">Je m'inscris</th>{% endif %}
                                     <th class="dataTableHeader" style="width:10%;">Disponibilités</th>
                                     <th class="dataTableHeader" style="width:10%;">Type</th>
                                     <th class="dataTableHeader" style="width:10%;">Horaires</th>
@@ -43,16 +43,18 @@
                                             {% set strClass = '_atelier' %}
                                         {% endif %}
                                         <tr class='{{ oddEvenclass }}{{ strClass }}'> 
-                                            <td>
-                                                <input id='cb{{ seance.id }}' 
-                                                       type='{{ classInput }}' 
-                                                       name='inscrire{{ seancesParalleles ? i : ''}}' 
-                                                       {{ 0 ? 'checked' : ' '}} 
-                                                       {% if seance.dispo<=0 and seance.idParticipant %}
-                                                           disabled
-                                                       {% else %}
-                                                           onClick='inscrSeance("{{ seance.id }}", "{{ seance.realDateHeureDebut|date('H:i') }}", "{{ seance.description }}...", this.checked, null)' /> 
-                                                </td>
+                                            {% if stateSeminar == 'Open' %}
+                                                <td>
+                                                    <input id='cb{{ seance.id }}' 
+                                                           type='{{ classInput }}' 
+                                                           name='inscrire{{ seancesParalleles ? i : ''}}' 
+                                                           {{ 0 ? 'checked' : ' '}} 
+                                                           {% if seance.dispo<=0 and seance.idParticipant %}
+                                                               disabled
+                                                           {% else %}
+                                                               onClick='inscrSeance("{{ seance.id }}", "{{ seance.realDateHeureDebut|date('H:i') }}", "{{ seance.description }}...", this.checked, null)' /> 
+                                                    </td>
+                                                {% endif %}
                                             {% endif %}
 
                                             <td id='{{ seance.id }}'>{{ seance.dispo }} / {{ seance.maxSeats }} {% if seance.dispo <= 0 %}complet{% endif %}</td>
@@ -62,9 +64,10 @@
                                             <td>{{ seance.stakeholders }}</td>
                                             {% set oldIdS, oldDateHeureDebut, seanceSave = seance.id, seance.dateHeureDebut, seance %}
                                         </tr>
-                                        {% endfor %}
-                                        {% if seancesParalleles %}
-                                            <tr class='{{ oddEvenclass }}{{ strClass }}'> 
+                                    {% endfor %}
+                                    {% if seancesParalleles %}
+                                        <tr class='{{ oddEvenclass }}{{ strClass }}'> 
+                                            {% if stateSeminar == 'Open' %}
                                                 <td>
                                                     <input id='cbRAZ{{ oldIdS }}' 
                                                            type='{{ classInput }}' 
@@ -73,14 +76,15 @@
                                                                onClick='inscrSeance({{ oldIdS }}, "{{ seanceSave.realDateHeureDebut|date('Y-m-d H:i:s') }}", "Non merci", false, "raz")' 
                                                                /> 
                                                     </td>
-                                                    <td>Non merci</td>
-                                                    <td> </td>
-                                                    <td> </td>
-                                                    <td>Non merci</td>
-                                                    <td> </td>
                                                 {% endif %}
+                                                <td>Non merci</td>
+                                                <td> </td>
+                                                <td> </td>
+                                                <td>Non merci</td>
+                                                <td> </td>
                                             {% endif %}
-                                            
+                                        {% endif %}
+
                                     {% endfor %}
                             <tbody>  	 
                         </table>

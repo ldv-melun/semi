@@ -25,6 +25,7 @@ class UserController extends Controller {
             $meetings = $this->getDoctrine()->getRepository("SioSemiBundle:Meeting")->findBy(array("seminar" => $seminar), array('dateStart' => 'asc', 'relativeNumber' => 'asc'));
             $manager = $this->getDoctrine()->getManager();
             $nbMeetingRegister = $manager->getRepository('Sio\SemiBundle\Entity\Meeting')->countNbMeetingRegister($user->getId(), $seminar->getId());
+            $seminarState = $seminar->getState()->getName();
 
             $curJour = null;
             foreach ($meetings as $meeting) {
@@ -40,7 +41,7 @@ class UserController extends Controller {
                 $desSeances[$curJour][$heureDeb][] = $meeting;
             }
             
-            $toview = array("title" => $seminar->getName(), "description" => $seminar->getDescription(), "meetings" => $desSeances, "nbMeetingRegister" => $nbMeetingRegister);
+            $toview = array("title" => $seminar->getName(), "description" => $seminar->getDescription(), "meetings" => $desSeances, "nbMeetingRegister" => $nbMeetingRegister, "stateSeminar" => $seminarState);
             return $this->render('SioSemiBundle:User:meetings.html.twig', $toview);
         } else {
             $em = $this->getDoctrine()->getManager();

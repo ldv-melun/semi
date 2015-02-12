@@ -238,3 +238,10 @@ function semiRegisterAjax()
 	}
     });
 }
+
+$('a[href^="#"]').click(function($this){  
+    var id = $(this);
+    var offset = $(id).offset().top;
+    $('html, body').animate({scrollTop: offset-60}, 'slow'); 
+    return false;  
+}); 
