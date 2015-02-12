@@ -122,3 +122,119 @@ function showMeetings(i)
         alert('Une erreur est survenue. Contactez un administrateur.');
     }
 }
+
+function semiShowError(error)
+{
+    html = '<div id="error" class="alert alert-danger">'+error+'</div>';
+    $('div#container').prepend(html);
+    $('div#error').delay(3000).fadeOut(1000);
+}
+
+function semiShowWarning(warning)
+{
+    html = '<div id="warning" class="alert alert-warning">'+warning+'</div>';
+    $('div#container').prepend(html);
+    $('div#warning').delay(3000).fadeOut(1000);
+}
+
+function semiShowSuccess(success)
+{
+    html = '<div id="success" class="alert alert-success">'+success+'</div>';
+    $('div#container').prepend(html);
+    $('div#success').delay(3000).fadeOut(1000);
+}
+
+function semiAdd(item)
+{
+    if(item == "password")
+    {
+        html = '<span class="input-group-addon" id="basic-addon">></span>'
+             + '<input type="password" id="password" name="password" class="form-control" placeholder="Mot de passe" aria-describedby="basic-addon1"><br>';
+    }
+    $('div#input-group').prepend(html);
+}
+
+function semiRedirect(url)
+{
+    if(url == "register")
+    {
+        // Case where we need a POST action.
+        var url = 'register';
+        var form = $('<form action="' + url + '" method="post">' +
+          '<input type="text" name="mail" value="' + $('input#mail').val() + '" />' +
+          '<input type="text" name="clef" value="' + $('input#clef').val() + '" />' +
+          '</form>');
+        $('body').append(form);
+        form.submit();
+    }
+    else if(url == "fastRegister")
+    {
+        var url = 'register';
+        var form = $('<form action="' + url + '" method="post">' +
+          '<input type="text" name="mail" value="' + $('input#mail').val() + '" />' +
+          '<input type="text" name="clef" value="' + $('input#clef').val() + '" />' +
+          '<input type="password" name="password" value="' + $('input#password').val() + '" />' +
+          '</form>');
+        $('body').append(form);
+        form.submit();
+    }
+    else
+    {
+        window.location.replace(url);
+    }
+}
+
+function semiRegisterAjax()
+{
+    // Password is a special case.
+    if($("input#password"))
+    {
+        var password = $("input#password").val();
+    }
+    else
+    {
+        var password = null;
+    }
+    
+    $.ajax({
+        url : "registerajax",
+	type : 'POST',
+	cache : false,
+	dataType : 'html',
+	data: { mail: $('input#mail').val(), clef: $('input#clef').val(), password: password },
+	success : function(html, statut)
+	{
+            // Impairs = command, pairs = argument.
+            var queries = html.split('|');
+            var nbQueries = queries.length;
+            
+            for(var i = 0; i < nbQueries; i++)
+            {
+                if(i % 2 === 0)
+                {
+                    // We took only the command.
+                    if(queries[i] == "error")
+                    {
+                        semiShowError(queries[i+1]);
+                    }
+                    else if(queries[i] == "warning")
+                    {
+                        semiShowWarning(queries[i+1]);
+                    }
+                    else if(queries[i] == "success")
+                    {
+                        semiShowSuccess(queries[i+1]);
+                    }
+                    else if(queries[i] == "add")
+                    {
+                        semiAdd(queries[i+1]);
+                    }
+                    else if(queries[i] == "redirect")
+                    {
+                        semiRedirect(queries[i+1]);
+                    }
+                }
+            }
+	}
+    });
+}

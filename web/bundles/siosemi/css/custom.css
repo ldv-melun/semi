@@ -11,3 +11,19 @@
     text-align:left;
     color:white;
 }
+
+th.dataTableHeader {
+	color: #fff;
+	background-color: #052d92;
+	padding: 5px;
+	border: #fff 1px solid;
+	text-align: center;
+}
+
+tr.odd_row_atelier {
+	background-color: #FFD900;
+}
+
+tr.odd_row:hover tr.odd_row_atelier:hover a:hover,
+tr.even_row:hover tr.even_row_atelier:hover a:hover {
+}
