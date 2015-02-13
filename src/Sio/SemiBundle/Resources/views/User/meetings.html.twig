@@ -7,7 +7,15 @@
     <div class="row">
         <div class="col-md-12">
             <center><h2>{{ title }}</h2>{{ description }}</center>
-            <hr> 
+            <hr>
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Informations sur mes inscriptions</h3>
+                </div>
+                <div class="panel-body" id='statNbSeanceInscr'>
+                    Vous êtes actuellement inscrit(e) à {{ nbMeetingRegister }} séances sur ce séminaire.
+                </div>
+            </div>
             <div id="content">
                 {% set i, classSeancesParalleles, oddEvenclass = 0, 'odd_row', 'event_row' %}
                 {% for jour, seances in meetings %}
@@ -35,9 +43,9 @@
                                         {% set classInput = 'checkbox' %}
                                         {% set strClass = '' %}
                                     {% endif %}
-                                    {% set isChecked, numLigneMemeHoraire = false, 0 %}       
+                                    {% set isChecked, numLigneMemeHoraire = 'false', 0 %}       
                                     {% for seance in seancesHoraire %}
-                                        {% set isChecked = isChecked %}
+                                        {%if seance.register == 1 %}{% set isChecked = 'true' %}{% endif %}
                                         {% set oddEvenclass = (seancesParalleles) ? classSeancesParalleles : ((oddEvenclass == 'even_row') ? 'odd_row' : 'even_row') %}
                                         {% if seance.type == 'atelier' %}
                                             {% set strClass = '_atelier' %}
@@ -48,11 +56,11 @@
                                                     <input id='cb{{ seance.id }}' 
                                                            type='{{ classInput }}' 
                                                            name='inscrire{{ seancesParalleles ? i : ''}}' 
-                                                           {{ 0 ? 'checked' : ' '}} 
+                                                           {% if seance.register == 1 %}checked{% endif %} 
                                                            {% if seance.dispo<=0 and seance.idParticipant %}
                                                                disabled
                                                            {% else %}
-                                                               onClick='inscrSeance("{{ seance.id }}", "{{ seance.realDateHeureDebut|date('H:i') }}", "{{ seance.description }}...", this.checked, null)' /> 
+                                                               onClick='inscrSeance("{{ seance.id }}", "{{ seance.realDateHeureDebut|date('Y-m-d H:i:s') }}", "{{ seance.description }}...", this.checked, null)' /> 
                                                     </td>
                                                 {% endif %}
                                             {% endif %}
@@ -72,11 +80,11 @@
                                                     <input id='cbRAZ{{ oldIdS }}' 
                                                            type='{{ classInput }}' 
                                                            name='inscrire{{ (seancesParalleles) ? i : ''}}' 
-                                                           {% if not (isChecked) ? 'checked' : ' '%} 
+                                                           {% if isChecked == 'false' %}checked {% endif %}
                                                                onClick='inscrSeance({{ oldIdS }}, "{{ seanceSave.realDateHeureDebut|date('Y-m-d H:i:s') }}", "Non merci", false, "raz")' 
                                                                /> 
                                                     </td>
-                                                {% endif %}
+                                                
                                                 <td>Non merci</td>
                                                 <td> </td>
                                                 <td> </td>
