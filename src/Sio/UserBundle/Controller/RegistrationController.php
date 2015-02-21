@@ -121,7 +121,8 @@ class RegistrationController extends BaseController {
     $newUser->setEmail($mail);
     $factory = $this->get('security.encoder_factory');
     $encoder = $factory->getEncoder($newUser);
-    $password = $encoder->encodePassword($pass, $newUser->getSalt());
+    $password = $encoder->encodePassword($pass, null);
+         // whith bcrypt salt is in password : no need $newUser->getSalt());
     $newUser->setPassword($password);
     $newUser->setRoles(array("ROLE_USER"));
     $newUser->setEnabled(true);
