@@ -27,7 +27,7 @@ class DefaultController extends Controller
     /**
      * @return JSon 
      *  {clefOk: true|false, userKnown: true|false, emailSyntaxOk: true|false}
-     * @Route("/checkclef", name="_semi_default_check_clef")
+     * @Route("/checkclef-mail", name="_semi_default_check_clef_mail")
      */
     public function checkClefAndEmailAction(Request $request)
     {

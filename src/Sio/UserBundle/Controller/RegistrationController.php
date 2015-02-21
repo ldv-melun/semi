@@ -121,8 +121,10 @@ class RegistrationController extends BaseController {
     $newUser->setEmail($mail);
     $factory = $this->get('security.encoder_factory');
     $encoder = $factory->getEncoder($newUser);
+    
     $password = $encoder->encodePassword($pass, null);
-         // whith bcrypt salt is in password : no need $newUser->getSalt());
+       // whith bcrypt salt will be generate and integrate into password
+       // http://stackoverflow.com/questions/25760520/does-symfony-derive-the-salt-from-the-hash-or-isnt-the-hash-salted-at-all
     $newUser->setPassword($password);
     $newUser->setRoles(array("ROLE_USER"));
     $newUser->setEnabled(true);
