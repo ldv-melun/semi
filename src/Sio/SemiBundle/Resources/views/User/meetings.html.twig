@@ -60,7 +60,7 @@
                                                            {% if seance.dispo<=0 and seance.idParticipant %}
                                                                disabled
                                                            {% else %}
-                                                               onClick='inscrSeance("{{ seance.id }}", "{{ seance.realDateHeureDebut|date('Y-m-d H:i:s') }}", "{{ seance.description }}...", this.checked, null)' /> 
+                                                             onClick='inscrSeance("{{ seance.id }}", "{{ seance.realDateHeureDebut|date('Y-m-d H:i:s') }}", "{{ seance.description | escape('js')}}...", this.checked)' /> 
                                                     </td>
                                                 {% endif %}
                                             {% endif %}
@@ -81,7 +81,7 @@
                                                            type='{{ classInput }}' 
                                                            name='inscrire{{ (seancesParalleles) ? i : ''}}' 
                                                            {% if isChecked == 'false' %}checked {% endif %}
-                                                               onClick='inscrSeance({{ oldIdS }}, "{{ seanceSave.realDateHeureDebut|date('Y-m-d H:i:s') }}", "Non merci", false, "raz")' 
+                                                               onClick='inscrSeance({{ oldIdS }}, "{{ seanceSave.realDateHeureDebut|date('Y-m-d H:i:s') }}", "Non merci", false)' 
                                                                /> 
                                                     </td>
                                                 

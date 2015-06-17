@@ -4,10 +4,12 @@ namespace Sio\SemiBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sio\SemiBundle\Entity\Registration as Registration;
 use Sio\SemiBundle\Entity\Seminar as Seminar;
+Use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @Route("/user")
@@ -95,14 +97,14 @@ class UserController extends Controller {
         
     }
 
+        
     /**
-     * @Route("/ajax/register", name="_semi_user_ajax_register")
-     * @Template()
+     * @return JSon
+     * @Route("/ajax/register", name="_semi_user_ajax_registerOld")
      */
-    public function ajaxAction(Request $request) {
+    public function ajaxChoiceRegistrationAction(Request $request) {
         $user = $this->getUser();
-        $return = NULL;
-
+        
         $idSeance = $request->request->get('idSeance', null);
         $inscription = $request->request->get('inscrire', null);
         $dateHeureDebut = $request->request->get('dateHeureDebut', null);
@@ -114,33 +116,34 @@ class UserController extends Controller {
             $response->setStatusCode(500);
             $response->headers->set('Refresh', '0; url=' . $this->generateUrl('_semi_user_index'));
             $response->send();
+            return;
         }
 
         $meeting = $this->getDoctrine()->getRepository("SioSemiBundle:Meeting")->findOneBy(array("id" => $idSeance));
-        $seminar = $this->getDoctrine()->getRepository("SioSemiBundle:Seminar")->findOneBy(array("id" => $meeting->getSeminar()));
+        $seminar = $meeting->getSeminar();
 
         $manager = $this->getDoctrine()->getManager();
-
+        $repoMeeting = $manager->getRepository('Sio\SemiBundle\Entity\Meeting');
         // Traitement.
-        if ($raz != NULL) {
-            $return = $manager->getRepository('Sio\SemiBundle\Entity\Meeting')->razInscriptionSeances($dateHeureDebut, $user, $seminar); // 1 | 0
-        } elseif ($inscription == 'true') {
-            $return = $manager->getRepository('Sio\SemiBundle\Entity\Meeting')->razInscriptionSeances($dateHeureDebut, $user, $seminar); // 1 | 0
-            // TODO : Refactor.
+        //if ($raz != NULL) {
+        //    $repoMeeting->razInscriptionSeances($dateHeureDebut, $user, $seminar); 
+        // } else
+          if ($inscription == 'true') {
+            $repoMeeting->razInscriptionSeances($dateHeureDebut, $user, $seminar); 
             $newRegistration = new Registration();
             $newRegistration->setDateRegistration(new \DateTime('now'));
             $newRegistration->setUser($user);
             $newRegistration->setMeeting($meeting);
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($newRegistration);
-            $em->flush();
-            $return = 1;
+            $manager->persist($newRegistration);
+            $manager->flush();
         } else {
-            $return = $manager->getRepository('Sio\SemiBundle\Entity\Meeting')->razInscriptionSeances($dateHeureDebut, $user, $seminar); // 1 | 0
+            $repoMeeting->razInscriptionSeances($dateHeureDebut, $user, $seminar);
         }
-
-        return array('return' => $return);
+        
+        $statCurUser = $repoMeeting->countNbMeetingRegister($user, $seminar);
+        $statMeeting = $repoMeeting->getStatInscriptionSeance($dateHeureDebut);
+        
+        return new JsonResponse(array('statCurUser'=>$statCurUser, 'statMeeting'=>$statMeeting));
     }
 
     static function jourFr($jour) {

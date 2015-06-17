@@ -268,28 +268,26 @@ $('a[href^="#"]').click(function ($this) {
     return false;
 });
 
-function inscrSeance(idSeance, heureDeb, description, checked, raz) {
-    var razInscr = (raz == 'raz') ? '&raz=1' : '';
+function inscrSeance(idSeance, heureDeb, description, checked) {   
     $.ajax({
         type: "POST",
         url: "ajax/register",
-        data: "idSeance=" + idSeance + "&inscrire=" + checked + "&dateHeureDebut=" + heureDeb + razInscr,
+        data: "idSeance=" + idSeance + "&inscrire=" + checked + "&dateHeureDebut=" + heureDeb,
         error: function (msg) {
             alert("Error : " + msg);
         },
         success: function (data) {             
-            var tabRadio = data.split(";");
-            for (var i = 0; i < tabRadio.length - 2; i += 2) {
-                $('#' + tabRadio[i]).html(tabRadio[i + 1]);
-            }
-            var nbInscr = etatsNbSeanceInscr(tabRadio[tabRadio.length - 2]);
-            $('#statNbSeanceInscr').html(nbInscr);
-            $.gritter.add({
-                // (string | mandatory) the heading of the notification
-                title: ((checked) ? 'Inscription ' : 'Déinscription '),
-                // (string | mandatory) the text inside the notification
-                text: 'Séance de ' + heureDeb + " " + description //idSeance
-            })
+           // console.log(data.statMeeting[0].free);  
+           // refresh stats : see meetings.html.twig 
+           for (var i = 0; i < data.statMeeting.length; i++) {
+              $('#' + data.statMeeting[i].id).html(data.statMeeting[i].free + " / "+ data.statMeeting[i].maxSeats);
+           }
+            
+           // see meetings.html.twig
+           var MESSAGE_STAT_1 = "Vous êtes actuellement inscrit(e) à ";
+           var MESSAGE_STAT_2 = " séances sur ce séminaire.";
+           
+           $('#statNbSeanceInscr').html(MESSAGE_STAT_1 + data.statCurUser + MESSAGE_STAT_2);
         }
     });
 }  

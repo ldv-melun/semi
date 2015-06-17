@@ -3,6 +3,7 @@
 namespace Sio\SemiBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\ResultSetMapping;
 
 class MeetingRepository extends EntityRepository {
     /* GLOBAL NOTES :
@@ -50,7 +51,27 @@ class MeetingRepository extends EntityRepository {
                         ->setParameter(':user', $user->getId())
                         ->setParameter(':seminar', $seminar->getId())
                         ->execute();
-        return $dateHeureDebut;
+        return $this->countNbMeetingRegister($user, $seminar);
     }
 
+   /**
+    *
+    * Obtient des informations (nombre d'inscrits...) sur les seances d'un même créneau (dateStart)
+    * TODO : do it in OQL
+    * @param date_sql $dateStart 
+   */
+   public function getStatInscriptionSeance($dateStart){
+     $rsm = new ResultSetMapping;
+	   $rsm->addScalarResult('id', 'id');
+     $rsm->addScalarResult('free', 'free');
+     $rsm->addScalarResult('maxSeats', 'maxSeats');
+    
+     $sql = 'SELECT semi_meeting.id, maxSeats-count(idMeeting) AS free, maxSeats FROM semi_meeting LEFT JOIN semi_registration ON semi_meeting.id=idMeeting WHERE dateStart = ? GROUP BY semi_meeting.id';
+     
+     $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
+     $query->setParameter(1, $dateStart);
+     
+     return $query->getResult();
+     
+    }
 }
