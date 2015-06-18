@@ -6,50 +6,18 @@
             <center><h2>Paramètres natifs à l'application</h2></center>
             <hr>
             <form action="{{ path('_semi_admin_parameter_check') }}" method="post">
-            {% set i = 0 %}
-            {% for arrayNative in nativeParameters %}
-		{% for clef, value in arrayNative %}
-                    {% set i = i + 1 %}
                     <div class="input-group">
                         <span class="input-group-addon" id="basic-addon1">Clé</span>
-                        <input name="clef{{ i }}" type="text" class="form-control" placeholder="Clé" aria-describedby="basic-addon1" value="{{ clef }}" readonly>
+                        <input name="clef1" type="text" class="form-control" placeholder="Clé" aria-describedby="basic-addon1" value="{{ clef }}" readonly>
                         <span class="input-group-addon" id="basic-addon1">Valeur</span>
-                        <input name="value{{ i }}" type="text" class="form-control" placeholder="Valeur" aria-describedby="basic-addon1" value="{{ value }}">
+                        <input name="value1" type="text" class="form-control" placeholder="Valeur" aria-describedby="basic-addon1" value="{{ valeur }}">
                     </div>
-                {% endfor %}
-            {% endfor %}
             
-            <hr>
-            <center><h2>Paramètres secondaires</h2></center>
-            <hr>
-                <div id="optParamContainer">
-                    {% set nbParameters = parameters|length %}
-                    {% if nbParameters == 0 %}
-                        <div id="noOptParam"><center>- Aucun paramètre optionnel trouvé -</center></div>
-                    {% else %}
-                        {% for array in parameters %}
-                            {% for clef, value in array %}
-                                {% set i = i + 1 %}
-                                <div id="optParam" class="input-group">
-                                    <span class="input-group-addon" id="basic-addon1">Clé</span>
-                                    <input name="clefOpt{{ i }}" type="text" class="form-control" placeholder="Clé" aria-describedby="basic-addon1" value="{{ clef }}">
-                                    <input name="rememberOpt{{ i }}" type="hidden" value="{{ clef }}">
-                                    <span class="input-group-addon" id="basic-addon1">Valeur</span>
-                                    <input name="valueOpt{{ i }}" type="text" class="form-control" placeholder="Valeur" aria-describedby="basic-addon1" value="{{ value }}">
-                                </div>
-                            {% endfor %}
-                        {% endfor %}
-                    {% endif %}
-                </div>
                 <hr>
-                <div style="text-align:right;width:100%;">
-                    <button type="button" class="btn btn-lg btn-primary" style="text-align:right;" onClick="addParam();">Ajouter un paramètre</button>
+                <div style="text-align:right;width:100%;">              
                     <input type="submit" class="btn btn-lg btn-success" style="text-align:right;" value="Sauvegarder">
                 </div>
-            </form>
-            <script type="text/javascript">
-                init = {{ i }};
-            </script>
+            </form>            
         </div>
     </div>
 {% endblock %}

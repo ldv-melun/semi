@@ -70,6 +70,7 @@ class UserController extends Controller {
                 $seminars[] = $this->getDoctrine()->getRepository("SioSemiBundle:Seminar")->findBy(array("id" => $seminar->getSeminar()->getId()));
             }
 
+            $meetings = array();
             foreach ($seminars as $tab) {
                 foreach ($tab as $seminar) {
                     // Une valeur $jour puis $DateDebut doit arriver entre []
