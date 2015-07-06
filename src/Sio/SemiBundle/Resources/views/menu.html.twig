@@ -1,58 +1,52 @@
-{# Note : The index link is different from each user role to redirect him at the right place. #}
 
-<div class="navbar-header">
-    {# ADMIN MENU ABOVE #}
-    {% if is_granted('ROLE_ADMIN') %}
-        <a class="navbar-brand" href="{{ path('_semi_admin_index') }}">{{ projectName }}</a>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">{{ projectName }}</a>
     </div>
-    <div id="navbar" class="collapse navbar-collapse">
-        <ul class="nav navbar-nav">
-            {# MANAGER MENU ABOVE #}
-        {% elseif is_granted('ROLE_MANAGER') %}
-            <a class="navbar-brand" href="{{ path('_semi_manager_index') }}">{{ projectName }}</a>
-    </div>
-    <div id="navbar" class="collapse navbar-collapse">
-        <ul class="nav navbar-nav">
-            {# USER MENU ABOVE #}
-        {% elseif is_granted('ROLE_USER') %}
-            <a class="navbar-brand" href="{{ path('_semi_user_index') }}">{{ projectName }}</a>
-            <ul class="nav navbar-nav">
-                <li><a href="{{ path('_semi_user_index') }}">
-                        Mes séminaires
-                    </a></li>
-                <li><a href="{{ path('_semi_user_register') }}">
-                        Mes inscriptions
-                    </a></li>
-                <li><a href="{{ path('_semi_user_profil') }}">
-                        Ma fiche
-                    </a></li>
-            </ul>
-    </div>
-    <div id="navbar" class="collapse navbar-collapse">
-        <ul class="nav navbar-nav">
-            {# ANONYMOUS MENU ABOVE #}
-        {% else %}
-            <a class="navbar-brand" href="{{ path('_semi_default_index') }}">{{ projectName }}</a>
-    </div>
-    <div id="navbar" class="collapse navbar-collapse">
-        <ul class="nav navbar-nav">
-            <li><a href="{{ path('_semi_default_index') }}">Accueil</a></li>           
-            {% endif %}
-            {# LOG OUT OPTION #}
-            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                {{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }} |
-            <li><a href="{{ path('fos_user_security_logout') }}">
-                    {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}
-                </a></li>
-            {% else %}
-            <li><a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a></li>
-            {% endif %}
-    </ul>
-</div><!--/.nav-collapse -->
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Home</a></li>
+        <li><a href="{{ path('_semi_user_index') }}">
+            Mes séminaires
+          </a></li>
+          {% if seminar is defined %}
+          <li><a href="{{ path('_semi_user_register') }}">
+              Mes inscriptions
+            </a></li>
+          {%endif%}
+        <li><a href="{{ path('_semi_user_profil') }}">
+            Ma fiche
+          </a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+         {% if app.user and is_granted('IS_AUTHENTICATED_REMEMBERED') %}                      
+            {% if is_granted('ROLE_ADMIN') %}
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li> <a href="{{ path('_semi_admin_index') }}"> admin users</a> <li>  
+            <li> <a href="{{ path('_semi_admin_index') }}"> admin seminars</a> <li>  
+          </ul>
+        </li>
+        {% endif %}
+        <li><a href="{{ path('fos_user_security_logout') }}"><span class="glyphicon glyphicon-log-out"></span> <b>({{ app.user.firstname }}  <span class="glyphicon glyphicon-admin"></span>) Deconnexion</b></a></li>
+      {% endif %}
+         </ul>
+
+      </div><!--/.nav-collapse -->
+  </div><!--/.container-fluid -->
+</nav>
 
 {# https://github.com/FriendsOfSymfony/FOSUserBundle/blob/master/Resources/doc/overriding_templates.md #}
 
 <div>
-    {% block fos_user_content %}
-    {% endblock fos_user_content %}
+  {% block fos_user_content %}
+  {% endblock fos_user_content %}
 </div>

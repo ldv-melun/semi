@@ -6,11 +6,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
 
 class MeetingRepository extends EntityRepository {
-    /* GLOBAL NOTES :
-     * Seminar isn't needed in all of the functions.
-     * idMeeting is linked to a Seminar.
-     */
-
+    
     /**
      * Used to count the number of seats taken.
      * @param \Meeting $meeting

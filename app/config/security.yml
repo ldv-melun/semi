@@ -38,3 +38,4 @@ security:
         - { path: ^/admin, role: ROLE_ADMIN }
         - { path: ^/manager, role: ROLE_MANAGER }
         - { path: ^/user, role: ROLE_USER }
+        - { path: ^/seminar, role: ROLE_USER }

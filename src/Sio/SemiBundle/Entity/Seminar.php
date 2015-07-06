@@ -6,9 +6,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Seminar
- *
+ * 
+ * @ORM\Entity(repositoryClass="Sio\SemiBundle\Entity\SeminarRepository") 
  * @ORM\Table(name="semi_seminar")
- * @ORM\Entity
  */
 class Seminar
 {
@@ -335,4 +335,6 @@ class Seminar
     {
         return $this->state;
     }
+    
+    
 }

@@ -1,5 +1,5 @@
 # This area have to be edited in order to start your project.
 twig:
     globals:
-        projectName: CMSéminaire
-        slogan: (Oui, le nom est nul et pas adapté.. :()
+        projectName: SioSeminaire
+        slogan: 

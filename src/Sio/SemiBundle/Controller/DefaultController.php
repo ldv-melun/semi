@@ -4,7 +4,6 @@ namespace Sio\SemiBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -22,7 +21,6 @@ class DefaultController extends Controller
     {
         return $this->redirect($this->generateUrl(self::ROUTE_LOGIN));
     }
-
 
     /**
      * @return JSon 
@@ -109,12 +107,7 @@ class DefaultController extends Controller
                 return array('firstName' => $user->getFirstName(), 'role' => $this->generateUrl('_semi_user_index'));
             }
         }
-        else
-        {
-            // Access trough ROLE_ANONYMOUS.
-            return $this->redirect($this->generateUrl('_semi_default_index'));
-        }
+        // Access trough ROLE_ANONYMOUS.
+        return $this->redirect($this->generateUrl('_semi_default_index'));
     }
-    
-    
 }

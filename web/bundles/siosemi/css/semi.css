@@ -20,8 +20,20 @@ th.dataTableHeader {
 	text-align: center;
 }
 
+.table>tbody>tr>td.atelier, td.atelier {
+  padding:0 0 5px 25px; 
+  background-color: #f2f5f2;
+  background:url(../images/atelier.png) no-repeat 0 0; 
+}
+
 tr.odd_row_atelier {
-	background-color: #FFD900;
+  background-color: #eae3e3
+	/* background-color: #66afe9; */
+}
+
+tr.even_row_atelier{
+  background-color: #f2f5f2; 
+	/*background-color: #269abc; */
 }
 
 tr.odd_row:hover tr.odd_row_atelier:hover a:hover,

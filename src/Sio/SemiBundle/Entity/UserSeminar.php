@@ -133,5 +133,13 @@ class UserSeminar
     {
         return $this->status;
     }
+
+    
+    // TODO better...
+    public function __toString()
+    {
+        return $this->user->getLastName() . ' (' . $this->status->getStatus() .')';
+    }
+
     
 }
