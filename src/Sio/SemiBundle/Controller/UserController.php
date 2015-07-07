@@ -49,10 +49,12 @@ class UserController extends Controller {
     $organisations = $this->getDoctrine()
           ->getRepository('SioSemiBundle:Organisation')
           ->findAll();
+    // examples : Créteil, Marseille, ...
       
     $typeOrganisation = $this->getDoctrine()
           ->getRepository('SioSemiBundle:Parameter')
           ->findOneBy(array('clef' => 'organisation'));
+    // example : Académie or Team or ...
       
     $toview = array(
         'user' => $user,
@@ -62,8 +64,9 @@ class UserController extends Controller {
         'allStatus' => $allStatus,
         'userStatus' => $userStatus
         );
+    
+    // pass to FOSUserBundle...
     return $this
             ->render('SioUserBundle:Registration:register.html.twig', $toview);
   }
-
 }

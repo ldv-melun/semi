@@ -16,11 +16,12 @@ Use Symfony\Component\HttpFoundation\JsonResponse;
 class SeminarController extends Controller {
 
     /**
-     * @Route("/", name="_semi_user_index")
-     * @Route("/{idSeminar}", name="_semi_user_index_seminar")
+     * @Route("/", name="_semi_seminar_index")
+     * @Route("/{id}", name="_semi_seminar_index_seminar")
      * @Template()
      */
-    public function indexAction($idSeminar = null) {
+    public function indexAction($id = null) {
+        $idSeminar = $id;
         $user = $this->getUser();
         $manager = $this->getDoctrine()->getManager();    
         $repoMeeting = $manager->getRepository('Sio\SemiBundle\Entity\Meeting');

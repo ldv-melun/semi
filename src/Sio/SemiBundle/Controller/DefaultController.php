@@ -12,8 +12,10 @@ Use Symfony\Component\HttpFoundation\JsonResponse;
 class DefaultController extends Controller
 {
     const ROUTE_LOGIN = 'fos_user_security_login';
+    const SEMINAR_KEY = "seminarKey";
+    const SEMINAR_ID = "seminarId";
 
-    /**
+  /**
      * @Route("/", name="_semi_default_index")
      * @Template()
      */
@@ -50,7 +52,8 @@ class DefaultController extends Controller
               
        // put clef into session 
        if ($seminar) {
-           $request->getSession()->set('seminarClef', $seminarClef);
+           $request->getSession()->set(self::SEMINAR_KEY, $seminarClef);
+           $request->getSession()->set(self::SEMINAR_ID, $seminar->getId());
        }
        // put email into session for register
        if ($emailSyntax) {
@@ -69,9 +72,11 @@ class DefaultController extends Controller
      * @Route("/redirect", name="_semi_default_redirect")
      * @Template()
      */
-    public function redirectAction()
+    public function redirectAction(Request $request)
     {
-        // Redirect the user. In this route we will also update ipLastLogin & dateLastLogin.
+        $session = $request->getSession();
+        $idSeminar = $session->get(self::SEMINAR_ID);
+        // Redirect the user, will also update ipLastLogin & dateLastLogin.
         $response = new Response();
         $response->setStatusCode(200);
         
@@ -87,10 +92,7 @@ class DefaultController extends Controller
             
             if(true === $this->get('security.context')->isGranted('ROLE_ADMIN'))
             {
-                $response->headers->set('Refresh', '5; url='.$this->generateUrl('_semi_admin_index'));
-                $response->send();
-
-                return array('firstName' => $user->getFirstName(), 'role' => $this->generateUrl('_semi_admin_index'));
+              return $this->redirect($this->generateUrl('_semi_seminar_index') . "$idSeminar");
             }
             elseif(true === $this->get('security.context')->isGranted('ROLE_MANAGER'))
             {
@@ -101,10 +103,10 @@ class DefaultController extends Controller
             }
             elseif(true === $this->get('security.context')->isGranted('ROLE_USER'))
             {
-                $response->headers->set('Refresh', '5; url='.$this->generateUrl('_semi_user_index'));
+                $response->headers->set('Refresh', '5; url='.$this->generateUrl('_semi_seminar_index') . "$idSeminar");
                 $response->send();
 
-                return array('firstName' => $user->getFirstName(), 'role' => $this->generateUrl('_semi_user_index'));
+                return array('firstName' => $user->getFirstName(), 'role' => $this->generateUrl('_semi_seminar_index'));
             }
         }
         // Access trough ROLE_ANONYMOUS.
