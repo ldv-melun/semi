@@ -1,4 +1,6 @@
-
+{% if menuItemActive is not defined %}
+  {%  set menuItemActive = "" %}
+{% endif %}  
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -8,27 +10,23 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">{{ projectName }}</a>
+      <a class="navbar-brand" href="{{ path('_semi_default_index')}}">{{ projectName }}</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Home</a></li>
-        <li><a href="{{ path('_semi_seminar_index') }}">
+        <li {% if menuItemActive == "seminar" %} class="active" {% endif %} >
+          <a href="{{ path('_semi_seminar_index') }}">
             Mes séminaires
           </a></li>
-          {% if seminar is defined %}
-          <li><a href="{{ path('_semi_user_register') }}">
-              Mes inscriptions
-            </a></li>
-          {%endif%}
-        <li><a href="{{ path('_semi_user_profil') }}">
+        <li {% if menuItemActive == "profil" %} class="active" {% endif %} >
+          <a href="{{ path('_semi_user_profil') }}">
             Ma fiche
           </a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
          {% if app.user and is_granted('IS_AUTHENTICATED_REMEMBERED') %}                      
             {% if is_granted('ROLE_ADMIN') %}
-        <li class="dropdown">
+        <li class="dropdown {% if menuItemActive == "admin" %} class="active" {% endif %}  ">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin<span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li> <a href="{{ path('_semi_admin_index') }}"> admin users</a> <li>  

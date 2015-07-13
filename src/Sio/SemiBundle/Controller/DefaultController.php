@@ -17,11 +17,15 @@ class DefaultController extends Controller
 
   /**
      * @Route("/", name="_semi_default_index")
-     * @Template()
      */
     public function indexAction()
     {
+      $user = $this->getUser();
+      if (! $user) {
         return $this->redirect($this->generateUrl(self::ROUTE_LOGIN));
+      } else {
+        return $this->redirect($this->generateUrl('_semi_seminar_index'));
+      }
     }
 
     /**

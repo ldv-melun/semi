@@ -88,7 +88,8 @@ class RegistrationController extends BaseController {
           'paramOrganisation' => $typeOrganisation,
           'user' => new User(),
           'allStatus' => $allStatus,
-          'userStatus' => $userStatus);
+          'userStatus' => $userStatus,
+          'menuItemActive' => 'profil');
       
       return $this
               ->render('SioUserBundle:Registration:register.html.twig', $toview);
@@ -280,7 +281,8 @@ class RegistrationController extends BaseController {
         'clef' => $clef,
         'organisations' => $organisations,
         'paramOrganisation' => $paramOrganisation,
-        'allStatus' => $allStatus);
+        'allStatus' => $allStatus,
+        'menuItemActive' => 'profil');
     return $this
             ->render('SioUserBundle:Registration:register.html.twig', $toview);
   }

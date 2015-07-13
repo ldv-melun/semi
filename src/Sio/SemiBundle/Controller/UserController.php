@@ -5,7 +5,7 @@ namespace Sio\SemiBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+
 
 
 /**
@@ -18,7 +18,6 @@ class UserController extends Controller {
    * from registerUser method of RegistrationController... TODO no duplicate 
    *  
    * @Route("/user/profil", name="_semi_user_profil")
-   * @Template()
    */
   public function updateProfilAction(Request $request) {
     $user = $this->getUser();
@@ -62,7 +61,8 @@ class UserController extends Controller {
         'organisations' => $organisations,
         'paramOrganisation' => $typeOrganisation,
         'allStatus' => $allStatus,
-        'userStatus' => $userStatus
+        'userStatus' => $userStatus,
+        'menuItemActive' => 'profil'
         );
     
     // pass to FOSUserBundle...

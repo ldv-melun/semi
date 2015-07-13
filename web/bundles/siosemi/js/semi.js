@@ -1,3 +1,6 @@
+
+// TODO à placer dans un twig pour permettre le paramètrage de l'url ?
+
 function inscrSeance(idSeance, heureDeb, description, checked) {   
     $.ajax({
         type: "POST",
@@ -13,11 +16,8 @@ function inscrSeance(idSeance, heureDeb, description, checked) {
               $('#' + data.statMeeting[i].id).html(data.statMeeting[i].free + " / "+ data.statMeeting[i].maxSeats);
            }
             
-           // see meetings.html.twig
-           var MESSAGE_STAT_1 = "Vous êtes actuellement inscrit(e) à ";
-           var MESSAGE_STAT_2 = " séances sur ce séminaire.";
-           
-           $('#statNbSeanceInscr').html(MESSAGE_STAT_1 + data.statCurUser + MESSAGE_STAT_2);
+           // see meetings.html.twig           
+           $('#statNbSeanceInscr').html(data.statCurUser);
         }
     });
 }  
