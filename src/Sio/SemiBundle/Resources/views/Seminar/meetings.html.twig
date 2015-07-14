@@ -4,6 +4,11 @@
   {% set oldIdS, oldDateHeureDebut = '', date() %}
   {% set seanceSave = null %}
   {% set strClass = '' %}
+  {#
+  {% if readOnly is not defined %}
+    {% set readOnly = false %}
+  {% endif %}
+  #}
   <div class="row">
     <div class="col-md-12">
       <center><h2>{{ title }}</h2>{{ description }}</center>
@@ -16,7 +21,7 @@
           
           Vous êtes actuellement inscrit(e) à <b><span id='statNbSeanceInscr'>{{ nbMeetingRegister }}</span></b> séances sur ce séminaire.
           
-          {% if viewOnly is defined and viewOnly %}
+          {% if readOnly %}
             <a href="{{ path('_semi_seminar_index_seminar', {'id' : seminar.id}) }}"><span class="glyphicon glyphicon-arrow-left"></span> <b>RETOUR</b></a>
           {% else %}  
             <a href="{{ path('_semi_seminar_my_meetings', {'id' : seminar.id}) }}"><span class="glyphicon glyphicon-arrow-right"></span> <b>VOIR</b></a>
@@ -31,7 +36,7 @@
             <table class="table table-hover table-bordered">
               <thead>
                 <tr>
-                  {% if stateSeminar == 'Open' and not viewOnly %}<th class="dataTableHeader" style="width:5%;">Je m'inscris</th>{% endif %}
+                  {% if not readOnly %}<th class="dataTableHeader" style="width:5%;">Je m'inscris</th>{% endif %}
                   <th class="dataTableHeader" style="width:10%;">Disponibilités</th>
                   <th class="dataTableHeader" style="width:10%;">Type</th>
                   <th class="dataTableHeader" style="width:10%;">Horaires</th>
@@ -58,7 +63,7 @@
                       {% set strClass = '_atelier' %}
                     {% endif %}
                     <tr class='{{ oddEvenclass }}{{ strClass }}'> 
-                    {% if stateSeminar == 'Open' and not viewOnly %}
+                    {% if not readOnly %}
                     <td>
                       <input id='cb{{ seance.id }}' 
                              type='{{ classInput }}' 
@@ -80,9 +85,8 @@
                     {% set oldIdS, oldDateHeureDebut, seanceSave = seance.id, seance.dateHeureDebut, seance %}
                   </tr>
                   {% endfor %}
-                  {% if seancesParalleles %}
-                  <tr class='{{ oddEvenclass }}{{ strClass }}'> 
-                    {% if stateSeminar == 'Open' and not viewOnly  %}
+                  {% if seancesParalleles and not readOnly  %}
+                    <tr class='{{ oddEvenclass }}{{ strClass }}'>                     
                       <td>
                         <input id='cbRAZ{{ oldIdS }}' 
                                type='{{ classInput }}' 
@@ -96,8 +100,7 @@
                       <td> </td>
                       <td>Non merci</td>
                       <td> </td>
-                    </tr>  
-                  {% endif %}
+                    </tr>                    
                 {% endif %}
                 {% if seancesParalleles %}
                   {% set oddEvenclass = classSeancesParalleles %}

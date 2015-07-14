@@ -19,8 +19,27 @@ class AdminController extends Controller
      */
     public function indexAction()
     {
-    	return array();
+    	return array('menuItemActive' => 'admin');
     }
+    
+    /**
+     * @Route("/users", name="_semi_admin_users")
+     * @Template()
+     */
+    public function usersAction()
+    {
+    	return array('menuItemActive' => 'admin');
+    }
+    
+    /**
+     * @Route("/seminars", name="_semi_admin_seminars")
+     * @Template()
+     */
+    public function seminarsAction()
+    {
+    	return array('menuItemActive' => 'admin');
+    }
+    
     
     /**
      * @Route("/parameter", name="_semi_admin_parameter")

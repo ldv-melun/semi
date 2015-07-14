@@ -21,9 +21,9 @@ class SeminarController extends Controller {
    * 
    * @Route("/mymeetings/{id}", name="_semi_seminar_my_meetings")
    */
-  public function myMeetingsAction($id) {
+  public function myMeetingsAction(Request $request, $id) {
     if ($id) { 
-      return $this->meetingsAction($id, true);
+      return $this->meetingsAction($request, $id, true);
     } else {
       // TODO throw new ;
       return $this->redirect($this->generateUrl('_semi_default_index'));
@@ -37,11 +37,10 @@ class SeminarController extends Controller {
    * @Route("/{id}", name="_semi_seminar_index_seminar")
    * @Template()
    */
-  public function indexAction($id = null) {
-    if ($id) {
-      
-      return $this->meetingsAction($id, false);
-      
+  public function indexAction(Request $request, $id = null) {
+    if ($id) {      
+      // $this->get('session')
+      return $this->meetingsAction($request, $id, false);      
     } else {
       $user = $this->getUser();
       $em = $this->getDoctrine()->getManager();
@@ -63,12 +62,19 @@ class SeminarController extends Controller {
     }
   }
 
-  private function meetingsAction($idSeminar, $isOnlyMyRegistrations) {
+  private function meetingsAction($request, $idSeminar, $isOnlyMyRegistrations) {
     $user = $this->getUser();
     $manager = $this->getDoctrine()->getManager();
     $repoMeeting = $manager->getRepository('Sio\SemiBundle\Entity\Meeting');
 
     $seminar = $this->getDoctrine()->getRepository("SioSemiBundle:Seminar")->findOneBy(array("id" => $idSeminar));
+    if (!$seminar) {
+      // TODO throw new ;
+      return $this->redirect($this->generateUrl('_semi_default_index'));
+    }
+    // set idSeminar in session
+    $request->getSession()->set(DefaultController::SEMINAR_ID, $idSeminar);
+     
     if ($isOnlyMyRegistrations) {
       $em = $this->getDoctrine()->getManager();
       $query = $em->createQuery('SELECT r, meeting, sem FROM SioSemiBundle:Registration r '
@@ -79,7 +85,7 @@ class SeminarController extends Controller {
       $query->setParameter("sem", $seminar);  
       $result = $query->getResult();
       $meetings = array();
-      // get meetings only TODO avoid this ?
+      // get meetings only (TODO avoid this ?)
       foreach ($result as $r) {
         $meetings[] = $r->getMeeting();
       }
@@ -118,9 +124,9 @@ class SeminarController extends Controller {
         'description' => $seminar->getDescription(),
         'meetings' => $meetingsForView,
         'nbMeetingRegister' => $nbMeetingRegister,
-        'stateSeminar' => $seminarState,
+        // 'stateSeminar' => $seminarState,
         'menuItemActive' => 'seminar',
-        'viewOnly' => $isOnlyMyRegistrations,
+        'readOnly' => $isOnlyMyRegistrations || $seminarState != 'Open',
         'seminar' => $seminar ); // TODO del attribut because accessible by seminar
     return $this->render('SioSemiBundle:Seminar:meetings.html.twig', $toview);
   }
