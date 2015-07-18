@@ -10,15 +10,14 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sio\SemiBundle\Controller\DefaultController as SemiDefaultController;
 use Sio\UserBundle\Entity\User as User;
 use Sio\UserBundle\Form\Type\UserType as UserType;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 /**
  * @Route("/user")
  */
 class UserController extends Controller {
 
-  
   const ROUTE_LOGIN = 'fos_user_security_login';
-
   
    /**
    *  
@@ -33,36 +32,61 @@ class UserController extends Controller {
     endif;
     
     $user = new User();
-    
     $form = $this->createForm(new UserType(), $user);
     $form->handleRequest($request);
 
-    if ($form->isValid() && $this->validationExtra($request)) {
+    if ($form->isValid() && $this->validationExtra($form)) {
            
-        // fait quelque chose comme sauvegarder la tâche dans la bdd
-        $this->get('session')
-          ->getFlashBag()
-          ->add('Trace', 'TODO save in DB');
+      $user->setEmail($session->get(SemiDefaultController::EMAIL_FOR_REGISTER));
+      $factory = $this->get('security.encoder_factory');
+      $encoder = $factory->getEncoder($user);
+      $password = $encoder->encodePassword($form->get('pass1')->getData(), null);
+      // whith bcrypt salt will be generate and integrate into password
+      // http://stackoverflow.com/questions/25760520/does-symfony-derive-the-salt-from-the-hash-or-isnt-the-hash-salted-at-all
+      $user->setPassword($password);
       
-        // TODO : redirection selon le rôle...
-        return $this->redirect($this->generateUrl('_semi_default_index'));
+      // TODO : setRole ne marche pas...
+      $user->setRoles(array("ROLE_USER")); 
+      
+      $user->setEnabled(true);
+      $user->setUsername($user->getEmail()); // FOSUser say not null (and unique ? so we put mail)
+      $this->managerPersist($user);
+      
+      // TODO inscription à un séminaire 
+      // semi_user_seminar
+      
+      $this->get('session')
+          ->getFlashBag()
+          ->add('success', 'Votre compte a bien été créé, ' . $user->getFirstName() . ' ! Vous avez été automatiquement connecté(e) à l\'application !');
+      $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
+      $this->get('security.context')->setToken($token);
+      return $this->redirect($this->generateUrl('_semi_default_index'));
     }
     
-    return array('form' => $form->createView(), 
+    return array(
+        'form' => $form->createView(), 
         'user' => $user,
-        'userEmail' => $session->get(SemiDefaultController::EMAIL_FOR_REGISTER));
+        'userEmail' => $session->get(SemiDefaultController::EMAIL_FOR_REGISTER)
+    );
   }
   
   /**
    * Validate password and ...
    * @param Request $request
    */
-  private function validationExtra(Request $request) {
-    $postRequest = $request->request;
-    $pass1 = $postRequest->get('pass1', NULL);
-    $pass2 = $postRequest->get('pass2', NULL);
-    return ($pass1 && $pass1==$pass2);
+  private function validationExtra($form) {
+    
+    $pass1 = $form->get('pass1')->getData();
+    $pass2 = $form->get('pass2')->getData();
+    $ok = ($pass1 && ($pass1==$pass2));
+    if (!$ok) :
+      $this->get('session')
+          ->getFlashBag()
+          ->add('notice', 'Les mots de passe ne correspondent pas !');
+    endif;
+    return $ok;  
   }
+  
   
 
   
