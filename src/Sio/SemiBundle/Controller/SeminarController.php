@@ -103,7 +103,7 @@ class SeminarController extends Controller {
     $meetingsForView = array();
     $curDay = null;
     foreach ($meetings as $meeting) {
-      $j = $this->jourFr(date("N", $meeting->getDateStart()->getTimestamp()));
+      $j = self::jourFr(date("N", $meeting->getDateStart()->getTimestamp()));
       $day = $j . ' ' . date("d-m-Y", $meeting->getDateStart()->getTimestamp());
       $curDay = $day;
       $meeting->dispo = (int) ($meeting->getMaxSeats() - $repoMeeting->countSeatsTaken($meeting->getId()));

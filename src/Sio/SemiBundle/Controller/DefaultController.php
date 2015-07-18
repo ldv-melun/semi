@@ -12,8 +12,9 @@ Use Symfony\Component\HttpFoundation\JsonResponse;
 class DefaultController extends Controller
 {
     const ROUTE_LOGIN = 'fos_user_security_login';
-    const SEMINAR_KEY = "seminarKey";
-    const SEMINAR_ID = "seminarId";
+    const SEMINAR_KEY = 'seminarKey';
+    const SEMINAR_ID = 'seminarId';
+    const EMAIL_FOR_REGISTER = 'emailRegister';
 
   /**
      * @Route("/", name="_semi_default_index")
@@ -61,7 +62,7 @@ class DefaultController extends Controller
        }
        // put email into session for register
        if ($emailSyntax) {
-           $request->getSession()->set('emailUser', $emailUser);
+           $request->getSession()->set(self::EMAIL_FOR_REGISTER, $emailUser);
        }
        
        $data = array('clefOk'=>$seminar != false, 

@@ -1,31 +1,61 @@
-{% set menuItemProfile = "profil" %}
-
 {% extends "SioSemiBundle::layout.html.twig" %}
 
 {% block content %}
-{{ form_start(form) }}
-    {{ form_errors(form) }}
-
-    <div>
-        {{ form_label(form.last_name, 'Nom') }}
-        {{ form_errors(form.last_name) }}
-        {{ form_widget(form.last_name) }}
-    </div>
-
-    <div>
-        {{ form_label(form.first_name, 'Prénom') }}
-        {{ form_errors(form.first_name) }}
-        {{ form_widget(form.first_name) }}
-    </div>
-
-<input type="submit" />
-
-{{ form_end(form) }}
-
-{% endblock %}
-
-{% block hidden %}
+{% trans_default_domain 'FOSUserBundle' %}
 <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title" style="text-align: center">Ma fiche</h3>
+    </div>
+    <div class="panel-body">
+      <form class="form-horizontal" role="form" action="{{ path('fos_user_registration_register') }}" {{ form_enctype(form) }} method="post"> 
+
+    {{ form_widget(form) }}
+ {#
+    {{ form_errors(form) }}
+       
+       <div class="form-group">
+        {{ form_label(form.email, {'attr': {'class': 'col-sm-2 control-label'}}) }}
+        <div class="col-sm-10">
+        {{ form_errors(form.email) }}
+        {{ form_widget(form.email, {'attr': {'class': 'form-control'}})}}
+        </div>
+      </div>
+           
+      #}          
+                <div>
+        <input type="submit" value="{{ 'registration.submit'|trans }}" />
+      </div>
+    </form>
+    </div> <!-- panel-body -->
+ </div>
+{#
+  <form action="{{ path('fos_user_registration_register') }}"  method="POST" class="fos_user_registration_register">
+    <div id="fos_user_registration_form" >
+      <div><label for="fos_user_registration_form_email" class="required">Email:</label>
+        <input type="email" id="fos_user_registration_form_email" 
+               name="fos_user_registration_form[email]" required="required" />
+      </div>
+      <div><label for="fos_user_registration_form_username" class="required">Username:</label>
+        <input type="text" id="fos_user_registration_form_username" 
+               name="fos_user_registration_form[username]" required="required" maxlength="255" pattern=".{2,}" />
+      </div>
+      <div><label for="fos_user_registration_form_plainPassword_first" class="required">Password:</label>
+        <input type="password" id="fos_user_registration_form_plainPassword_first" 
+               name="fos_user_registration_form[plainPassword][first]" required="required" />
+      </div>
+      <div><label for="fos_user_registration_form_plainPassword_second" class="required">Repeat password:</label>
+        <input type="password" id="fos_user_registration_form_plainPassword_second" 
+               name="fos_user_registration_form[plainPassword][second]" required="required" />
+      </div>
+      <input type="hidden" id="fos_user_registration_form__token" 
+             name="fos_user_registration_form[_token]" 
+             value="{{token}}" /></div>
+    <div>
+      <input type="submit" value="Register" />
+    </div>
+  </form>
+
+  <div class="panel panel-default">
     <div class="panel-heading">
       <h3 class="panel-title" style="text-align: center">Ma fiche</h3>
     </div>
@@ -49,10 +79,10 @@
         </div>
         <div class="form-group">
           <label for="pass1" class="col-sm-2 control-label">Mot de passe
-           {% if user.password %}
-             (optionnel)
-           {% endif %} 
-            </label>
+            {% if user.password %}
+              (optionnel)
+            {% endif %} 
+          </label>
           <div class="col-sm-10">
             <input type="password" class="form-control" name="pass1" id="pass1">
           </div>
@@ -73,11 +103,11 @@
                 <option disabled></option>
                 {% for organisation in organisations %}
                   <option value="{{ organisation.id }}"
-                    {% if user is defined and user.organisation and organisation.id == user.organisation.id %}
-                      selected
-                    {% endif %}
-                  >
-                  {{ organisation.name }} 
+                          {% if user is defined and user.organisation and organisation.id == user.organisation.id %}
+                            selected
+                          {% endif %}
+                          >
+                    {{ organisation.name }} 
                   </option>
                 {% endfor %}
               </select>
@@ -91,7 +121,7 @@
             <input type="text" class="form-control" id="familyCity" name="familyCity" value="{{user.homeCity}}">
           </div>
         </div>
-        {% if app.user.email is not defined %} {# email is key, no change. #}
+        {% if app.user.email is not defined %} <!-- email is key, no change. -->
           <div class="form-group">
             <label for="mail" class="col-sm-2 control-label">mail</label>
             <div class="col-sm-10">
@@ -134,10 +164,10 @@
                     <label>
                       <input id="{{ object.status }}" name="status" 
                              value="{{ object.status }}" type="radio"
-                           {% if object.status == userStatus %}
-                             checked
-                            {% endif %}    
-                      />
+                             {% if object.status == userStatus %}
+                               checked
+                             {% endif %}    
+                             />
                       {{ object.status }}</label>
                   </div>
                 {% endfor %}
@@ -157,5 +187,5 @@
       </form>
     </div>
   </div>
-
+#}
 {% endblock %}

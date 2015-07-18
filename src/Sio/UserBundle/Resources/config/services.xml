@@ -23,6 +23,11 @@
             <tag name="form.type" alias="sio_user_registration" />
         </service>
 
+        <!-- service id="sio_user.profile.form.type" class="Sio\UserBundle\Form\Type\ProfileFormType">
+          <argument>%fos_user.model.user.class%</argument> 
+          <tag name="form.type" alias="sio_user_profile" />
+        </service -->
+
         <service id="sio.user_provider.email" class="Sio\UserBundle\Security\EmailProvider">
              <argument type="service" id="fos_user.user_manager"/>
         </service>

@@ -76,4 +76,6 @@ fos_user:
     registration:
         form:
             type: sio_user_registration # see UserBundle From Type, Services.xml
-        
+#    profile:
+#        form:
+#            type: sio_user_profile

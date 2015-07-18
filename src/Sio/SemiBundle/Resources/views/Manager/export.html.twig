@@ -1,5 +1,24 @@
 {% extends "SioSemiBundle::layout.html.twig" %}
 
 {% block content %}
-<h2>Welcome to the Manager:data export : {{seminar.name}}</h2>
+ <h2>Welcome to the Manager:data export : {{seminar.name}}</h2>
+ nb inscrits : {{allRegistrations | length }}
+ <table style="border">
+   <tbody>
+ {% for row in allRegistrations %}
+   <tr>
+  {% if loop.index0 == 0 %}
+    {% for data in row %}
+      <th>{{data}}</th>
+    {% endfor %}
+  {% else %}
+    {% for data in row %}
+      <td>{{data}}</td>
+    {% endfor %}
+  {% endif %}
+   </tr>
+   {% endfor %}
+ </tbody>
+   </table>
+ 
 {% endblock %}
