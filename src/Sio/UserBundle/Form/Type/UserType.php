@@ -29,7 +29,7 @@ class UserType extends AbstractType {
     $builder->add('homeCity');
     $builder->add('organisation', 'entity', 
      array('class'=> 'SioSemiBundle:Organisation', 'property' => 'name' ));
-     // 
+     
     
     //$session = $this->container->get('session');
     if ($this->allStatusUserSeminar) :     
@@ -39,8 +39,7 @@ class UserType extends AbstractType {
         'mapped' => false,
         'expanded'=> TRUE,
         'multiple'=> FALSE,  
-        'required' => TRUE,
-        'label' => 'Quel satus ? '
+        'required' => TRUE
       ));
       
       //$seminar = $this->session->get(SemiDefaultController::SEMINAR);

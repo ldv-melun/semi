@@ -41,14 +41,12 @@ class UserController extends Controller {
     $seminar = $repoSeminar->findOneByClef($seminarKey);
     
     if (!$seminar) :
-      // on n'est jamais trop prudent...
+      // one is never too careful ...
       throw new AccessDeniedException('Semi : register (2)');
     endif;
     
     $user = new User();
     $allStatusUserSeminar = $repoSeminar->getAllUserStatusBySeminar($seminar);
-    
- //   \var_dump($allStatusUserSeminar);
  
     $form = $this->createForm(new UserType($allStatusUserSeminar), $user);
     $form->handleRequest($request);
@@ -65,23 +63,24 @@ class UserController extends Controller {
       
       // TODO : setRole ne marche pas...
       $user->setRoles(array("ROLE_USER")); 
-      
-      $user->setEnabled(true);
-      $user->setUsername($user->getEmail()); // FOSUser say not null (and unique ? so we put mail)
+      // FOSUser say not null (and unique ? so we put mail)
+      $user->setUsername($user->getEmail());
+                
+      $user->setEnabled(true); 
       
       $userIdStatusForThisSeminar = $form->get('status')->getData();      
       
-      // suspend auto-commit
       $em = $this->getDoctrine()->getManager();
+      
+      // suspend auto-commit
       $em->getConnection()->beginTransaction();
       try {
        $em->persist($user);
-       $em->flush();
        $this->registerUserSeminar($em, $seminar, $user, $userIdStatusForThisSeminar);
        $em->flush(); 
        // Try and commit the transaction
        $em->getConnection()->commit();
-       // no need
+       // it is no longer useful in session
        $session->remove(SemiDefaultController::EMAIL_FOR_REGISTER);
     
        $this->get('session')
@@ -103,37 +102,42 @@ class UserController extends Controller {
         'form' => $form->createView(), 
         'user' => $user,
         'userEmail' => $session->get(SemiDefaultController::EMAIL_FOR_REGISTER),
-  //      'allStatusUserSeminar' => $allStatusUserSeminar
     );
   }
   
   /**
-   * Validate password and ...
-   * @param Request $request
+   * Validate password and userIdStatusForThisSeminar...
+   * @param $form
    */
   private function validationExtra($form) {
     
     $pass1 = $form->get('pass1')->getData();
     $pass2 = $form->get('pass2')->getData();
-    $ok = ($pass1 && ($pass1==$pass2));
-    if (!$ok) :
+    $okpw = ($pass1 && ($pass1==$pass2));
+    if (!$okpw) :
       $this->get('session')
           ->getFlashBag()
           ->add('notice', 'Les mots de passe ne correspondent pas !');
     endif;
-    return $ok;  
+    
+    $userIdStatusForThisSeminar = $form->get('status')->getData();
+    $okStatus = bool($this->getDoctrine()->getManager()
+        ->getRepository('SioSemiBundle:Status')
+        ->find($userIdStatusForThisSeminar));
+    
+    return $okpw && $okStatus;  
   }
   
     
   
   /**
    * Persist a new UserSeminar Status
+   * @param EntityManager $sem (for transation by caller)
    * @param Seminar $seminar
    * @param User $user
    * @param String $idStatus
    */
-  function registerUserSeminar($em, $seminar, $user, $idStatus ) {
-    \var_dump($user);
+  function registerUserSeminar($em, $seminar, $user, $idStatus ) {    
     $userStatus = //$this->getDoctrine()
         $em->getRepository('SioSemiBundle:Status')
         ->find($idStatus);
@@ -146,7 +150,7 @@ class UserController extends Controller {
     if ($statusUserSeminar) {
       $statusUserSeminar->setStatus($userStatus);
       $em->persist($statusUserSeminar);
-      $em->flush();
+      // $em->flush(); call by caller
       $this->get('session')->getFlashBag()->add('success', 'Satus Update ' . $statusUserSeminar);
     } else {
       $newUserSeminar = new UserSeminar();
@@ -154,7 +158,7 @@ class UserController extends Controller {
       $newUserSeminar->setStatus($userStatus);
       $newUserSeminar->setUser($user);
       $em->persist($newUserSeminar);
-      $em->flush();
+      // $em->flush(); call by caller
       $this->get('session')->getFlashBag()->add('success', 'Satus Create');
     }
   }

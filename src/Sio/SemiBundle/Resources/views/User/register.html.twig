@@ -60,8 +60,18 @@
           {{ form_widget(form.pass2, {'attr': {'class': 'form-control'}}) }}          
         </div>        
       </div>
-        
-    </div>
+      <hr>
+      {# theme for design radio-inline #}
+      {% form_theme form 'SioSemiBundle:Form:fields.html.twig' %}
+      <div class="form-group">
+        {{ form_label(form.status, 'Pour ce séminaire, vous participez en tant que ?',
+         {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+         <div class="col-sm-10">
+         {{ form_widget(form.status) }}
+         </div>
+      </div>       
+
+    </div> {# panel-body #}
   
   <div class="panel-footer" style="overflow:hidden;text-align:right;">
     <div class="form-group">
