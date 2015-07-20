@@ -11,6 +11,7 @@ use Sio\SemiBundle\Controller\DefaultController as SemiDefaultController;
 use Sio\UserBundle\Entity\User as User;
 use Sio\UserBundle\Form\Type\UserType as UserType;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Sio\SemiBundle\Entity\UserSeminar as UserSeminar;
 
 /**
  * @Route("/user")
@@ -27,12 +28,29 @@ class UserController extends Controller {
   public function registerAction(Request $request) {
     $session = $request->getSession();
     
-    if ($this->getUser() || !$session->has(SemiDefaultController::EMAIL_FOR_REGISTER)) :
-      throw new AccessDeniedException('Oups !!');
+    if ($this->getUser() 
+        || !$session->has(SemiDefaultController::EMAIL_FOR_REGISTER)
+        || !$session->has(DefaultController::SEMINAR_KEY)) :
+      throw new AccessDeniedException('Semi : register (1)');
+    endif;
+    
+    $seminarKey = $session->get(DefaultController::SEMINAR_KEY);
+    
+    $manager = $this->getDoctrine()->getManager();
+    $repoSeminar = $manager->getRepository('SioSemiBundle:Seminar');
+    $seminar = $repoSeminar->findOneByClef($seminarKey);
+    
+    if (!$seminar) :
+      // on n'est jamais trop prudent...
+      throw new AccessDeniedException('Semi : register (2)');
     endif;
     
     $user = new User();
-    $form = $this->createForm(new UserType(), $user);
+    $allStatusUserSeminar = $repoSeminar->getAllUserStatusBySeminar($seminar);
+    
+ //   \var_dump($allStatusUserSeminar);
+ 
+    $form = $this->createForm(new UserType($allStatusUserSeminar), $user);
     $form->handleRequest($request);
 
     if ($form->isValid() && $this->validationExtra($form)) {
@@ -50,23 +68,42 @@ class UserController extends Controller {
       
       $user->setEnabled(true);
       $user->setUsername($user->getEmail()); // FOSUser say not null (and unique ? so we put mail)
-      $this->managerPersist($user);
       
-      // TODO inscription à un séminaire 
-      // semi_user_seminar
+      $userIdStatusForThisSeminar = $form->get('status')->getData();      
       
-      $this->get('session')
+      // suspend auto-commit
+      $em = $this->getDoctrine()->getManager();
+      $em->getConnection()->beginTransaction();
+      try {
+       $em->persist($user);
+       $em->flush();
+       $this->registerUserSeminar($em, $seminar, $user, $userIdStatusForThisSeminar);
+       $em->flush(); 
+       // Try and commit the transaction
+       $em->getConnection()->commit();
+       // no need
+       $session->remove(SemiDefaultController::EMAIL_FOR_REGISTER);
+    
+       $this->get('session')
           ->getFlashBag()
-          ->add('success', 'Votre compte a bien été créé, ' . $user->getFirstName() . ' ! Vous avez été automatiquement connecté(e) à l\'application !');
+          ->add('success', 'Votre compte a bien été créé, ' 
+              . $user->getFirstName());
+      } catch (Exception $ex) {
+        // Rollback the failed transaction attempt
+        $em->getConnection()->rollback();
+        throw $e;
+      }
+      // auto connect  
       $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
       $this->get('security.context')->setToken($token);
       return $this->redirect($this->generateUrl('_semi_default_index'));
     }
-    
+  
     return array(
         'form' => $form->createView(), 
         'user' => $user,
-        'userEmail' => $session->get(SemiDefaultController::EMAIL_FOR_REGISTER)
+        'userEmail' => $session->get(SemiDefaultController::EMAIL_FOR_REGISTER),
+  //      'allStatusUserSeminar' => $allStatusUserSeminar
     );
   }
   
@@ -87,9 +124,41 @@ class UserController extends Controller {
     return $ok;  
   }
   
+    
   
+  /**
+   * Persist a new UserSeminar Status
+   * @param Seminar $seminar
+   * @param User $user
+   * @param String $idStatus
+   */
+  function registerUserSeminar($em, $seminar, $user, $idStatus ) {
+    \var_dump($user);
+    $userStatus = //$this->getDoctrine()
+        $em->getRepository('SioSemiBundle:Status')
+        ->find($idStatus);
+    
+    $statusUserSeminar = //$this->getDoctrine()
+        $em->getRepository('SioSemiBundle:UserSeminar')
+        ->findOneBy(array('seminar' => $seminar
+        , 'user'=> $user));
+    
+    if ($statusUserSeminar) {
+      $statusUserSeminar->setStatus($userStatus);
+      $em->persist($statusUserSeminar);
+      $em->flush();
+      $this->get('session')->getFlashBag()->add('success', 'Satus Update ' . $statusUserSeminar);
+    } else {
+      $newUserSeminar = new UserSeminar();
+      $newUserSeminar->setSeminar($seminar);
+      $newUserSeminar->setStatus($userStatus);
+      $newUserSeminar->setUser($user);
+      $em->persist($newUserSeminar);
+      $em->flush();
+      $this->get('session')->getFlashBag()->add('success', 'Satus Create');
+    }
+  }
 
-  
   
   
   
@@ -128,7 +197,7 @@ class UserController extends Controller {
     if ($seminar) {
       // define status for this seminar
       // (a user can direct connect without seminar key)
-      $allStatus = $repoSeminar->getAllStatusBySeminar($seminar);
+      $allStatus = $repoSeminar->getAllUserStatusBySeminar($seminar);
       $userStatus = $this->getDoctrine()
           ->getRepository('SioSemiBundle:UserSeminar')
           ->findOneBy(array('user' => $user, 'seminar' => $seminar))
@@ -202,7 +271,8 @@ class UserController extends Controller {
     }
 
     // We wil get the seminar and all status from that Seminar for all cases.
-    $allStatus = $this->getAllStatusBySeminar($seminar);
+    $allStatus = $this->getDoctrine()
+        ->getRepository('SioSemiBundle:Seminar')->getAllUserStatusBySeminar($seminar);
 
     if ($request->isMethod('POST')) {
       $this->doRegisterOrUpdateUserIfOk($postRequest, $seminar);
@@ -346,36 +416,6 @@ class UserController extends Controller {
   }
 
   /**
-   * Persist a new UserSeminar Status
-   * @param Seminar $seminar
-   * @param User $user
-   * @param String $status
-   */
-  function registerUserSeminar($seminar, $user, $status ) {
-    $userStatus = $this->getDoctrine()
-        ->getRepository('SioSemiBundle:Status')
-        ->findOneBy(array("status" => $status));
- 
-    $statusUserSeminar = $this->getDoctrine()
-        ->getRepository('SioSemiBundle:UserSeminar')
-        ->findOneBy(array('seminar' => $seminar
-        , 'user'=> $user));
-    
-    if ($statusUserSeminar) {
-      $statusUserSeminar->setStatus($userStatus);
-      $this->managerPersist($statusUserSeminar);
-      $this->get('session')->getFlashBag()->add('success', 'Satus Update ' . $statusUserSeminar);
-    } else {
-      $newUserSeminar = new UserSeminar();
-      $newUserSeminar->setSeminar($seminar);
-      $newUserSeminar->setStatus($userStatus);
-      $newUserSeminar->setUser($user);
-      $this->managerPersist($newUserSeminar);
-      $this->get('session')->getFlashBag()->add('success', 'Satus Create');
-    }
-  }
-
-  /**
    * Check if a Seminar exist and return a boolean.
    * @param \Seminar $seminar
    * @return boolean
@@ -385,20 +425,6 @@ class UserController extends Controller {
       return true;
     }
     return false;
-  }
-
-  /**
-   * 
-   * 
-   * Return all status of a seminar.
-   * @param \Seminar $seminar
-   * @return Array
-   */
-  function getAllStatusBySeminar($seminar) {
-    return 
-      $this->getDoctrine()
-        ->getRepository('SioSemiBundle:Seminar')
-        ->getAllStatusBySeminar($seminar);
   }
 
   /**

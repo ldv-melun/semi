@@ -14,6 +14,7 @@ class DefaultController extends Controller
     const ROUTE_LOGIN = 'fos_user_security_login';
     const SEMINAR_KEY = 'seminarKey';
     const SEMINAR_ID = 'seminarId';
+    const SEMINAR = 'seminar';
     const EMAIL_FOR_REGISTER = 'emailRegister';
 
   /**
