@@ -129,15 +129,15 @@ class UserController extends Controller {
   
   
   /**
-   * Validate password and userIdStatusForThisSeminar...
+   * Validate password if not 'nochange'...
    * @param $form
    */
   private function validationExtraUpdateProfil($form) {
     
     $pass1 = $form->get('pass1')->getData();
     $pass2 = $form->get('pass2')->getData();
-    if ($pass1) :
-      $okpw = ($pass1 && ($pass1 != 'nochange') && ($pass1==$pass2));
+    if ($pass1 != 'nochange') :
+      $okpw = ($pass1 && ($pass1==$pass2));
     else:
       $okpw = true; // no change password 
     endif;
@@ -147,11 +147,14 @@ class UserController extends Controller {
           ->getFlashBag()
           ->add('notice', 'Les mots de passe ne correspondent pas !');
     endif;
-    
-    $userIdStatusForThisSeminar = $form->get('status')->getData();
-    $okStatus = TRUE == ($this->getDoctrine()->getManager()
+    $okStatus = TRUE;
+    if ($form->has('status')):
+      $userIdStatusForThisSeminar = $form->get('status')->getData();
+      $okStatus = TRUE == ($this->getDoctrine()->getManager()
         ->getRepository('SioSemiBundle:Status')
-        ->find($userIdStatusForThisSeminar));
+        ->find($userIdStatusForThisSeminar));  
+    endif;
+    
     
     return $okpw && $okStatus;  
   }
@@ -216,29 +219,30 @@ class UserController extends Controller {
     $form->handleRequest($request);
 
     if ($form->isValid() && $this->validationExtraUpdateProfil($form)) {
-      if ($form->get('pass1')->getData()) :
-        // change pw
+      if ($form->get('pass1')->getData() != 'nochange') :        
         $factory = $this->get('security.encoder_factory');
         $encoder = $factory->getEncoder($user);
         $password = $encoder->encodePassword($form->get('pass1')->getData(), null);
         // whith bcrypt salt will be generate and integrate into password
         // http://stackoverflow.com/questions/25760520/does-symfony-derive-the-salt-from-the-hash-or-isnt-the-hash-salted-at-all
         $user->setPassword($password);
-      endif;           
-      
-      $userIdStatusForThisSeminar = $form->get('status')->getData();
+      endif;        
+      // user can direct connect (without choice a seminar)
+      $userIdStatusForThisSeminar = NULL;
+      if ($form->has('status')) :
+         $userIdStatusForThisSeminar = $form->get('status')->getData();     
+      endif;
       $em = $this->getDoctrine()->getManager();
       // suspend auto-commit
       $em->getConnection()->beginTransaction();
       try {
        $em->persist($user);
        $em->flush(); // for get id 
-       $this->registerUserSeminar($em, $seminar, $user, $userIdStatusForThisSeminar);
-       $em->flush(); 
+       if ($userIdStatusForThisSeminar):
+         $this->registerUserSeminar($em, $seminar, $user, $userIdStatusForThisSeminar);         
+       endif;
        // Try and commit the transaction
-       $em->getConnection()->commit();
-       // it is no longer useful in session
-       $session->remove(SemiDefaultController::EMAIL_FOR_REGISTER);    
+       $em->getConnection()->commit();       
        $this->get('session')
           ->getFlashBag()
           ->add('success', 'Votre compte a bien été modifié (' 
