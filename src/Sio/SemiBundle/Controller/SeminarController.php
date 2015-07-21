@@ -38,9 +38,8 @@ class SeminarController extends Controller {
    * @Template()
    */
   public function indexAction(Request $request, $id = null) {
-    if ($id) {      
-      // $this->get('session')
-      return $this->meetingsAction($request, $id, false);      
+    if ($id) {            
+      return $this->getMeetings($request, $id, false);      
     } else {
       $user = $this->getUser();
       $em = $this->getDoctrine()->getManager();
@@ -58,11 +57,11 @@ class SeminarController extends Controller {
       foreach ($userSeminar as $seminarUser) {
         $seminars[] = $repoSeminar->findBy(array("id" => $seminarUser->getSeminar()->getId()));
       }
-      return array('seminars' => $seminars, 'menuItemActive' => 'seminar');  
+      return array('seminars' => $seminars);  
     }
   }
 
-  private function meetingsAction($request, $idSeminar, $isOnlyMyRegistrations) {
+  private function getMeetings($request, $idSeminar, $isOnlyMyRegistrations) {
     $user = $this->getUser();
     $manager = $this->getDoctrine()->getManager();
     $repoMeeting = $manager->getRepository('Sio\SemiBundle\Entity\Meeting');
@@ -124,8 +123,6 @@ class SeminarController extends Controller {
         'description' => $seminar->getDescription(),
         'meetings' => $meetingsForView,
         'nbMeetingRegister' => $nbMeetingRegister,
-        // 'stateSeminar' => $seminarState,
-        'menuItemActive' => 'seminar',
         'readOnly' => $isOnlyMyRegistrations || $seminarState != 'Open',
         'seminar' => $seminar ); // TODO del attribut because accessible by seminar
     return $this->render('SioSemiBundle:Seminar:meetings.html.twig', $toview);

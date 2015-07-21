@@ -28,8 +28,11 @@ class UserController extends Controller {
   public function registerAction(Request $request) {
     $session = $request->getSession();
     
-    if ($this->getUser() 
-        || !$session->has(SemiDefaultController::EMAIL_FOR_REGISTER)
+    if ($this->getUser() && $this->getUser().getId()) :
+      return $this->updateProfilAction($request);   
+    endif;  
+    
+    if (!$session->has(SemiDefaultController::EMAIL_FOR_REGISTER)
         || !$session->has(DefaultController::SEMINAR_KEY)) :
       throw new AccessDeniedException('Semi : register (1)');
     endif;
@@ -64,38 +67,34 @@ class UserController extends Controller {
       // TODO : setRole ne marche pas...
       $user->setRoles(array("ROLE_USER")); 
       // FOSUser say not null (and unique ? so we put mail)
-      $user->setUsername($user->getEmail());
-                
+      $user->setUsername($user->getEmail());                
       $user->setEnabled(true); 
-      
       $userIdStatusForThisSeminar = $form->get('status')->getData();      
-      
       $em = $this->getDoctrine()->getManager();
-      
       // suspend auto-commit
       $em->getConnection()->beginTransaction();
       try {
        $em->persist($user);
+       $em->flush(); // for get id 
        $this->registerUserSeminar($em, $seminar, $user, $userIdStatusForThisSeminar);
        $em->flush(); 
        // Try and commit the transaction
        $em->getConnection()->commit();
        // it is no longer useful in session
-       $session->remove(SemiDefaultController::EMAIL_FOR_REGISTER);
-    
+       $session->remove(SemiDefaultController::EMAIL_FOR_REGISTER);    
        $this->get('session')
           ->getFlashBag()
-          ->add('success', 'Votre compte a bien été créé, ' 
-              . $user->getFirstName());
+          ->add('success', 'Votre compte a bien été créé (' 
+              . $user->getFirstName() . ')');
       } catch (Exception $ex) {
         // Rollback the failed transaction attempt
         $em->getConnection()->rollback();
-        throw $e;
+        throw $ex;
       }
       // auto connect  
       $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
       $this->get('security.context')->setToken($token);
-      return $this->redirect($this->generateUrl('_semi_default_index'));
+      return $this->redirect($this->generateUrl('_semi_default_redirect'));
     }
   
     return array(
@@ -121,18 +120,46 @@ class UserController extends Controller {
     endif;
     
     $userIdStatusForThisSeminar = $form->get('status')->getData();
-    $okStatus = bool($this->getDoctrine()->getManager()
+    $okStatus = TRUE == ($this->getDoctrine()->getManager()
         ->getRepository('SioSemiBundle:Status')
         ->find($userIdStatusForThisSeminar));
     
     return $okpw && $okStatus;  
   }
   
+  
+  /**
+   * Validate password and userIdStatusForThisSeminar...
+   * @param $form
+   */
+  private function validationExtraUpdateProfil($form) {
     
+    $pass1 = $form->get('pass1')->getData();
+    $pass2 = $form->get('pass2')->getData();
+    if ($pass1) :
+      $okpw = ($pass1 && ($pass1 != 'nochange') && ($pass1==$pass2));
+    else:
+      $okpw = true; // no change password 
+    endif;
+    
+    if (!$okpw) :
+      $this->get('session')
+          ->getFlashBag()
+          ->add('notice', 'Les mots de passe ne correspondent pas !');
+    endif;
+    
+    $userIdStatusForThisSeminar = $form->get('status')->getData();
+    $okStatus = TRUE == ($this->getDoctrine()->getManager()
+        ->getRepository('SioSemiBundle:Status')
+        ->find($userIdStatusForThisSeminar));
+    
+    return $okpw && $okStatus;  
+  }
+  
   
   /**
    * Persist a new UserSeminar Status
-   * @param EntityManager $sem (for transation by caller)
+   * @param EntityManager $em (for transation by caller)
    * @param Seminar $seminar
    * @param User $user
    * @param String $idStatus
@@ -141,29 +168,98 @@ class UserController extends Controller {
     $userStatus = //$this->getDoctrine()
         $em->getRepository('SioSemiBundle:Status')
         ->find($idStatus);
-    
+
     $statusUserSeminar = //$this->getDoctrine()
-        $em->getRepository('SioSemiBundle:UserSeminar')
+      $em->getRepository('SioSemiBundle:UserSeminar')
         ->findOneBy(array('seminar' => $seminar
-        , 'user'=> $user));
+        , 'user'=> $user));  
     
     if ($statusUserSeminar) {
       $statusUserSeminar->setStatus($userStatus);
       $em->persist($statusUserSeminar);
-      // $em->flush(); call by caller
-      $this->get('session')->getFlashBag()->add('success', 'Satus Update ' . $statusUserSeminar);
+      $em->flush(); 
+       $this->get('session')->getFlashBag()->add('success', 'Satus Update ' . $statusUserSeminar);
     } else {
       $newUserSeminar = new UserSeminar();
       $newUserSeminar->setSeminar($seminar);
       $newUserSeminar->setStatus($userStatus);
       $newUserSeminar->setUser($user);
       $em->persist($newUserSeminar);
-      // $em->flush(); call by caller
-      $this->get('session')->getFlashBag()->add('success', 'Satus Create');
+      $em->flush(); 
+      // $this->get('session')->getFlashBag()->add('success', 'Satus Create');
     }
   }
 
+   /** 
+   * @Route("/user/profil", name="_semi_user_profil")
+   */
+  public function updateProfilAction(Request $request) {
+    $session = $request->getSession();
+    $seminar = NULL;
+    $allStatusUserSeminar = NULL;
+    $user = $this->getUser();
+    if (!$user):
+      throw new AccessDeniedException('Semi : update profil (1)');
+    endif;
+    
+    $seminarId = $session->get(DefaultController::SEMINAR_ID);
+    if ($seminarId) :
+      $manager = $this->getDoctrine()->getManager();
+      $repoSeminar = $manager->getRepository('SioSemiBundle:Seminar');
+      $seminar = $repoSeminar->find($seminarId);    
+      if ($seminar) :
+        $allStatusUserSeminar = $repoSeminar->getAllUserStatusBySeminar($seminar);
+      endif;
+    endif;
+
+    $form = $this->createForm(new UserType($allStatusUserSeminar), $user);
+    $form->handleRequest($request);
+
+    if ($form->isValid() && $this->validationExtraUpdateProfil($form)) {
+      if ($form->get('pass1')->getData()) :
+        // change pw
+        $factory = $this->get('security.encoder_factory');
+        $encoder = $factory->getEncoder($user);
+        $password = $encoder->encodePassword($form->get('pass1')->getData(), null);
+        // whith bcrypt salt will be generate and integrate into password
+        // http://stackoverflow.com/questions/25760520/does-symfony-derive-the-salt-from-the-hash-or-isnt-the-hash-salted-at-all
+        $user->setPassword($password);
+      endif;           
+      
+      $userIdStatusForThisSeminar = $form->get('status')->getData();
+      $em = $this->getDoctrine()->getManager();
+      // suspend auto-commit
+      $em->getConnection()->beginTransaction();
+      try {
+       $em->persist($user);
+       $em->flush(); // for get id 
+       $this->registerUserSeminar($em, $seminar, $user, $userIdStatusForThisSeminar);
+       $em->flush(); 
+       // Try and commit the transaction
+       $em->getConnection()->commit();
+       // it is no longer useful in session
+       $session->remove(SemiDefaultController::EMAIL_FOR_REGISTER);    
+       $this->get('session')
+          ->getFlashBag()
+          ->add('success', 'Votre compte a bien été modifié (' 
+              . $user->getFirstName() . ')');
+      } catch (Exception $ex) {
+        // Rollback the failed transaction attempt
+        $em->getConnection()->rollback();
+        throw $ex;
+      }
+
+      return $this->redirect($this->generateUrl('_semi_default_redirect'));
+    }
   
+    $toview = array(
+        'form' => $form->createView(), 
+        'user' => $user,
+        'userEmail' => $user->getEmail(),
+    );
+    return $this
+            ->render('SioSemiBundle:User:register.html.twig', $toview);
+  }
   
   
   
@@ -180,20 +276,20 @@ class UserController extends Controller {
    * prepare for view of register, so some duplicate instructions 
    * from registerUser method of RegistrationController... TODO no duplicate 
    *  
-   * @Route("/user/profil", name="_semi_user_profil")
+   * @Route("/user/profilsav", name="_semi_user_profilsav")
    */
-  public function updateProfilAction(Request $request) {
+  public function _updateProfilAction(Request $request) {
     $user = $this->getUser();
-    $seminarKey = null;
+    $seminarId = null;
     $session = $request->getSession();
 
-    if ($session->has(DefaultController::SEMINAR_KEY)) {
-      $seminarKey = $session->get(DefaultController::SEMINAR_KEY);
+    if ($session->has(DefaultController::SEMINAR_ID)) {
+      $seminarId = $session->get(DefaultController::SEMINAR_ID);
     }
 
     $manager = $this->getDoctrine()->getManager();
     $repoSeminar = $manager->getRepository('SioSemiBundle:Seminar');
-    $seminar = $repoSeminar->findOneByClef($seminarKey);
+    $seminar = $repoSeminar->find($seminarId);
     
     $userStatus = '';
     $allStatus = array();
@@ -205,7 +301,7 @@ class UserController extends Controller {
       $userStatus = $this->getDoctrine()
           ->getRepository('SioSemiBundle:UserSeminar')
           ->findOneBy(array('user' => $user, 'seminar' => $seminar))
-          ->getStatus()->getStatus();
+          ->getStatus()->getName();
     }
       
     $organisations = $this->getDoctrine()
@@ -220,17 +316,15 @@ class UserController extends Controller {
       
     $toview = array(
         'user' => $user,
-        'clef' => $seminarKey,
         'organisations' => $organisations,
         'paramOrganisation' => $typeOrganisation,
         'allStatus' => $allStatus,
         'userStatus' => $userStatus,
-        'menuItemActive' => 'profil'
+        // 'menuItemActive' => 'profil'
         );
     
-    // pass to FOSUserBundle...
     return $this
-            ->render('SioUserBundle:Registration:register.html.twig', $toview);
+            ->render('SioSemiBundle:User:register.html.twig', $toview);
   }
   
   
@@ -462,7 +556,8 @@ class UserController extends Controller {
         'organisations' => $organisations,
         'paramOrganisation' => $paramOrganisation,
         'allStatus' => $allStatus,
-        'menuItemActive' => 'profil');
+        //'menuItemActive' => 'profil'
+        );
     return $this
             ->render('SioUserBundle:Registration:register.html.twig', $toview);
   }

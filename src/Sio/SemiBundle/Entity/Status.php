@@ -24,9 +24,9 @@ class Status {
     /**
      * @var string
      *
-     * @ORM\Column(name="status", type="string", length=50, nullable=true)
+     * @ORM\Column(name="name", type="string", length=50, nullable=true)
      */
-    private $status;
+    private $name;
     
     /**
      * Get id
@@ -41,23 +41,23 @@ class Status {
     /**
      * Set status
      *
-     * @param string $status
+     * @param string $name
      * @return Status
      */
-    public function setStatus($status)
+    public function setName($name)
     {
-        $this->status = $status;
+        $this->name = $name;
     
         return $this;
     }
 
     /**
-     * Get status
+     * Get name
      *
      * @return string 
      */
-    public function getStatus()
+    public function getName()
     {
-        return $this->status;
+        return $this->name;
     }
 }

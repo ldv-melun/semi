@@ -16,7 +16,7 @@ class UserType extends AbstractType {
 
     private $allStatusUserSeminar;
         
-    public function __construct($allStatusUserSeminar)
+    public function __construct($allStatusUserSeminar = null)
     {
       $this->allStatusUserSeminar = $allStatusUserSeminar;    
     }
@@ -30,8 +30,6 @@ class UserType extends AbstractType {
     $builder->add('organisation', 'entity', 
      array('class'=> 'SioSemiBundle:Organisation', 'property' => 'name' ));
      
-    
-    //$session = $this->container->get('session');
     if ($this->allStatusUserSeminar) :     
       $builder->add('status', 'choice', array(
         'choices'   => $this->allStatusUserSeminar,
@@ -59,9 +57,7 @@ class UserType extends AbstractType {
         ));
       */
     endif;
-    
-    $builder->add('Valider', 'submit');
-    $builder->add('Abandonner', 'submit', array('validation_groups' => false));
+    $builder->add('Valider', 'submit');    
   }
 
   public function setDefaultOptions(OptionsResolverInterface $resolver) {

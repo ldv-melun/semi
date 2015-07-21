@@ -1,11 +1,24 @@
 {% set menuItemProfile = "profil" %}
-
 {% extends "SioSemiBundle::layout.html.twig" %}
 
 {% block content %}
+  <script>
+  /**
+     * redirect for register
+     */
+    function dologin() {
+        window.location = "{{ path('_semi_default_index') }}";
+    }
+  </script>
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title" style="text-align: center">Enregistrement</h3>
+      <h3 class="panel-title" style="text-align: center">
+      {%  if user.id is not empty %}
+        Modification de mon profil
+      {% else %}
+        Création de mon profil
+      {% endif %}
+      </h3>
     </div>
     <div class="panel-body">
       {{ form_start(form, {'attr': {'role': 'form', 'class' : 'form-horizontal'}})}}
@@ -46,18 +59,24 @@
           {{ form_widget(form.organisation, {'attr': {'class': 'form-control'}}) }}
         </div>
       </div>
-
+      {%  if user.id is not empty %}
+        {% set pwMsg = "Mot de passe (Optionnel)" %}
+        {% set pw    = "nochange" %}
+      {% else %} 
+        {% set pwMsg = "Mot de passe" %}
+        {% set pw  = ""  %}
+      {% endif %}  
       <div class="form-group">
-        {{ form_label(form.pass1, 'Mot de passe', {'label_attr': {'class': 'col-sm-2 control-label'}})}}
+        {{ form_label(form.pass1, pwMsg, {'label_attr': {'class': 'col-sm-2 control-label'}})}}
         <div class="col-sm-10">
-          {{ form_widget(form.pass1, {'attr': {'class': 'form-control'}}) }}          
+          {{ form_widget(form.pass1, {'attr': {'class': 'form-control', 'value' : pw}}) }}          
         </div>        
       </div>
 
       <div class="form-group">
         {{ form_label(form.pass2, 'Confirmer votre mot de passe', {'label_attr': {'class': 'col-sm-2 control-label'}})}}
         <div class="col-sm-10">
-          {{ form_widget(form.pass2, {'attr': {'class': 'form-control'}}) }}          
+          {{ form_widget(form.pass2, {'attr': {'class': 'form-control', 'value' : pw}}) }}          
         </div>        
       </div>
       <hr>
@@ -75,12 +94,9 @@
   
   <div class="panel-footer" style="overflow:hidden;text-align:right;">
     <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
         {{ form_widget(form.Valider, {'attr': {'class': 'btn btn-success btn-sm'}}) }}
-        {#{ form_widget(form.Abandonner, {'attr': {'class': 'btn btn-default btn-sm'}}) }#}
-        <!--button type="submit" id="btvalid" name="btvalid" class="btn btn-success btn-sm">Valider</button-->
-        <button type="cancel" id="btcancel" name="btcancel" class="btn btn-default btn-sm">Annuler (ou retour login ?)</button-->
-      </div>
+        <button type="cancel" id="btcancel" name="btcancel" onClick='dologin();' 
+                class="btn btn-default btn-sm">Annuler </button>      
     </div>  
   </div> 
 

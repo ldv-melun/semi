@@ -6,20 +6,26 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
 
 class SeminarRepository extends EntityRepository {
-
-   public function getAllUserStatusBySeminar($seminar) {
+  
+/**
+ * 
+ * @param Seminar $seminar
+ * @return array of status: key=id, value=name
+ */
+ public function getAllUserStatusBySeminar($seminar) {
     // TODO trop de requêtes ici, il y a moyen de mieux faire avec Join...
     $em =  $this->getEntityManager();
     $seminarStatus = $em->getRepository("SioSemiBundle:SeminarStatus")
         ->findBy(array("seminar" => $seminar));
     $allStatus = array();
-    foreach ($seminarStatus as $status) {
-      $statusObject = $status->getStatus();// $em->getRepository("SioSemiBundle:Status")->find($status);
-      $allStatus[$statusObject->getId()] = $statusObject->getStatus(); 
-    }
+    foreach ($seminarStatus as $semiStatus) :
+      $statusObject = $semiStatus->getStatus();
+      //$allStatus[$statusObject->getId()]['name'] = $statusObject->getName(); 
+      $allStatus[$statusObject->getId()] = $statusObject->getName(); 
+    endforeach;
+    //$allStatus[2]['checked'] = TRUE; 
     return $allStatus;
   }
-  
   
   
   /*
