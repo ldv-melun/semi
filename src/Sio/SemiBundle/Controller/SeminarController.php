@@ -23,7 +23,7 @@ class SeminarController extends Controller {
    */
   public function myMeetingsAction(Request $request, $id) {
     if ($id) { 
-      return $this->meetingsAction($request, $id, true);
+      return $this->getMeetings($request, $id, true);
     } else {
       // TODO throw new ;
       return $this->redirect($this->generateUrl('_semi_default_index'));

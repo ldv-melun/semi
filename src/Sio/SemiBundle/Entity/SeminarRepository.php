@@ -33,13 +33,14 @@ class SeminarRepository extends EntityRepository {
 
    */
   
+  
    public function getAllRegistrationsUserSeminar($seminar) {
     $em = $this->getEntityManager();
     $sql = "SELECT DISTINCT semi_user.id, "
+        . "semi_organisation.name as orga, "
         . "semi_user.lastName, "
-        . "semi_user.firstName, "
-        . "semi_user.email, "
-        . "semi_organisation.name as orga "
+        . "semi_user.firstName "
+//        . "semi_user.email "  
         . "FROM semi_user, "
         . "semi_registration, "
         . "semi_organisation, "
@@ -77,7 +78,7 @@ class SeminarRepository extends EntityRepository {
      
      */
     $res = $query->getResult();
-    $header = array("ID", "NOM", "PRENOM", "EMAIL", "ACADEMIE");
+    $header = array("ID", "ACADEMIE", "NOM", "PRENOM" /*, "EMAIL",*/ );
     array_unshift($res, $header );
     return $res;
     }

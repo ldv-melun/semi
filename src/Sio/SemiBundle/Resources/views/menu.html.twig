@@ -30,8 +30,8 @@
         {% endif %}  
       </ul>
       <ul class="nav navbar-nav navbar-right">
-         {% if app.user and is_granted('IS_AUTHENTICATED_REMEMBERED') %}                      
-            {% if is_granted('ROLE_ADMIN') %}
+                   
+        {% if is_granted('ROLE_ADMIN') %}
         <li class="dropdown {% if menuItemActive == "admin" %} active" {% endif %}  ">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin<span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -40,6 +40,7 @@
           </ul>
         </li>
         {% endif %}
+      {% if app.user and is_granted('IS_AUTHENTICATED_REMEMBERED') %}          
         <li><a href="{{ path('fos_user_security_logout') }}"><span class="glyphicon glyphicon-log-out"></span> <b>({{ app.user.firstname }}  <span class="glyphicon glyphicon-admin"></span>) Deconnexion</b></a></li>
       {% endif %}
          </ul>

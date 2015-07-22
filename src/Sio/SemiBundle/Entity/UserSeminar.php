@@ -3,13 +3,17 @@
 namespace Sio\SemiBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Sio\UserBundle\Entity\User as User;
+// use Sio\UserBundle\Entity\User as User;
+// use Doctrine\ORM\Mapping\UniqueConstraint;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 
 /**
  * UserSeminar
  *
  * @ORM\Table(name="semi_user_seminar")
  * @ORM\Entity
+ * @UniqueEntity(fields={"user", "seminar"}, message="userseminar.role")
  */
 class UserSeminar
 {

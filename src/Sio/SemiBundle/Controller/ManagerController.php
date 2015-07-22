@@ -35,14 +35,66 @@ class ManagerController extends Controller {
     $repoSeminar =  $this->getDoctrine()
                ->getRepository('SioSemiBundle:Seminar');
   
-    $seminar =  $repoSeminar->find($idSeminar);
+    $repoMeeting =  $this->getDoctrine()
+               ->getRepository('SioSemiBundle:Meeting');
+
+    $repoReg =  $this->getDoctrine()
+               ->getRepository('SioSemiBundle:Registration');
 
     
-    $allRegistrations = $repoSeminar->getAllRegistrationsUserSeminar($seminar);
+    $seminar =  $repoSeminar->find($idSeminar);
     
+    $allUsersRegisted = $repoSeminar->getAllRegistrationsUserSeminar($seminar);
+    $plagesHoraires   = $repoMeeting->getAllDistinctsPlagesHoraires($seminar);
+    
+    $result = array();
+    
+    foreach ($allUsersRegisted[0] as $header) :
+      $result[]= $header;
+    endforeach;
+      
+    foreach ($plagesHoraires as $meeting) :
+      $result[] = $meeting->getDateStart();
+    endforeach;
+    $i = 0;
+
+    // Oh ! out of memory whith profiler enable...
+    // http://stackoverflow.com/questions/30229637/out-of-memory-error-in-symfony
+    if ($this->container->has('profiler')) :
+      $this->container->get('profiler')->disable();    
+    endif;
+
+    foreach ($allUsersRegisted as $user) :
+      $row = array();
+      if ($i++ == 0) : 
+        foreach($user as $header):
+          $row[] = $header;
+        endforeach;
+        foreach ($plagesHoraires as $meeting) :
+          $row[] = \date("d-m-Y", $meeting->getDateStart()->getTimestamp());
+        endforeach;
+      else :
+        foreach($user as $infoUser):
+          $row[] = $infoUser;
+        endforeach;        
+       foreach ($plagesHoraires as $meeting) :
+         $registration = $repoMeeting->getMeetingUser($seminar, $user, $meeting);
+         if ($registration) :
+           $row[] = $registration->getMeeting()->getType() == 'atelier' 
+             ? $registration->getMeeting()->getRelativeNumber() 
+             : 'X'; 
+         else :
+           $row[] = '-';
+         endif;  
+         
+       endforeach;
+      endif;
+      $result[] = $row;
+    endforeach;
+      
     $toview = array(
         'seminar' => $seminar,
-        'allRegistrations' => $allRegistrations,
+        'allRegistrations' => $result,
         'menuItemActive' => 'manager');
     return $toview;
   }

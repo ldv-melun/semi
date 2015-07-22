@@ -70,4 +70,42 @@ class MeetingRepository extends EntityRepository {
     return $query->getResult();
   }
 
+  /**
+   * 
+   * @param type $seminar
+   * @return array of meetings with only one atelier representant by atelier group 
+   */
+  public function getAllDistinctsPlagesHoraires($seminar) {
+     $em = $this->getEntityManager();
+     // astuce qui fonctionne si tout meeting a par 
+     // défaut son relativenumber à 1 (ATTENTION)
+     $q = $em->createQuery(
+      "SELECT m FROM SioSemiBundle:Meeting m "
+	      ." WHERE m.relativeNumber = 1 "
+        ." AND m.seminar = :ids");
+     $q->setParameter("ids", $seminar);
+     return $q->getResult();
+  }
+  
+  
+  /**
+   * 
+   * @param type $seminar
+   * @return one or none meeting registred by this user at date this meeting
+   */
+  public function getMeetingUser($seminar, $user, $meeting) {
+     $em = $this->getEntityManager();
+     $q = $em->createQuery(
+      "SELECT r, m FROM SioSemiBundle:Registration r "
+        ." Join r.meeting m"  
+	      ." WHERE r.user = :idu"
+        ." AND m.seminar = :ids"
+        ." AND m.dateStart = :ds");
+     $q->setParameter("ids", $seminar->getId());
+     $q->setParameter("idu", $user['id']);
+     $q->setParameter("ds", $meeting->getDateStart());
+     return $q->getOneOrNullResult();
+  }
+  
+  
 }
