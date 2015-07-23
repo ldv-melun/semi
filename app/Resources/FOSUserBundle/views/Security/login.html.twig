@@ -161,6 +161,12 @@
       $('#login-panel-title').html('Inscription à un séminaire');
     }
 
+    function validateSubmit() {
+      if ($('#_submit').is(":visible") == true)
+        return true;
+      
+      return false;  
+    }
   </script>
 
   <div  style="margin-top:20px;" 
@@ -194,6 +200,7 @@
              class="alert alert-danger col-sm-12">               
         </div>
         <form action="{{ path("fos_user_security_check") }}" 
+              onsubmit="return validateSubmit()"
               method="post" id="loginform" class="form-horizontal" role="form">
           <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
 
