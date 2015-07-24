@@ -71,7 +71,12 @@ class ManagerController extends Controller {
           $row[] = $header;
         endforeach;
         foreach ($plagesHoraires as $meeting) :
-          $row[] = \date("d-m-Y", $meeting->getDateStart()->getTimestamp());
+          $data = array();
+          $data['type'] = $meeting->getType();
+          //$data['date'] = \date("d-m-Y", $meeting->getDateStart()->getTimestamp());
+          $data['date'] = \date("F j, Y, H:m", $meeting->getDateStart()->getTimestamp());
+          
+          $row[] = $data['date'];
         endforeach;
       else :
         foreach($user as $infoUser):

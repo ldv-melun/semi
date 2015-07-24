@@ -12,6 +12,7 @@ use Sio\UserBundle\Entity\User as User;
 use Sio\UserBundle\Form\Type\UserType as UserType;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Sio\SemiBundle\Entity\UserSeminar as UserSeminar;
+use FOS\UserBundle\Model\UserInterface;
 
 /**
  * @Route("/user")
@@ -27,8 +28,8 @@ class UserController extends Controller {
    */
   public function registerAction(Request $request) {
     $session = $request->getSession();
-    
-    if ($this->getUser() && $this->getUser().getId()) :
+    $u = $this->getUser();
+    if (is_object($u) && $u instanceof UserInterface && $u.getId()) :
       return $this->updateProfilAction($request);   
     endif;  
     
@@ -201,7 +202,7 @@ class UserController extends Controller {
     $seminar = NULL;
     $allStatusUserSeminar = NULL;
     $user = $this->getUser();
-    if (!$user):
+    if (is_object($user) && $user instanceof UserInterface) :
       throw new AccessDeniedException('Semi : update profil (1)');
     endif;
     
@@ -263,9 +264,7 @@ class UserController extends Controller {
     );
     return $this
             ->render('SioSemiBundle:User:register.html.twig', $toview);
-  }
-  
-  
+  }  
   
   /**
    * Determine if date now inner [$dateStart..$dateEnd]
