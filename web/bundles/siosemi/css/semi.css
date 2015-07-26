@@ -20,7 +20,9 @@ th.dataTableHeader {
 	text-align: center;
 }
 
-.table>tbody>tr>td.atelier, td.atelier {
+.table>tbody>tr>td.atelier,
+.table>tbody>tr>th.atelier, 
+td.atelier {
   padding:0 0 5px 25px; 
   background-color: #f2f5f2;
   background:url(../images/atelier.png) no-repeat 0 0; 

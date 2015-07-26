@@ -4,6 +4,7 @@ namespace Sio\SemiBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
+use Sio\SemiBundle\Util\Header;
 
 class SeminarRepository extends EntityRepository {
   
@@ -27,12 +28,10 @@ class SeminarRepository extends EntityRepository {
     return $allStatus;
   }
   
-  
   /*
    *  $sql = "SELECT DISTINCT participant.id, participant.nom, participant.prenom, participant.mail, participant.titre, academie.nom acad FROM participant, inscription, academie, seance WHERE participant.id = inscription.idParticipant AND inscription.idSeance=seance.id AND academie.id = participant.idAcademie AND seance.idSeminaire = :IDSE ORDER BY academie.nom ASC, participant.nom ASC";
 
    */
-  
   
    public function getAllRegistrationsUserSeminar($seminar) {
     $em = $this->getEntityManager();
@@ -78,8 +77,16 @@ class SeminarRepository extends EntityRepository {
      
      */
     $res = $query->getResult();
-    $header = array("ID", "ACADEMIE", "NOM", "PRENOM" /*, "EMAIL",*/ );
+    $header = $this->createHeaderExport(array("ID", "ACADEMIE", "NOM", "PRENOM" /*, "EMAIL",*/ ));
     array_unshift($res, $header );
     return $res;
+    }
+    
+    private function createHeaderExport($tab) {
+      $res = array();
+      foreach ($tab as $v) {
+         $res[] = new Header($v, '');
+      }
+      return $res;
     }
 }

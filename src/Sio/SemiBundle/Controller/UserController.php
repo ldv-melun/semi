@@ -140,7 +140,7 @@ class UserController extends Controller {
     if ($pass1 != 'nochange') :
       $okpw = ($pass1 && ($pass1==$pass2));
     else:
-      $okpw = true; // no change password 
+      $okpw = $pass1==$pass2; // no change password 
     endif;
     
     if (!$okpw) :
@@ -202,7 +202,7 @@ class UserController extends Controller {
     $seminar = NULL;
     $allStatusUserSeminar = NULL;
     $user = $this->getUser();
-    if (is_object($user) && $user instanceof UserInterface) :
+    if (!is_object($user) || !$user instanceof UserInterface) :
       throw new AccessDeniedException('Semi : update profil (1)');
     endif;
     

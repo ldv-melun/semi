@@ -9,7 +9,11 @@
    <tr>
   {% if loop.index0 == 0 %}
     {% for data in row %}
-      <th>{{data}}</th>
+      {% if data.type is not empty %}
+         <th class = '{{data.type | e("css")}}'>{{data.name}}</th>
+      {% else %}  
+         <th>{{data.name}}</th>         
+      {% endif %}  
     {% endfor %}
   {% else %}
     {% for data in row %}

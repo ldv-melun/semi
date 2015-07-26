@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Sio\SemiBundle\Util\Header as Header;
 
 /**
  * @Route("/manager")
@@ -48,14 +49,19 @@ class ManagerController extends Controller {
     $plagesHoraires   = $repoMeeting->getAllDistinctsPlagesHoraires($seminar);
     
     $result = array();
-    
-    foreach ($allUsersRegisted[0] as $header) :
-      $result[]= $header;
+    $header = array();
+    foreach ($allUsersRegisted[0] as $head) :
+      $header[]= $head;
     endforeach;
       
     foreach ($plagesHoraires as $meeting) :
-      $result[] = $meeting->getDateStart();
+      $type = $meeting->getType();
+      //$data['date'] = \date("d-m-Y", $meeting->getDateStart()->getTimestamp());
+      $hdate = \date("F j, Y, H:m", $meeting->getDateStart()->getTimestamp());       
+      
+      $header[] = new Header($hdate, $type);
     endforeach;
+    $result[] = $header;
     $i = 0;
 
     // Oh ! out of memory whith profiler enable...
@@ -63,26 +69,18 @@ class ManagerController extends Controller {
     if ($this->container->has('profiler')) :
       $this->container->get('profiler')->disable();    
     endif;
-
+    $firstLineHeader = true;
     foreach ($allUsersRegisted as $user) :
+      if ($firstLineHeader) {
+        $firstLineHeader = false;
+        continue;
+      }
+      
       $row = array();
-      if ($i++ == 0) : 
-        foreach($user as $header):
-          $row[] = $header;
-        endforeach;
-        foreach ($plagesHoraires as $meeting) :
-          $data = array();
-          $data['type'] = $meeting->getType();
-          //$data['date'] = \date("d-m-Y", $meeting->getDateStart()->getTimestamp());
-          $data['date'] = \date("F j, Y, H:m", $meeting->getDateStart()->getTimestamp());
-          
-          $row[] = $data['date'];
-        endforeach;
-      else :
-        foreach($user as $infoUser):
-          $row[] = $infoUser;
-        endforeach;        
-       foreach ($plagesHoraires as $meeting) :
+      foreach($user as $infoUser):
+        $row[] = $infoUser;
+      endforeach;        
+      foreach ($plagesHoraires as $meeting) :
          $registration = $repoMeeting->getMeetingUser($seminar, $user, $meeting);
          if ($registration) :
            $row[] = $registration->getMeeting()->getType() == 'atelier' 
@@ -90,13 +88,13 @@ class ManagerController extends Controller {
              : 'X'; 
          else :
            $row[] = '-';
-         endif;  
-         
+         endif;        
        endforeach;
-      endif;
       $result[] = $row;
     endforeach;
-      
+
+    // var_dump($result);
+    
     $toview = array(
         'seminar' => $seminar,
         'allRegistrations' => $result,
