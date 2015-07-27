@@ -1,5 +1,5 @@
 {% extends "SioSemiBundle::layout.html.twig" %}
-
+{% set menuItemActive = 'manager' %}
 {% block content %}
  <h2>Welcome to the Manager:data export : {{seminar.name}}</h2>
  nb inscrits : {{allRegistrations | length }}

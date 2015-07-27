@@ -102,6 +102,7 @@ class UserController extends Controller {
         'form' => $form->createView(), 
         'user' => $user,
         'userEmail' => $session->get(SemiDefaultController::EMAIL_FOR_REGISTER),
+     //   'menuItemActive' => 'profil'
     );
   }
   
@@ -201,6 +202,7 @@ class UserController extends Controller {
     $session = $request->getSession();
     $seminar = NULL;
     $allStatusUserSeminar = NULL;
+    $idStatus = NULL;
     $user = $this->getUser();
     if (!is_object($user) || !$user instanceof UserInterface) :
       throw new AccessDeniedException('Semi : update profil (1)');
@@ -278,6 +280,12 @@ class UserController extends Controller {
     return $dateStart <= $now && $now <= $dateEnd;
   }
 
+  /**
+   * 
+   * @param User $user
+   * @param Seminar $seminar
+   * @return id of user status for this seminar or null
+   */
   function getIdStatusByUser($user, $seminar) {
     $manager = $this->getDoctrine()->getManager();
     $status = $manager->getRepository('SioSemiBundle:UserSeminar')

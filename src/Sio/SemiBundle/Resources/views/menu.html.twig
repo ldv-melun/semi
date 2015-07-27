@@ -14,7 +14,7 @@
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li {% if menuItemActive == "seminar" %} class="active" {% endif %} >
+        <li {% if menuItemActive|default('seminar') == "seminar" %} class="active" {% endif %} >
           <a href="{{ path('_semi_seminar_index') }}">
             Mes séminaires
           </a></li>

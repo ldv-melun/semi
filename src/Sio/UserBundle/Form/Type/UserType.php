@@ -5,10 +5,9 @@ namespace Sio\UserBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Sio\SemiBundle\Controller\DefaultController as SemiDefaultController;
-use Sio\SemiBundle\Entity\SeminarRepository;
+
 /**
- * Description of RegistrationFormType
+ * Description of UserType
  *
  * @author kpu
  */
@@ -43,22 +42,6 @@ class UserType extends AbstractType {
         'data' => $this->idStatusUserSeminarChecked  
       ));
       
-      //$seminar = $this->session->get(SemiDefaultController::SEMINAR);
-      //$repoSeminar = $manager->getRepository('SioSemiBundle:Seminar');
-      //$allStatusUserSeminar = $repoSeminar->getAllUserStatusBySeminar($seminar);
-     /*
-      $builder->add('status','entity',
-          array(
-          'mapped' => false,
-          'class' => 'Sio\SemiBundle\Entity\Status',
-          'property' => 'status',
-          'query_builder' => function (\Sio\SemiBundle\Entity\SeminarRepository $repoSe) use ($seminar){
-            $qb = $repoSe->getAllUserStatusBySeminar($seminar);
-            return $qb;
-          },
-          'label' => 'status'
-        ));
-      */
     endif;
     $builder->add('Valider', 'submit');    
   }
