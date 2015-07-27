@@ -22,9 +22,8 @@ class SeminarRepository extends EntityRepository {
     foreach ($seminarStatus as $semiStatus) :
       $statusObject = $semiStatus->getStatus();
       //$allStatus[$statusObject->getId()]['name'] = $statusObject->getName(); 
-      $allStatus[$statusObject->getId()] = $statusObject->getName(); 
+      $allStatus[$statusObject->getId()]= $statusObject->getName();      
     endforeach;
-    //$allStatus[2]['checked'] = TRUE; 
     return $allStatus;
   }
   

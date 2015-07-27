@@ -90,6 +90,7 @@
       {% if form.status is defined %}
       {# theme for design radio-inline #}
       {% form_theme form 'SioSemiBundle:Form:fields.html.twig' %}
+
       <div class="form-group">
         {{ form_label(form.status, 'Pour ce séminaire, vous participez en tant que ?',
          {'label_attr': {'class': 'col-sm-2 control-label'}}) }}

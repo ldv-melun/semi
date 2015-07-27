@@ -15,10 +15,12 @@ use Sio\SemiBundle\Entity\SeminarRepository;
 class UserType extends AbstractType {
 
     private $allStatusUserSeminar;
+    private $idStatusUserSeminarChecked;
         
-    public function __construct($allStatusUserSeminar = null)
+    public function __construct($allStatusUserSeminar, $idStatusUserSeminarChecked = null)
     {
-      $this->allStatusUserSeminar = $allStatusUserSeminar;    
+      $this->allStatusUserSeminar = $allStatusUserSeminar;
+      $this->idStatusUserSeminarChecked = $idStatusUserSeminarChecked;
     }
   
   public function buildForm(FormBuilderInterface $builder, array $options) {
@@ -37,7 +39,8 @@ class UserType extends AbstractType {
         'mapped' => false,
         'expanded'=> TRUE,
         'multiple'=> FALSE,  
-        'required' => TRUE
+        'required' => TRUE,
+        'data' => $this->idStatusUserSeminarChecked  
       ));
       
       //$seminar = $this->session->get(SemiDefaultController::SEMINAR);

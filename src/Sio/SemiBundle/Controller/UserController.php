@@ -213,10 +213,11 @@ class UserController extends Controller {
       $seminar = $repoSeminar->find($seminarId);    
       if ($seminar) :
         $allStatusUserSeminar = $repoSeminar->getAllUserStatusBySeminar($seminar);
+        $idStatus = $this->getIdStatusByUser($user, $seminar);
       endif;
     endif;
 
-    $form = $this->createForm(new UserType($allStatusUserSeminar), $user);
+    $form = $this->createForm(new UserType($allStatusUserSeminar, $idStatus), $user);
     $form->handleRequest($request);
 
     if ($form->isValid() && $this->validationExtraUpdateProfil($form)) {
@@ -277,4 +278,17 @@ class UserController extends Controller {
     return $dateStart <= $now && $now <= $dateEnd;
   }
 
+  function getIdStatusByUser($user, $seminar) {
+    $manager = $this->getDoctrine()->getManager();
+    $status = $manager->getRepository('SioSemiBundle:UserSeminar')
+            ->findOneBy(array('seminar' => $seminar, 'user'=> $user));
+    if ($status) :
+      $idStatus = $status->getStatus()->getId();
+    else :
+      $idStatus = null; 
+    endif;
+   
+    return $idStatus;
+  }
+  
 }
