@@ -1,6 +1,6 @@
 <?php
 
-namespace Sio\SemiBundle\Controller;
+namespace Sio\UserBundle\Controller;
 
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -56,7 +56,7 @@ class UserController extends Controller {
     $form->handleRequest($request);
 
     if ($form->isValid() && $this->validationExtra($form)) {
-           
+      // or via Validation de l'email (voir FUB) 
       $user->setEmail($session->get(SemiDefaultController::EMAIL_FOR_REGISTER));
       $factory = $this->get('security.encoder_factory');
       $encoder = $factory->getEncoder($user);
@@ -208,7 +208,7 @@ class UserController extends Controller {
       throw new AccessDeniedException('Semi : update profil (1)');
     endif;
     
-    $seminarId = $session->get(DefaultController::SEMINAR_ID);
+    $seminarId = $session->get(SemiDefaultController::SEMINAR_ID);
     if ($seminarId) :
       $manager = $this->getDoctrine()->getManager();
       $repoSeminar = $manager->getRepository('SioSemiBundle:Seminar');
@@ -266,7 +266,7 @@ class UserController extends Controller {
         'userEmail' => $user->getEmail(),
     );
     return $this
-            ->render('SioSemiBundle:User:register.html.twig', $toview);
+            ->render('SioUserBundle:User:register.html.twig', $toview);
   }  
   
   /**

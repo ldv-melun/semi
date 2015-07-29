@@ -22,7 +22,7 @@ class RegistrationController extends BaseController {
    
     $user = $this->getUser();
     if (!$user) :
-      return $this->forward('SioSemiBundle:User:register', array('request' => $request));
+      return $this->forward('SioUserBundle:User:register', array('request' => $request));
     else : 
       $this->get('session')->getFlashBag()->add('warning', '=> bad connect');   
       return $this->redirect($this->generateUrl(self::ROUTE_LOGIN));
