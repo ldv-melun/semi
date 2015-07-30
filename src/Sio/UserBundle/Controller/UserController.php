@@ -34,11 +34,11 @@ class UserController extends Controller {
     endif;  
     
     if (!$session->has(SemiDefaultController::EMAIL_FOR_REGISTER)
-        || !$session->has(DefaultController::SEMINAR_KEY)) :
+        || !$session->has(SemiDefaultController::SEMINAR_KEY)) :
       throw new AccessDeniedException('Semi : register (1)');
     endif;
     
-    $seminarKey = $session->get(DefaultController::SEMINAR_KEY);
+    $seminarKey = $session->get(SemiDefaultController::SEMINAR_KEY);
     
     $manager = $this->getDoctrine()->getManager();
     $repoSeminar = $manager->getRepository('SioSemiBundle:Seminar');
@@ -50,9 +50,10 @@ class UserController extends Controller {
     endif;
     
     $user = new User();
-    $allStatusUserSeminar = $repoSeminar->getAllUserStatusBySeminar($seminar);
- 
-    $form = $this->createForm(new UserType($allStatusUserSeminar), $user);
+  //  $allStatusUserSeminar = $repoSeminar->getAllUserStatusBySeminar($seminar);
+    //$form = $this->createForm(new UserType($allStatusUserSeminar), $user);
+    $registrationFormType = $this->get('sio_user.registration.form.type');
+    $form = $this->createForm($registrationFormType, $user);
     $form->handleRequest($request);
 
     if ($form->isValid() && $this->validationExtra($form)) {
@@ -65,9 +66,9 @@ class UserController extends Controller {
       // http://stackoverflow.com/questions/25760520/does-symfony-derive-the-salt-from-the-hash-or-isnt-the-hash-salted-at-all
       $user->setPassword($password);
       
-      // TODO : setRole ne marche pas...
-      $user->setRoles(array("ROLE_USER")); 
-      // FOSUser say not null (and unique ? so we put mail)
+      $user->addRoles("ROLE_USER"); 
+      
+      // FOSUser userName
       $user->setUsername($user->getEmail());                
       $user->setEnabled(true); 
       $userIdStatusForThisSeminar = $form->get('status')->getData();      

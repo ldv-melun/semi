@@ -73,9 +73,9 @@ fos_user:
     firewall_name: main
     user_class: Sio\UserBundle\Entity\User  
     
-    registration:
-        form:
-            type: sio_user_registration # see UserBundle From Type, Services.xml
+#    registration:
+#        form:
+#            type: sio_user_registration # see UserBundle From Type, Services.xml
 #    profile:
 #        form:
 #            type: sio_user_profile

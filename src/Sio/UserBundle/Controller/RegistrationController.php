@@ -2,8 +2,8 @@
 
 namespace Sio\UserBundle\Controller;
 
-// use FOS\UserBundle\Controller\RegistrationController as BaseController;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
+use FOS\UserBundle\Controller\RegistrationController as BaseController;
+// use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\HttpFoundation\Request;
 
 
@@ -27,6 +27,8 @@ class RegistrationController extends BaseController {
       $this->get('session')->getFlashBag()->add('warning', '=> bad connect');   
       return $this->redirect($this->generateUrl(self::ROUTE_LOGIN));
     endif;
+ 
+//    return parent::registerAction($request);
   }
 
 }

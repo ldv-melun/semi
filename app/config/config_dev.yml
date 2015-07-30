@@ -29,3 +29,7 @@ assetic:
 
 #swiftmailer:
 #    delivery_address: me@example.com
+swiftmailer:
+    transport: gmail
+    username:  olivier.capuozzo@gmail.com
+    password:  kpukpu-@88
