@@ -9,13 +9,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 
 /**
- * UserSeminar
+ * StatusUserSeminar
  *
  * @ORM\Table(name="semi_user_seminar")
  * @ORM\Entity
  * @UniqueEntity(fields={"user", "seminar"}, message="userseminar.role")
  */
-class UserSeminar
+class StatusUserSeminar
 {
     /**
      * @var integer

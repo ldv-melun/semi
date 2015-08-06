@@ -14,7 +14,10 @@ framework:
         strict_requirements: ~
     form:            ~
     csrf_protection: ~
-    validation:      { enable_annotations: true }
+    validation:
+        enable_annotations: true
+        enabled: true
+        api: 2.4 
     templating:
         engines: ['twig']
         #assets_version: SomeVersionScheme
@@ -73,9 +76,9 @@ fos_user:
     firewall_name: main
     user_class: Sio\UserBundle\Entity\User  
     
-#    registration:
-#        form:
-#            type: sio_user_registration # see UserBundle From Type, Services.xml
-#    profile:
-#        form:
-#            type: sio_user_profile
+    registration:
+        form:
+            type: sio_user_registration # see UserBundle From Type, Services.xml
+    profile:
+        form:
+            type: sio_user_profile

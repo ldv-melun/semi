@@ -17,28 +17,38 @@
             
         </service>
     
-        <service id="sio_user.registration.form.type" class="Sio\UserBundle\Form\Type\RegistrationFormType">
-            <argument type="service" id="service_container" />
+        <service id="sio_user.registration.form.type" 
+            class="Sio\UserBundle\Form\Type\RegistrationFormType">
+            <argument>%fos_user.model.user.class%</argument>
+            <argument type="service" id="helper.registration" />
             <tag name="form.type" alias="sio_user_registration" />
         </service>
 
-        <!-- service id="sio_user.profile.form.type" class="Sio\UserBundle\Form\Type\ProfileFormType">
+        <!-- permettre à l'utilisateur de tenter de modifier son mail -->
+        <service id="sio_user.profile.form.type" 
+                 class="Sio\UserBundle\Form\Type\ProfileFormType">
           <argument>%fos_user.model.user.class%</argument> 
           <tag name="form.type" alias="sio_user_profile" />
-        </service -->
+        </service>
 
-        <service id="sio.user_provider.email" class="Sio\UserBundle\Security\EmailProvider">
+        <service id="sio.user_provider.email" 
+                 class="Sio\UserBundle\Security\EmailProvider">
              <argument type="service" id="fos_user.user_manager"/>
+        </service>
+        
+        <service id="sio_user_registration_listener" 
+                 class="Sio\UserBundle\EventListener\RegistrationListener">
+             <tag name="kernel.event_subscriber"/>
+             <argument type="service" id="helper.registration" />
+        </service>
+        
+        <!-- override service FUB/Resources/config/validator.xml -->
+        <service id="fos_user.validator.initializer" class="Sio\UserBundle\Validator\Initializer" public="false">
+            <tag name="validator.initializer" />
+            <argument type="service" id="fos_user.user_manager" />
         </service>
     
     </services>
     
-<!--
-services:
-    sio_semi.user_provider.email:
-        class:        "Sio\SemiBundle\Security\EmailProvider"
-        arguments:    ["@fos_user.user_manager"]
--->        
-
 </container>
  

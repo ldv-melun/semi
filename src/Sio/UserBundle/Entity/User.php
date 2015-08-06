@@ -30,7 +30,7 @@ class User extends BaseUser
      * @ORM\Column(name="lastName", type="string", length=50, nullable=true)
      * @Assert\NotBlank(message="Veuillez entrer votre nom", groups={"Registration", "Profile"})
      * @Assert\Length(
-     *     min="2",
+     *     min="3",
      *     max="50",
      *     minMessage="Votre nom est trop court",
      *     maxMessage="Votre nom est trop long",
@@ -54,21 +54,6 @@ class User extends BaseUser
      * )
      */
     private $firstName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="jobCity", type="string", length=80, nullable=true)
-     * @Assert\NotBlank(message="Veuillez entrer la ville de votre résidence administrative", groups={"Registration", "Profile"})
-     * @Assert\Length(
-     *     min="2",
-     *     max="80",
-     *     minMessage="La ville de votre résidence administrative est trop court",
-     *     maxMessage="La ville de votre résidence administrative est trop long",
-     *     groups={"Registration", "Profile"}
-     * )
-     */
-    private $jobCity;
 
     /**
      * @var string
@@ -114,7 +99,6 @@ class User extends BaseUser
      * @var string
      *
      * @ORM\Column(name="ipLastLogin", type="string", length=75, nullable=true)
-     * @Assert\NotBlank(message="Veuillez entrer votre nom", groups={"Registration", "Profile"})
      */
     private $ipLastLogin;
     

@@ -19,7 +19,7 @@ class RegistrationController extends BaseController {
 
   /* override */
   public function registerAction(Request $request) {
-   
+ /*  
     $user = $this->getUser();
     if (!$user) :
       return $this->forward('SioUserBundle:User:register', array('request' => $request));
@@ -27,8 +27,8 @@ class RegistrationController extends BaseController {
       $this->get('session')->getFlashBag()->add('warning', '=> bad connect');   
       return $this->redirect($this->generateUrl(self::ROUTE_LOGIN));
     endif;
- 
-//    return parent::registerAction($request);
+ */
+   return parent::registerAction($request);
   }
 
 }

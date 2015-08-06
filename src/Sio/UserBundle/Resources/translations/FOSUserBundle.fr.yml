@@ -85,7 +85,7 @@ layout:
 # Form field labels
 form:
     group_name: "Nom du groupe :"
-    username: "Adresse e-mail :"
+    username: "Username :"
     email: "Adresse e-mail :"
     current_password: "Mot de passe actuel :"
     password: "Mot de passe :"

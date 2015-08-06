@@ -9,7 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sio\SemiBundle\Entity\Registration as Registration;
 Use Symfony\Component\HttpFoundation\JsonResponse;
-
+Use Sio\SemiBundle\SioSemiConstants;
 /**
  * @Route("/seminar")
  */
@@ -46,7 +46,7 @@ class SeminarController extends Controller {
       // TODO à revoir cette section (recup directe des seminaires d'un user)
       $query = $em->createQuery(
           'SELECT userseminar
-                FROM SioSemiBundle:UserSeminar userseminar
+                FROM SioSemiBundle:StatusUserSeminar userseminar
                 WHERE userseminar.user = ' . $user->getId() . '
                 ORDER BY userseminar.id'
       );
@@ -68,11 +68,22 @@ class SeminarController extends Controller {
 
     $seminar = $this->getDoctrine()->getRepository("SioSemiBundle:Seminar")->findOneBy(array("id" => $idSeminar));
     if (!$seminar) {
-      // TODO throw new ;
+      // TODO throw exception ? 
       return $this->redirect($this->generateUrl('_semi_default_index'));
     }
+    
+    // user can go on this seminar ? (if hack url :)
+    $seminarStatus = $this->getDoctrine()
+        ->getRepository('SioSemiBundle:StatusUserSeminar')
+        ->findOneBy(array('user' => $user,
+                          'seminar' => $seminar));
+    if (!$seminarStatus) {
+      // TODO throw exception ? 
+      return $this->redirect($this->generateUrl('_semi_default_index'));
+    }
+    
     // set idSeminar in session
-    $request->getSession()->set(DefaultController::SEMINAR_ID, $idSeminar);
+    $request->getSession()->set(SioSemiConstants::SEMINAR_ID, $idSeminar);
      
     if ($isOnlyMyRegistrations) {
       $em = $this->getDoctrine()->getManager();

@@ -8,15 +8,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 Use Symfony\Component\HttpFoundation\JsonResponse;
+Use Sio\SemiBundle\SioSemiConstants;
 
 class DefaultController extends Controller
 {
-    const ROUTE_LOGIN = 'fos_user_security_login';
-    const SEMINAR_KEY = 'seminarKey';
-    const SEMINAR_ID = 'seminarId';
-    const SEMINAR = 'seminar';
-    const EMAIL_FOR_REGISTER = 'emailRegister';
-
+    
   /**
      * @Route("/", name="_semi_default_index")
      */
@@ -24,7 +20,7 @@ class DefaultController extends Controller
     {
       $user = $this->getUser();
       if (! $user) {
-        return $this->redirect($this->generateUrl(self::ROUTE_LOGIN));
+        return $this->redirect($this->generateUrl(SioSemiConstants::ROUTE_LOGIN));
       } else {
         return $this->redirect($this->generateUrl('_semi_seminar_index'));
       }
@@ -58,12 +54,12 @@ class DefaultController extends Controller
               
        // put clef into session 
        if ($seminar) {
-           $request->getSession()->set(self::SEMINAR_KEY, $seminarClef);
-           $request->getSession()->set(self::SEMINAR_ID, $seminar->getId());
+           $request->getSession()->set(SioSemiConstants::SEMINAR_KEY, $seminarClef);
+           $request->getSession()->set(SioSemiConstants::SEMINAR_ID, $seminar->getId());
        }
        // put email into session for register
        if ($emailSyntax) {
-           $request->getSession()->set(self::EMAIL_FOR_REGISTER, $emailUser);
+           $request->getSession()->set(SioSemiConstants::EMAIL_FOR_REGISTER, $emailUser);
        }
        
        $data = array('clefOk'=>$seminar != false, 
@@ -81,7 +77,7 @@ class DefaultController extends Controller
     public function redirectAction(Request $request)
     {
         $session = $request->getSession();
-        $idSeminar = $session->get(self::SEMINAR_ID);
+        $idSeminar = $session->get(SioSemiConstants::SEMINAR_ID);
         // Redirect the user, will also update ipLastLogin & dateLastLogin.
         $response = new Response();
         $response->setStatusCode(200);

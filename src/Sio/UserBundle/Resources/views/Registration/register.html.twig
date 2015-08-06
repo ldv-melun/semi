@@ -1,0 +1,111 @@
+{% extends "SioSemiBundle::layout.html.twig" %}
+{% set menuItemActive = 'profil' %}
+
+{% block content %}
+{% block fos_user_content %}
+  <script>
+  /**
+     * redirect for register
+     */
+    function dologin() {
+        window.location = "{{ path('_semi_default_index') }}";
+    }
+    
+    function onChangePW() {
+      var pw = $('#sio_user_pass1').val();    
+      if (pw == 'nochange')
+        $('#sio_user_pass1').val("");      
+    }
+    
+  </script>
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title" style="text-align: center">
+        Création de mon profil
+      </h3>
+    </div>
+    <div class="panel-body">
+      <form action="{{ path('fos_user_registration_register') }}" {{ form_enctype(form) }} method="POST" class="fos_user_registration_register form-horizontal">
+      {{ form_errors(form) }}
+
+      <div class="form-group">
+        {{ form_label(form.lastName, 'Nom', {'label_attr': {'class': 'col-sm-2 control-label'}})}}
+        {{ form_errors(form.lastName) }}
+        <div class="col-sm-10">
+          {{ form_widget(form.lastName, {'attr': {'class': 'form-control'}}) }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        {{ form_label(form.firstName, 'Prénom' , {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+        {{ form_errors(form.firstName) }}
+        <div class="col-sm-10">
+          {{ form_widget(form.firstName, {'attr': {'class': 'form-control'}}) }}
+        </div>
+      </div>
+        
+      <div class="form-group">
+        {{ form_label(form.email, 'Email', {'label_attr': {'class': 'col-sm-2 control-label'}} ) }}
+        {{ form_errors(form.email) }}
+        <div class="col-sm-10">
+          {{ form_widget(form.email , {'attr': {'class': 'form-control', 'readonly':'true'}})}}
+        </div>
+      </div>        
+        
+      <div class="form-group">
+        {{ form_label(form.homeCity, 'Ville de résidence', {'label_attr': {'class': 'col-sm-2 control-label'}} ) }}
+        {{ form_errors(form.homeCity) }}
+        <div class="col-sm-10">
+          {{ form_widget(form.homeCity , {'attr': {'class': 'form-control'}})}}
+        </div>
+      </div>
+      <div class="form-group">
+        {{ form_label(form.organisation, 'Académie', {'label_attr': {'class': 'col-sm-2 control-label'}})}}
+        <div class="col-sm-10">
+          {{ form_widget(form.organisation, {'attr': {'class': 'form-control'}}) }}
+        </div>
+      </div>
+      <div class="form-group">
+        {{ form_label(form.plainPassword.first, 'Mot de passe', {'label_attr': {'class': 'col-sm-2 control-label'}})}}
+        <div class="col-sm-10">
+          {{ form_widget(form.plainPassword.first, {'attr': {'class': 'form-control', 'onkeydown' : 'onChangePW();'}}) }}          
+        </div>        
+      </div>
+
+      <div class="form-group">
+        {{ form_label(form.plainPassword.second, 'Confirmer votre mot de passe', {'label_attr': {'class': 'col-sm-2 control-label'}})}}
+        <div class="col-sm-10">
+          {{ form_widget(form.plainPassword.second, {'attr': {'class': 'form-control'}}) }}          
+        </div>        
+      </div>
+      <hr>
+      {% if form.status is defined %}
+      {# theme for design radio-inline #}
+      {% form_theme form 'SioSemiBundle:Form:fields.html.twig' %}
+
+      <div class="form-group">
+        {{ form_label(form.status, 'Pour ce séminaire, vous participez en tant que ?',
+         {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+         <div class="col-sm-10">
+         {{ form_widget(form.status) }}
+         </div>
+      </div>       
+      {% endif %}
+    </div> {# panel-body #}
+  
+  <div class="panel-footer" style="overflow:hidden;text-align:right;">
+    <div class="form-group">
+        {{ form_widget(form.Valider, 
+          {'attr': {'class': 'btn btn-success btn-sm'
+                     ,'value' : 'registration.submit'|trans}}) }}
+        <button type="cancel" id="btcancel" name="btcancel" onClick='dologin();' 
+                 class="btn btn-default btn-sm">Annuler </button>      
+    </div>  
+  </div>
+  {{ form_rest(form) }}
+    
+  {# { form_end(form) } #}
+</div> 
+
+{% endblock fos_user_content %}
+{% endblock content %}

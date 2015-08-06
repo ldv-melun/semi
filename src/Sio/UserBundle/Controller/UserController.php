@@ -7,38 +7,38 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sio\SemiBundle\Controller\DefaultController as SemiDefaultController;
 use Sio\UserBundle\Entity\User as User;
 use Sio\UserBundle\Form\Type\UserType as UserType;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use Sio\SemiBundle\Entity\UserSeminar as UserSeminar;
+// use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Sio\SemiBundle\Entity\StatusUserSeminar;
 use FOS\UserBundle\Model\UserInterface;
+Use Sio\SemiBundle\SioSemiConstants;
 
 /**
  * @Route("/user")
  */
 class UserController extends Controller {
 
-  const ROUTE_LOGIN = 'fos_user_security_login';
-  
    /**
    *  
    * @Route("/user/register", name="_semi_user_register")
    * @Template()
    */
   public function registerAction(Request $request) {
-    $session = $request->getSession();
+   
     $u = $this->getUser();
     if (is_object($u) && $u instanceof UserInterface && $u.getId()) :
       return $this->updateProfilAction($request);   
     endif;  
+
+    throw new AccessDeniedException('Semi : register (1)');
     
-    if (!$session->has(SemiDefaultController::EMAIL_FOR_REGISTER)
-        || !$session->has(SemiDefaultController::SEMINAR_KEY)) :
-      throw new AccessDeniedException('Semi : register (1)');
-    endif;
-    
-    $seminarKey = $session->get(SemiDefaultController::SEMINAR_KEY);
+  }
+ 
+  /*
+  private function oldRegister(Request $request){
+    $session = $request->getSession();
+    $seminarKey = $session->get(SioSemiConstants::SEMINAR_KEY);
     
     $manager = $this->getDoctrine()->getManager();
     $repoSeminar = $manager->getRepository('SioSemiBundle:Seminar');
@@ -58,7 +58,7 @@ class UserController extends Controller {
 
     if ($form->isValid() && $this->validationExtra($form)) {
       // or via Validation de l'email (voir FUB) 
-      $user->setEmail($session->get(SemiDefaultController::EMAIL_FOR_REGISTER));
+      $user->setEmail($session->get(SioSemiConstants::EMAIL_FOR_REGISTER));
       $factory = $this->get('security.encoder_factory');
       $encoder = $factory->getEncoder($user);
       $password = $encoder->encodePassword($form->get('pass1')->getData(), null);
@@ -66,7 +66,9 @@ class UserController extends Controller {
       // http://stackoverflow.com/questions/25760520/does-symfony-derive-the-salt-from-the-hash-or-isnt-the-hash-salted-at-all
       $user->setPassword($password);
       
-      $user->addRoles("ROLE_USER"); 
+      // TODO : ?
+      $rolesArr = array('ROLE_USER');
+      $user->setRoles($rolesArr); 
       
       // FOSUser userName
       $user->setUsername($user->getEmail());                
@@ -83,7 +85,7 @@ class UserController extends Controller {
        // Try and commit the transaction
        $em->getConnection()->commit();
        // it is no longer useful in session
-       $session->remove(SemiDefaultController::EMAIL_FOR_REGISTER);    
+       $session->remove(SioSemiConstants::EMAIL_FOR_REGISTER);    
        $this->get('session')
           ->getFlashBag()
           ->add('success', 'Votre compte a bien été créé (' 
@@ -102,15 +104,16 @@ class UserController extends Controller {
     return array(
         'form' => $form->createView(), 
         'user' => $user,
-        'userEmail' => $session->get(SemiDefaultController::EMAIL_FOR_REGISTER),
+        'userEmail' => $session->get(SioSemiConstants::EMAIL_FOR_REGISTER),
      //   'menuItemActive' => 'profil'
     );
   }
+ 
   
-  /**
+ *
    * Validate password and userIdStatusForThisSeminar...
    * @param $form
-   */
+   *
   private function validationExtra($form) {
     
     $pass1 = $form->get('pass1')->getData();
@@ -129,7 +132,8 @@ class UserController extends Controller {
     
     return $okpw && $okStatus;  
   }
-  
+  */ 
+   
   
   /**
    * Validate password if not 'nochange'...
@@ -176,7 +180,7 @@ class UserController extends Controller {
         ->find($idStatus);
 
     $statusUserSeminar = //$this->getDoctrine()
-      $em->getRepository('SioSemiBundle:UserSeminar')
+      $em->getRepository('SioSemiBundle:StatusUserSeminar')
         ->findOneBy(array('seminar' => $seminar
         , 'user'=> $user));  
     
@@ -184,9 +188,9 @@ class UserController extends Controller {
       $statusUserSeminar->setStatus($userStatus);
       $em->persist($statusUserSeminar);
       $em->flush(); 
-       $this->get('session')->getFlashBag()->add('success', 'Satus Update ' . $statusUserSeminar);
+      // $this->get('session')->getFlashBag()->add('success', 'Satus Update ' . $statusUserSeminar);
     } else {
-      $newUserSeminar = new UserSeminar();
+      $newUserSeminar = new StatusUserSeminar();
       $newUserSeminar->setSeminar($seminar);
       $newUserSeminar->setStatus($userStatus);
       $newUserSeminar->setUser($user);
@@ -197,7 +201,7 @@ class UserController extends Controller {
   }
 
    /** 
-   * @Route("/user/profil", name="_semi_user_profil")
+   * @Route("/profil", name="_semi_user_profil")
    */
   public function updateProfilAction(Request $request) {
     $session = $request->getSession();
@@ -209,15 +213,15 @@ class UserController extends Controller {
       throw new AccessDeniedException('Semi : update profil (1)');
     endif;
     
-    $seminarId = $session->get(SemiDefaultController::SEMINAR_ID);
+    $seminarId = $session->get(SioSemiConstants::SEMINAR_ID);
     if ($seminarId) :
       $manager = $this->getDoctrine()->getManager();
       $repoSeminar = $manager->getRepository('SioSemiBundle:Seminar');
       $seminar = $repoSeminar->find($seminarId);    
       if ($seminar) :
         $allStatusUserSeminar = $repoSeminar->getAllUserStatusBySeminar($seminar);
-        $idStatus = $this->getIdStatusByUser($user, $seminar);
-      endif;
+        $idStatus = $this->getIdStatusByUserSeminar($user, $seminar);
+      endif;      
     endif;
 
     $form = $this->createForm(new UserType($allStatusUserSeminar, $idStatus), $user);
@@ -258,7 +262,7 @@ class UserController extends Controller {
         throw $ex;
       }
 
-      return $this->redirect($this->generateUrl('_semi_default_redirect'));
+      return $this->redirect($this->generateUrl('_semi_default_index'));
     }
   
     $toview = array(
@@ -267,7 +271,7 @@ class UserController extends Controller {
         'userEmail' => $user->getEmail(),
     );
     return $this
-            ->render('SioUserBundle:User:register.html.twig', $toview);
+            ->render('SioUserBundle:User:profile.html.twig', $toview);
   }  
   
   /**
@@ -287,9 +291,9 @@ class UserController extends Controller {
    * @param Seminar $seminar
    * @return id of user status for this seminar or null
    */
-  function getIdStatusByUser($user, $seminar) {
+  function getIdStatusByUserSeminar($user, $seminar) {
     $manager = $this->getDoctrine()->getManager();
-    $status = $manager->getRepository('SioSemiBundle:UserSeminar')
+    $status = $manager->getRepository('SioSemiBundle:StatusUserSeminar')
             ->findOneBy(array('seminar' => $seminar, 'user'=> $user));
     if ($status) :
       $idStatus = $status->getStatus()->getId();

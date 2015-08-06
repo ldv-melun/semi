@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Sio\SemiBundle\Util\Header as Header;
+use Sio\SemiBundle\SioSemiConstants;
 
 /**
  * @Route("/manager")
@@ -18,7 +19,7 @@ class ManagerController extends Controller {
    * @Template()
    */
   public function indexAction(Request $request) {
-    $idSeminar = $request->getSession()->get(DefaultController::SEMINAR_ID);
+    $idSeminar = $request->getSession()->get(SioSemiConstants::SEMINAR_ID);
     if ($idSeminar) {
       $return = $this->forward('SioSemiBundle:Manager:export', array('idSeminar'=>$idSeminar));
     } else {
