@@ -81,7 +81,7 @@
                     <td id='{{ seance.id }}'>{{ seance.dispo }} / {{ seance.maxSeats }} {% if seance.dispo <= 0 %}complet{% endif %}</td>
                     <td class='{{ seance.type | e('css') }}'>{{ seance.type }}</td>
                     <td>{{ seance.dateHeureDebut }} - {{ seance.dateHeureFin }}</td>
-                    <td>{% if seance.type == 'atelier' %}({{ seance.relativeNumber }}) {% endif %}{{ seance.description }}</td>
+                    <td>{% if seance.type == 'atelier' %}({{ seance.relativeNumber }}) {% endif %}{{ seance.description  | raw }}</td>
                     <td>{{ seance.stakeholders | raw}}</td>
                     {% set oldIdS, oldDateHeureDebut, seanceSave = seance.id, seance.dateHeureDebut, seance %}
                   </tr>
