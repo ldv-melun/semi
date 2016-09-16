@@ -24,7 +24,7 @@ class HelperRegistration {
   protected $securityContext;
 
   public function __construct(
-  EntityManager $em, SecurityContext $securityContext, RequestStack $requestStack) {
+   ntityManager $em, SecurityContext $securityContext, RequestStack $requestStack) {
     $this->requestStack = $requestStack;
     $this->em = $em;
     $this->securityContext = $securityContext;
@@ -96,7 +96,7 @@ class HelperRegistration {
             ->find($idStatus);
 
         $statusUserSeminar = //$this->getDoctrine()
-            $this->em->getRepository('SioSemiBundle:tusStaUserSeminar')
+            $this->em->getRepository('SioSemiBundle:StatusUserSeminar')
             ->findOneBy(array('seminar' => $seminar
             , 'user' => $user));
 

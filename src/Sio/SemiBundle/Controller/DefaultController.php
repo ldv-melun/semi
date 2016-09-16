@@ -12,7 +12,7 @@ Use Sio\SemiBundle\SioSemiConstants;
 
 class DefaultController extends Controller
 {
-    
+
   /**
      * @Route("/", name="_semi_default_index")
      */
@@ -27,7 +27,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @return JSon 
+     * @return JSon
      *  {clefOk: true|false, userKnown: true|false, emailSyntaxOk: true|false}
      * @Route("/checkclef-mail", name="_semi_default_check_clef_mail")
      */
@@ -35,7 +35,8 @@ class DefaultController extends Controller
     {
        $seminarClef = $request->request->get('seminar-clef', null);
        $emailUser = $request->request->get('email-user', null);
-      
+
+
        if ($seminarClef) {
           $seminar = $this->getDoctrine()
                ->getRepository('SioSemiBundle:Seminar')
@@ -44,6 +45,7 @@ class DefaultController extends Controller
           $seminar = null;
        }
        $emailSyntax = filter_var($emailUser, FILTER_VALIDATE_EMAIL);
+
        if ($emailUser && $emailSyntax) {
           $semiUser = $this->getDoctrine()
               ->getRepository('SioUserBundle:User')
@@ -51,8 +53,8 @@ class DefaultController extends Controller
        } else {
           $semiUser = null;
        }
-              
-       // put clef into session 
+
+       // put clef into session
        if ($seminar) {
            $request->getSession()->set(SioSemiConstants::SEMINAR_KEY, $seminarClef);
            $request->getSession()->set(SioSemiConstants::SEMINAR_ID, $seminar->getId());
@@ -61,15 +63,15 @@ class DefaultController extends Controller
        if ($emailSyntax) {
            $request->getSession()->set(SioSemiConstants::EMAIL_FOR_REGISTER, $emailUser);
        }
-       
-       $data = array('clefOk'=>$seminar != false, 
-                     'userKnown' => $semiUser != false, 
+
+       $data = array('clefOk'=>$seminar != false,
+                     'userKnown' => $semiUser != false,
                      'emailSyntaxOk'=> $emailSyntax == true);
-      
-       return new JsonResponse($data);        
+
+       return new JsonResponse($data);
     }
 
-    
+
     /**
      * @Route("/redirect", name="_semi_default_redirect")
      * @Template()
@@ -81,7 +83,7 @@ class DefaultController extends Controller
         // Redirect the user, will also update ipLastLogin & dateLastLogin.
         $response = new Response();
         $response->setStatusCode(200);
-        
+
         if($this->get('security.context')->isGranted('IS_AUTHENTICATED_REMEMBERED'))
         {
             // ipLastLogin & dateLastLogin
@@ -91,7 +93,7 @@ class DefaultController extends Controller
             $manager = $this->getDoctrine()->getManager();
             $manager->persist($user);
             $manager->flush();
-            
+
             if(true === $this->get('security.context')->isGranted('ROLE_ADMIN'))
             {
               return $this->redirect($this->generateUrl('_semi_seminar_index') . "$idSeminar");
