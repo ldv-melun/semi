@@ -6,7 +6,7 @@ use Sio\SemiBundle\SioSemiConstants;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\SecurityContext;
 use Doctrine\ORM\EntityManager;
-use Sio\SemiBundle\Entity\UserSeminar;
+use Sio\SemiBundle\Entity\StatusUserSeminar;
 
 /**
  * Description of HelperRegistration
@@ -108,7 +108,7 @@ class HelperRegistration {
           // $session->getFlashBag()->add('success', 'Satus Update ' . $statusUserSeminar);
         else :
           // create
-          $newUserSeminar = new UserSeminar();
+          $newUserSeminar = new StatusUserSeminar();
           $newUserSeminar->setSeminar($seminar);
           $newUserSeminar->setStatus($userStatus);
           $newUserSeminar->setUser($user);
