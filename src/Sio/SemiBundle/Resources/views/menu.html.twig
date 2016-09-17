@@ -12,6 +12,7 @@
       </button>
       <a class="navbar-brand" href="{{ path('_semi_default_index')}}">{{ projectName }}</a>
     </div>
+   {% if app.user is not null %}   
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li {% if menuItemActive|default('seminar') == "seminar" %} class="active" {% endif %} >
@@ -46,7 +47,8 @@
          </ul>
 
       </div><!--/.nav-collapse -->
-  </div><!--/.container-fluid -->
+   {% endif %}
+   </div><!--/.container-fluid -->
 </nav>
 
 {# https://github.com/FriendsOfSymfony/FOSUserBundle/blob/master/Resources/doc/overriding_templates.md #}

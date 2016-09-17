@@ -85,10 +85,9 @@ fos_user:
             type: sio_user_registration # see UserBundle From Type, Services.xml
             #        confirmation:        
             #            enabled: true
-        #    from_email:
-            #        address:        admin@quizbe.org
-            #        sender_name:    seminaire.quizbe.org App
-   
+    from_email:
+        address:        ne_pas_repondre@quizbe.org
+        sender_name:    seminaire.quizbe.org App
    
     profile:
         form:
