@@ -24,7 +24,7 @@ class HelperRegistration {
   protected $securityContext;
 
   public function __construct(
-   ntityManager $em, SecurityContext $securityContext, RequestStack $requestStack) {
+   EntityManager $em, SecurityContext $securityContext, RequestStack $requestStack) {
     $this->requestStack = $requestStack;
     $this->em = $em;
     $this->securityContext = $securityContext;
