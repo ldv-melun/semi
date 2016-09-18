@@ -150,12 +150,11 @@ class SeminarController extends Controller {
     $inscription = $request->request->get('inscrire', null);
     $dateHeureDebut = $request->request->get('dateHeureDebut', null);
 
-
     if ($idSeance == NULL || $inscription == NULL || $dateHeureDebut == NULL) {
       // This case can't normally happen.
       $response = new Response();
       $response->setStatusCode(500);
-      $response->headers->set('Refresh', '0; url=' . $this->generateUrl('_semi_user_index'));
+      $response->headers->set('Refresh', '0; url=' . $this->generateUrl('_semi_default_index'));
       $response->send();
       return;
     }
@@ -179,7 +178,7 @@ class SeminarController extends Controller {
     }
 
     $statCurUser = $repoMeeting->countNbMeetingRegister($user, $seminar);
-    $statMeeting = $repoMeeting->getStatInscriptionSeance($dateHeureDebut);
+    $statMeeting = $repoMeeting->getStatInscriptionSeance($seminar, $dateHeureDebut);
 
     return new JsonResponse(array('statCurUser' => $statCurUser, 'statMeeting' => $statMeeting));
   }

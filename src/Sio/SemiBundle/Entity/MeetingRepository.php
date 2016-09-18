@@ -54,18 +54,46 @@ class MeetingRepository extends EntityRepository {
    *
    * Obtient des informations (nombre d'inscrits...) sur les seances d'un même créneau (dateStart)
    * TODO : do it in OQL
+   * @param seminar $seminar 
    * @param date_sql $dateStart 
    */
-  public function getStatInscriptionSeance($dateStart) {
+  public function getStatInscriptionSeance($seminar, $dateStart) {
     $rsm = new ResultSetMapping;
     $rsm->addScalarResult('id', 'id');
     $rsm->addScalarResult('free', 'free');
     $rsm->addScalarResult('maxSeats', 'maxSeats');
 
-    $sql = 'SELECT semi_meeting.id, maxSeats-count(idMeeting) AS free, maxSeats FROM semi_meeting LEFT JOIN semi_registration ON semi_meeting.id=idMeeting WHERE dateStart = ? GROUP BY semi_meeting.id';
-
+    // $sql = 'SELECT semi_meeting.id, maxSeats-count(idMeeting) AS free, maxSeats FROM semi_meeting LEFT JOIN semi_registration ON semi_meeting.id=idMeeting WHERE idSeminar = ? AND dateStart = ? GROUP BY semi_meeting.id';
+    //
+    //or select ALL stats for seminar of this meeting
+    $sql = 'SELECT semi_meeting.id, maxSeats-count(idMeeting) AS free, maxSeats FROM semi_meeting LEFT JOIN semi_registration ON semi_meeting.id=idMeeting WHERE idSeminar = ? GROUP BY semi_meeting.id';
+    
     $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
-    $query->setParameter(1, $dateStart);
+
+    $query->setParameter(1, $seminar->getId());
+   // $query->setParameter(2, $dateStart);
+    
+    return $query->getResult();
+  }
+
+   /**
+   *
+   * Obtient des informations (nombre d'inscrits...) sur les seances d'un seminaire
+   * pour être utilisé via une requête ajax des clients (gestionnaire only ?) afin de visualiserr
+   * en temps réel les prise de décision des utilisateurs
+   * TODO : do it in OQL
+   * @param seminar
+   */
+  public function getStatInscriptionsSeancesBySeminar($seminar) {
+    $rsm = new ResultSetMapping;
+    $rsm->addScalarResult('id', 'id');
+    $rsm->addScalarResult('free', 'free');
+    $rsm->addScalarResult('maxSeats', 'maxSeats');
+
+    // select ALL stats for seminar of this meeting
+    $sql = 'SELECT semi_meeting.id, maxSeats-count(idMeeting) AS free, maxSeats FROM semi_meeting LEFT JOIN semi_registration ON semi_meeting.id=idMeeting WHERE idSeminar = ? GROUP BY semi_meeting.id';
+    $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
+    $query->setParameter(1, $seminar->getId());
 
     return $query->getResult();
   }
@@ -87,7 +115,6 @@ class MeetingRepository extends EntityRepository {
      return $q->getResult();
   }
   
-  
   /**
    * 
    * @param type $seminar
@@ -106,6 +133,5 @@ class MeetingRepository extends EntityRepository {
      $q->setParameter("ds", $meeting->getDateStart());
      return $q->getOneOrNullResult();
   }
-  
   
 }
