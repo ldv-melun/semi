@@ -1,10 +1,15 @@
 {% extends "SioSemiBundle::layout.html.twig" %}
 
 {% block content %}
-    <h1>Page non trouvée</h1>
-
+  <div class='panel panel-warning'>
+  <div class='panel-heading'>
+    <strong>Page non trouvée</strong>
+  </div>
+    <div class='panel-body'>
     <p>
-      La page demandée ne peut être localisée.<br>
+      La ressource demandée ne peut être localisée.<br>
       <a href="{{ path('_semi_default_index') }}">retour à la page d'accueil</a>.
     </p>
+  </div>
+  </div>
 {% endblock %}

@@ -1,0 +1,7 @@
+# http://groups.gandi.net/fr/topic/gandi.fr.hebergement.simple/34557
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /web
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ /web/$1 [QSA,L]
+</IfModule>

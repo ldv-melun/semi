@@ -1,9 +1,15 @@
 {% extends "SioSemiBundle::layout.html.twig" %}
 
 {% block content %}
-    <h1>Désolé</h1>
+  <div class='panel panel-warning'>
+    <div class='panel-heading'>
+      <strong>Désolé</strong>
+    </div>
+    <div class='panel-body'>
+      <p>la demande ne peut aboutir...<br>
+        <a href="{{ path('_semi_default_index') }}">retour à la page d'accueil</a>.
+      </p>
+    </div>
+  </div>
 
-    <p>la demande ne peut aboutir...<br>
-      <a href="{{ path('_semi_default_index') }}">retour à la page d'accueil</a>.
-    </p>
 {% endblock %}
