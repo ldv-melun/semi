@@ -1,10 +1,9 @@
 {% extends "SioSemiBundle::layout.html.twig" %}
 
-{% block body %}
-    <h1>Oups !</h1>
+{% block content %}
+    <h1>Désolé</h1>
 
-    <p>
-      Désolé, la demande ne peut aboutir...<br>
+    <p>la demande ne peut aboutir...<br>
       <a href="{{ path('_semi_default_index') }}">retour à la page d'accueil</a>.
     </p>
 {% endblock %}

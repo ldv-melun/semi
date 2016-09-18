@@ -1,11 +1,8 @@
 {% extends "SioSemiBundle::layout.html.twig" %}
 
-{% block body %}
+{% block content %}
     <h1>Page non trouvée</h1>
 
-    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-        {# ... #}
-    {% endif %}
     <p>
       La page demandée ne peut être localisée.<br>
       <a href="{{ path('_semi_default_index') }}">retour à la page d'accueil</a>.
