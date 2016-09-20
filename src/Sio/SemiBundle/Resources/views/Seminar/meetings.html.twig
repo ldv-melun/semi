@@ -78,7 +78,7 @@
                       />        
                     </td>
                     {% endif %}
-                    <td id='{{ seance.id }}'>{{ seance.dispo }} / {{ seance.maxSeats }} {% if seance.dispo <= 0 %}complet{% endif %}</td>
+                    <td id='{{ seance.id }}'>{{ seance.dispo }} / {{ seance.maxSeats }}{% if seance.dispo <= 0 %} complet{% endif %}</td>
                     <td class='{{ seance.type | e('css') }}'>{{ seance.type }}</td>
                     <td>{{ seance.dateHeureDebut }} - {{ seance.dateHeureFin }}</td>
                     <td>{% if seance.type == 'atelier' %}({{ seance.relativeNumber }}) {% endif %}{{ seance.description  | raw }}</td>
@@ -115,5 +115,21 @@
       {% endfor %}
     </div>
   </div>
-</div>
+</div>      
+{% endblock %}
+{% block javascripts %}
+   {{ parent() }}
+
+     <script>
+      $('document').ready(function() {      
+       {% if app.user and is_granted('ROLE_MANAGER') %}  
+          window.setInterval(stateInscrSeance, {{ constant('Sio\\SemiBundle\\SioSemiConstants::TIMER_REFRESH_FREQ') }});
+       {% else %}
+          stateInscrSeance();           
+       {% endif %}
+      });
+     </script> 
+    
+});
+
 {% endblock %}

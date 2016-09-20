@@ -178,11 +178,39 @@ class SeminarController extends Controller {
     }
 
     $statCurUser = $repoMeeting->countNbMeetingRegister($user, $seminar);
-    $statMeeting = $repoMeeting->getStatInscriptionSeance($seminar, $dateHeureDebut);
+    
+    // less data send...
+    //$statMeeting = $repoMeeting->getStatInscriptionSeance($seminar, $dateHeureDebut);
+    
+    $statMeeting = $repoMeeting->getStatInscriptionsSeancesBySeminar($seminar);
 
     return new JsonResponse(array('statCurUser' => $statCurUser, 'statMeeting' => $statMeeting));
   }
 
+    
+  /**
+   * @return JSon ('statMeeting')
+   * @Route("/ajax/stateregistration", name="_semi_seminar_ajax_stateregistration")
+   */
+  public function ajaxStateRegistrationAction(Request $request) {
+    $idSeminar = $request->getSession()->get(SioSemiConstants::SEMINAR_ID);
+    $seminar = $this->getDoctrine()->getRepository("SioSemiBundle:Seminar")->findOneBy(array("id" => $idSeminar));
+    if (!$seminar) {
+    // This case can't normally happen.
+      $response = new Response();
+      $response->setStatusCode(500);
+      $response->headers->set('Refresh', '0; url=' . $this->generateUrl('_semi_default_index'));
+      $response->send();
+      return;
+    }
+    $manager = $this->getDoctrine()->getManager();
+    $repoMeeting = $manager->getRepository('Sio\SemiBundle\Entity\Meeting');
+    $statMeeting = $repoMeeting->getStatInscriptionsSeancesBySeminar($seminar); 
+    
+    return new JsonResponse(array('statMeeting' => $statMeeting));
+  }
+  
+  
   static function jourFr($jour) {
     $jours = array('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche');
     return $jours[$jour - 1];
