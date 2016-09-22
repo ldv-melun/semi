@@ -41,3 +41,8 @@ tr.even_row_atelier{
 tr.odd_row:hover tr.odd_row_atelier:hover a:hover,
 tr.even_row:hover tr.even_row_atelier:hover a:hover {
 }
+
+
+.listintervenants {
+  padding: 6px;
+}

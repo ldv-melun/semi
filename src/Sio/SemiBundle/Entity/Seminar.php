@@ -5,7 +5,7 @@ namespace Sio\SemiBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Seminar
+ * Seminar state (example : Open, Close, ReadOnly)
  * 
  * @ORM\Entity(repositoryClass="Sio\SemiBundle\Entity\SeminarRepository") 
  * @ORM\Table(name="semi_seminar")

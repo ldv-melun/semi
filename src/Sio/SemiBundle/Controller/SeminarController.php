@@ -38,7 +38,8 @@ class SeminarController extends Controller {
    * @Template()
    */
   public function indexAction(Request $request, $id = null) {
-    if ($id) {            
+    if ($id) {
+      // idSeminar ok
       return $this->getMeetings($request, $id, false);      
     } else {
       $user = $this->getUser();
@@ -57,6 +58,16 @@ class SeminarController extends Controller {
       foreach ($userSeminar as $seminarUser) {
         $seminars[] = $repoSeminar->findBy(array("id" => $seminarUser->getSeminar()->getId()));
       }
+      
+/** TODO not work below...
+      
+      if (count($seminars) == 1 ){
+        // direct seminar meeting 
+        return $this->getMeetings($request, $seminars[0]->getId(), false);
+      }
+ * 
+ */
+      // go to seminars list
       return array('seminars' => $seminars);  
     }
   }

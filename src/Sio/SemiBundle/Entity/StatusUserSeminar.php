@@ -9,7 +9,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 
 /**
- * StatusUserSeminar
+ * StatusUserSeminar status of a user for a seminar 
  *
  * @ORM\Table(name="semi_user_seminar")
  * @ORM\Entity

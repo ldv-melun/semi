@@ -100,17 +100,11 @@ class DefaultController extends Controller
             }
             elseif(true === $this->get('security.context')->isGranted('ROLE_MANAGER'))
             {
-                $response->headers->set('Refresh', '5; url='.$this->generateUrl('_semi_manager_index'));
-                $response->send();
-
-                return array('firstName' => $user->getFirstName(), 'role' => $this->generateUrl('_semi_manager_index'));
+              return $this->redirect($this->generateUrl('_semi_seminar_index') . "$idSeminar");
             }
             elseif(true === $this->get('security.context')->isGranted('ROLE_USER'))
             {
-                $response->headers->set('Refresh', '5; url='.$this->generateUrl('_semi_seminar_index') . "$idSeminar");
-                $response->send();
-
-                return array('firstName' => $user->getFirstName(), 'role' => $this->generateUrl('_semi_seminar_index'));
+              return $this->redirect($this->generateUrl('_semi_seminar_index') . "$idSeminar");
             }
         }
         // Access trough ROLE_ANONYMOUS.

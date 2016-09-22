@@ -5,7 +5,7 @@ namespace Sio\SemiBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Seminar
+ * Seminar possible status of user for this seminar (example : IA, IPR, Prof, Other)
  *
  * @ORM\Table(name="semi_seminar_status")
  * @ORM\Entity
