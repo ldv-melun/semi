@@ -16,15 +16,15 @@
       console.log(response);
       if (response.clefOk) {
         // Seminar key is good 
-        console.log('clef OK');
+        // console.log('clef OK');
         if (response.userKnown) {
-          console.log('user OK');
+          // console.log('user OK');
           updateUILoginAfterMailAndKeyOk();
         } else {
           // user unknow and cle OK
           if (response.emailSyntaxOk) {
             // invite user register
-            console.log('new user ?');
+            // console.log('new user ?');
             updateUILoginForUserRegister();
           } else {
             // clef ok but : 
@@ -191,7 +191,7 @@
                     display:none">
              <a href="{{ path('fos_user_resetting_request') }}">
              <span class="glyphicon glyphicon-question-sign"> </span> 
-               Forgot password ?</a>
+               Mot de passe perdu</a>
         </div>
       </div>     
 
@@ -219,7 +219,7 @@
               </span>
             </span>
             <input id="seminar-clef" type="password" class="form-control" 
-                   name="_clef" placeholder="clef" value="{{semiKey}}"/>
+                   name="_clef" placeholder="clef du séminaire" value="{{semiKey}}"/>
           </div>
 
           {# default hidden #}
