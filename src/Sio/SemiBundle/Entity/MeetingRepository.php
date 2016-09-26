@@ -103,16 +103,22 @@ class MeetingRepository extends EntityRepository {
    * @param type $seminar
    * @return array of meetings with only one atelier representant by atelier group 
    */
-  public function getAllDistinctsPlagesHoraires($seminar) {
-     $em = $this->getEntityManager();
+  public function getOnlyMeetingsWithDistinctsPlagesHoraires($seminar) {
+
      // astuce qui fonctionne si tout meeting a par 
-     // défaut son relativenumber à 1 (ATTENTION)
-     $q = $em->createQuery(
-      "SELECT m FROM SioSemiBundle:Meeting m "
-	      ." WHERE m.relativeNumber = 1 "
-        ." AND m.seminar = :ids");
-     $q->setParameter("ids", $seminar);
-     return $q->getResult();
+     // défaut son relativenumber à 1 
+     // ATTENTION : les ateliers doivent commencer par 1, pour chaque groupe
+    
+    
+     $q = $this->createQueryBuilder('m')
+       ->where('m.seminar = :sem')
+       ->andWhere('m.relativeNumber = 1')      
+       ->setParameter("sem", $seminar)
+       ->orderBy('m.dateStart');
+         
+     return $q
+          ->getQuery()
+          ->getResult();
   }
   
   /**

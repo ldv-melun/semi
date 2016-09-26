@@ -101,7 +101,8 @@ class SeminarController extends Controller {
       $query = $em->createQuery('SELECT r, meeting, sem FROM SioSemiBundle:Registration r '
           .'JOIN r.meeting meeting '
           .'JOIN meeting.seminar sem '
-          .'WHERE r.user = :user AND sem = :sem');
+          .'WHERE r.user = :user AND sem = :sem '
+          .'ORDER BY meeting.dateStart' );
       $query->setParameter("user", $user);  
       $query->setParameter("sem", $seminar);  
       $result = $query->getResult();
@@ -116,7 +117,7 @@ class SeminarController extends Controller {
     } else {
       $meetings = $this->getDoctrine()->getRepository("SioSemiBundle:Meeting")
           ->findBy(array('seminar' => $seminar), 
-                   array('dateStart' => 'asc', 'relativeNumber' => 'asc'));
+                   array('dateStart' => 'asc'));//, 'relativeNumber' => 'asc'));
     }
     
     $nbMeetingRegister = $repoMeeting->countNbMeetingRegister($user->getId(), $seminar->getId());
