@@ -84,7 +84,8 @@ class ManagerController extends Controller {
          $registration = $repoMeeting->getMeetingUser($seminar, $user, $meeting);
          if ($registration) :
            $row[] = $registration->getMeeting()->getType() == 'atelier' 
-             ? $registration->getMeeting()->getRelativeNumber() 
+             // ? $registration->getMeeting()->getRelativeNumber() 
+             ? substr($registration->getMeeting()->getDescription(), 0, 10) 
              : 'X'; 
          else :
            $row[] = '-';
