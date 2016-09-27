@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Sio\SemiBundle\Util\Header as Header;
 use Sio\SemiBundle\SioSemiConstants;
 
@@ -29,11 +30,30 @@ class ManagerController extends Controller {
     return $return;
   }
 
+  
+  
   /**
    * @Route("/export/{idSeminar}", name="_semi_manager_export")
    * @Template()
    */
   public function exportAction($idSeminar) {
+    return $this->exportHTMLorCSV($idSeminar, false);
+  }
+  
+  /**
+   * @Route("/exportcsv", name="_semi_manager_export_csv")
+   * @Template()
+   */
+  public function exportCSVAction(Request $request) {
+    $idSeminar = $request->getSession()->get(SioSemiConstants::SEMINAR_ID);
+    if ($idSeminar) {
+       return $this->exportHTMLorCSV($idSeminar, true);
+    } else {
+      return $this->redirectToRoute('_semi_manager_index');
+    }
+  }
+  
+  public function exportHTMLorCSV($idSeminar, $isExportToCsv) {
     $repoSeminar =  $this->getDoctrine()
                ->getRepository('SioSemiBundle:Seminar');
   
@@ -53,11 +73,11 @@ class ManagerController extends Controller {
     foreach ($allUsersRegisted[0] as $head) :
       $header[]= $head;
     endforeach;
-      
+    // \setlocale(\LC_TIME, 'fr_FR.utf8','fra'); 
     foreach ($plagesHoraires as $meeting) :
       $type = $meeting->getType();
       //$data['date'] = \date("d-m-Y", $meeting->getDateStart()->getTimestamp());
-      $hdate = \date("F j, Y, H:m", $meeting->getDateStart()->getTimestamp());       
+      $hdate = \date("d-m-Y H:m", $meeting->getDateStart()->getTimestamp());       
       
       $header[] = new Header($hdate, $type);
     endforeach;
@@ -96,24 +116,27 @@ class ManagerController extends Controller {
 
     // var_dump($result);
     
-    $toview = array(
+    
+    if ($isExportToCsv) {
+      $response = new Response();
+      $response->headers->set('Content-Type', 'csv');
+      $filename = "export_".date("Y_m_d_His").".csv";
+      $response->headers->set('Content-Disposition', 'attachment; filename='.$filename); 
+      return $this->render(
+          'SioSemiBundle:Manager:export.csv.twig',
+          array(
+              'allRegistrations' => $result,
+              'seminar' => $seminar,
+          ),
+          $response
+      );
+    } else {
+      $toview = array(
         'seminar' => $seminar,
         'allRegistrations' => $result,
         'menuItemActive' => 'manager');
-    return $toview;
-  }
-  
-  /**
-   * Get meetings with distinct dateStart (one representant by atelier) 
-   * @param Seminar $seminar
-   * @return Array of Meeting
-   */
-  private function getMeetingsDistinctDateStart($seminar){
-    $em = $this->getDoctrine()->getManager();  
-    $query = $em->createQuery('SELECT m FROM SioSemiBundle:Meeting m '
-          .'WHERE m.seminar = :sem AND m.relativeNumber = 1 ORDER BY m.dateStart ASC');
-    $query->setParameter("sem", $seminar);  
-    return $query->getResult();
+      return $toview;
+    }
   }
   
 }

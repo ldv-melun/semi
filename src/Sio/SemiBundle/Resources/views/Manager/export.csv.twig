@@ -1,0 +1,9 @@
+{% for row in allRegistrations %}
+{% if loop.first %}
+{% for data in row %}{% if data.type is not empty %}{{data.type}} {{data.name}}{% else %}{{data.name}}{% endif %}{% if not loop.last %}|{% endif %}{% endfor %}
+
+{% else %}
+{% for data in row %}{% if not loop.last %}{{data | raw ~ '|'}}{% else %}{{data | raw }}
+{% endif %}{% endfor %}
+{% endif %}
+{% endfor %}
