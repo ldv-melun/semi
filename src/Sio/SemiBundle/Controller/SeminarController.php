@@ -43,34 +43,16 @@ class SeminarController extends Controller {
       return $this->getMeetings($request, $id, false);      
     } else {
       $user = $this->getUser();
-      $em = $this->getDoctrine()->getManager();
-      // TODO à revoir cette section (recup directe des seminaires d'un user)
-      $query = $em->createQuery(
-          'SELECT userseminar
-                FROM SioSemiBundle:StatusUserSeminar userseminar
-                WHERE userseminar.user = ' . $user->getId() . '
-                ORDER BY userseminar.id'
-      );
-
-      $userSeminar = $query->getResult();
-      $repoSeminar = $this->getDoctrine()->getRepository("SioSemiBundle:Seminar");
-      /*
-       * $seminars = array();
-       
-      foreach ($userSeminar as $seminarUser) {
-        $seminars[] = $repoSeminar->findBy(array("id" => $seminarUser->getSeminar()->getId()));
-      }
+      $repoSeminar = $this->getDoctrine()->getRepository("SioSemiBundle:Seminar");   
+      $seminars = $repoSeminar->getStatusSeminarsOfUser($user);
       
-      */
-/** TODO not work below...
-      
+      /** TODO to test !
       if (count($seminars) == 1 ){
         // direct seminar meeting 
-        return $this->getMeetings($request, $seminars[0]->getId(), false);
+        return $this->getMeetings($request, $seminars[0]->getSeminar()->getId(), false);
       }
  * 
  */
-      $seminars = $repoSeminar->getStatusSeminarsOfUser($user);
       // go to seminars list
       return array('seminars' => $seminars);  
     }
