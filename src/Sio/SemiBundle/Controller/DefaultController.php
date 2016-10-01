@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 Use Symfony\Component\HttpFoundation\JsonResponse;
 Use Sio\SemiBundle\SioSemiConstants;
 
+
 class DefaultController extends Controller
 {
 
@@ -93,7 +94,18 @@ class DefaultController extends Controller
             $manager = $this->getDoctrine()->getManager();
             $manager->persist($user);
             $manager->flush();
-
+            
+            $seminarKey = $request->getSession()->get(SioSemiConstants::SEMINAR_KEY);
+            
+            if ($idSeminar && $seminarKey ){
+                $repoSeminar = $manager->getRepository('SioSemiBundle:Seminar');
+                $seminar = $repoSeminar->find($idSeminar);
+                if ($seminar && !$repoSeminar->hasStatusUserSeminar($user, $seminar)) {
+                  // to define status role for this seminar
+                  return $this->redirect($this->generateUrl('_semi_user_profil'));
+                }
+            }           
+            
             if(true === $this->get('security.context')->isGranted('ROLE_ADMIN'))
             {
               return $this->redirect($this->generateUrl('_semi_seminar_index') . "$idSeminar");

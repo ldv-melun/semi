@@ -54,11 +54,14 @@ class SeminarController extends Controller {
 
       $userSeminar = $query->getResult();
       $repoSeminar = $this->getDoctrine()->getRepository("SioSemiBundle:Seminar");
-      $seminars = array();
+      /*
+       * $seminars = array();
+       
       foreach ($userSeminar as $seminarUser) {
         $seminars[] = $repoSeminar->findBy(array("id" => $seminarUser->getSeminar()->getId()));
       }
       
+      */
 /** TODO not work below...
       
       if (count($seminars) == 1 ){
@@ -67,6 +70,7 @@ class SeminarController extends Controller {
       }
  * 
  */
+      $seminars = $repoSeminar->getStatusSeminarsOfUser($user);
       // go to seminars list
       return array('seminars' => $seminars);  
     }

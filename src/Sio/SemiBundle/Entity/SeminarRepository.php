@@ -88,4 +88,23 @@ class SeminarRepository extends EntityRepository {
       }
       return $res;
     }
+    
+    public function getStatusSeminarsOfUser($user){   
+      $em =  $this->getEntityManager();      
+      $query = $em->createQuery(
+		"SELECT status, sem FROM SioSemiBundle:StatusUserSeminar status "
+		. "JOIN status.seminar sem "
+    . "WHERE status.user = " . $user->getId() . " "    
+		. "ORDER BY status.id");
+  
+      return $query->getResult();
+    }
+    
+    public function hasStatusUserSeminar($user, $seminar){
+      $em =  $this->getEntityManager();       
+      $seminarStatus = $em->getRepository("SioSemiBundle:StatusUserSeminar")
+        ->findBy(array("seminar" => $seminar, "user" => $user));
+      
+      return (bool) $seminarStatus;
+    }
 }

@@ -8,15 +8,15 @@
       <div id="adminMenu">
         <div class="list-group">
           {% set i = 1 %}
-          {% for tab in seminars %}
-            {% for seminar in tab %}
-              <a href="{{ path('_semi_seminar_index')}}{{ seminar.id }}" class="list-group-item" onMouseOver="overMenu($(this));">
-                <h4 class="list-group-item-heading">{{ seminar.name }} <small><i>(Du {{ seminar.dateStart|date("d/m/Y") }} au {{ seminar.dateEnd|date("d/m/Y") }} à {{ seminar.location }} : {{ seminar.comment }})</i></small></h4>
+          {% for status in seminars %}
+            {# % for seminar in tab % #}
+              <a href="{{ path('_semi_seminar_index')}}{{ status.seminar.id }}" class="list-group-item" onMouseOver="overMenu($(this));">
+                <h4 class="list-group-item-heading">{{ status.seminar.name }} <small><i>(Du {{ status.seminar.dateStart|date("d/m/Y") }} au {{ status.seminar.dateEnd|date("d/m/Y") }} à {{ status.seminar.location }} : {{ status.seminar.comment }})</i></small></h4>
                 <br>
-                <p class="list-group-item-text">{{ seminar.description }}</p>
+                <p class="list-group-item-text">{{ status.seminar.description }}</p>
               </a>
               {% set i = i + 1 %}
-            {% endfor %}
+            {# % endfor % #}
           {% endfor %}
         </div>
       </div>
