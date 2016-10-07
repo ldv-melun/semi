@@ -23,10 +23,19 @@
           Vous êtes actuellement inscrit(e) à <b><span id='statNbSeanceInscr'>{{ nbMeetingRegister }}</span></b> séances sur ce séminaire.
           
           {% if readOnly %}
+            {# TODO readOnly is too large ... specialy when seminar is close.... #}
             <a href="{{ path('_semi_seminar_index_seminar', {'id' : seminar.id}) }}"><span class="glyphicon glyphicon-arrow-left"></span> <b>RETOUR INSCRIPTIONS</b></a>
           {% else %}  
             <a href="{{ path('_semi_seminar_my_meetings', {'id' : seminar.id}) }}"><span class="glyphicon glyphicon-arrow-right"></span> <b>VOIR</b></a>
           {% endif %}
+          
+          {# attention : duplicate code with semi.js #}
+          {% if statNbUsers > 1 %}
+          <p>Il y a actuellement <span id='statNbUsers'><b>{{ statNbUsers }}</b> personnes inscrites.</span></p>
+          {% else %}
+          <p>Il y a actuellement <span id='statNbUsers'><b>{{ statNbUsers }}</b> personne inscrite.</span></p>
+          {% endif %}  
+        
         </div>
       </div>
       <div id="content">

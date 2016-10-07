@@ -1,6 +1,12 @@
 
-// TODO à placer dans un twig pour permettre le paramètrage de l'url ?
-
+/**
+ * When user select or unselect a meeting-seance
+ * @param {type} idSeance 
+ * @param {type} heureDeb
+ * @param {type} description of meeting
+ * @param {type} checked or not...
+ * @returns {undefined}
+ */
 function inscrSeance(idSeance, heureDeb, description, checked) {
   $.ajax({
     type: "POST",
@@ -20,6 +26,8 @@ function inscrSeance(idSeance, heureDeb, description, checked) {
         //console.log("["+stat+"]["+actual+"]"+ " free=["+free+"]");
         if (stat != actual) {
           $('#' + data.statMeeting[i].id).css("background-color", "lightyellow");
+           // see meetings.html.twig           
+          $('#' + data.statMeeting[i].id).html(stat);
         } else {          
           $('#' + data.statMeeting[i].id).css("background-color", "");
         }
@@ -27,17 +35,28 @@ function inscrSeance(idSeance, heureDeb, description, checked) {
           $('#' + data.statMeeting[i].id).css("background-color", "red");
         } else if (free <= 10){          
           $('#' + data.statMeeting[i].id).css("background-color", "coral");
-        }
-        $('#' + data.statMeeting[i].id).html(stat);
+        }            
       }
-
-      // see meetings.html.twig           
+      
+      // voir meetings.html.twig
+      if (data.statNbUsers > 1) {
+        $('#statNbUsers').html("<b>" + data.statNbUsers + "</b> personnes inscrites.");
+      } else {
+        $('#statNbUsers').html("<b>" + data.statNbUsers + "</b> personne inscrite.");
+      }
+      
+      // stat this user
       $('#statNbSeanceInscr').html(data.statCurUser);
     }
   });
 }  
 
-
+/**
+ *  get stats of meeting for seminar in session of user (manager only)
+ *  and update dom (content and css change)
+ *   
+ * @returns nothing
+ */
 function stateInscrSeance() {
   $.ajax({
     type: "POST",
@@ -55,6 +74,7 @@ function stateInscrSeance() {
         //console.log("["+stat+"]["+actual+"]"+ " free=["+free+"]");
         if (stat != actual) {
           $('#' + data.statMeeting[i].id).css("background-color", "lightyellow");
+          $('#' + data.statMeeting[i].id).html(stat);
         } else {          
           $('#' + data.statMeeting[i].id).css("background-color", "");
         }
@@ -62,9 +82,14 @@ function stateInscrSeance() {
           $('#' + data.statMeeting[i].id).css("background-color", "red");
         } else if (free <= 10){          
           $('#' + data.statMeeting[i].id).css("background-color", "coral");
-        }
-        $('#' + data.statMeeting[i].id).html(stat);
+        }        
       }
+      // voir meetings.html.twig
+      if (data.statNbUsers > 1) {
+        $('#statNbUsers').html("<b>" + data.statNbUsers + "</b> personnes inscrites.");
+      } else {
+        $('#statNbUsers').html("<b>" + data.statNbUsers + "</b> personne inscrite.");
+      }      
     }
   });
 }  

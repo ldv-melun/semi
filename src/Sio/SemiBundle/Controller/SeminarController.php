@@ -128,12 +128,15 @@ class SeminarController extends Controller {
       // meetings recorded by day and dateTimeStart               
       $meetingsForView[$curDay][$dateTimeStart][] = $meeting;
     }
+   
+    $statNbUsers =  $repoMeeting->countNbUserMeetingRegister($seminar);
     $toview = array('title' => $seminar->getName(),
         'description' => $seminar->getDescription(),
         'meetings' => $meetingsForView,
         'nbMeetingRegister' => $nbMeetingRegister,
         'readOnly' => $isOnlyMyRegistrations || $seminarState != 'Open',
-        'seminar' => $seminar ); // TODO del attribut because accessible by seminar
+        'seminar' => $seminar,
+        'statNbUsers' => $statNbUsers); // TODO del attribut because accessible by seminar
     return $this->render('SioSemiBundle:Seminar:meetings.html.twig', $toview);
   }
 
@@ -181,8 +184,8 @@ class SeminarController extends Controller {
     //$statMeeting = $repoMeeting->getStatInscriptionSeance($seminar, $dateHeureDebut);
     
     $statMeeting = $repoMeeting->getStatInscriptionsSeancesBySeminar($seminar);
-
-    return new JsonResponse(array('statCurUser' => $statCurUser, 'statMeeting' => $statMeeting));
+    $statNbUser =  $repoMeeting->countNbUserMeetingRegister($seminar);
+    return new JsonResponse(array('statCurUser' => $statCurUser, 'statMeeting' => $statMeeting, 'statNbUsers' => $statNbUser));
   }
 
     
@@ -204,8 +207,8 @@ class SeminarController extends Controller {
     $manager = $this->getDoctrine()->getManager();
     $repoMeeting = $manager->getRepository('Sio\SemiBundle\Entity\Meeting');
     $statMeeting = $repoMeeting->getStatInscriptionsSeancesBySeminar($seminar); 
-    
-    return new JsonResponse(array('statMeeting' => $statMeeting));
+    $statNbUser =  $repoMeeting->countNbUserMeetingRegister($seminar);
+    return new JsonResponse(array('statMeeting' => $statMeeting, 'statNbUsers' => $statNbUser));
   }
   
   

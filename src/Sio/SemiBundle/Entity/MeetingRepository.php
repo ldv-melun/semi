@@ -31,6 +31,19 @@ class MeetingRepository extends EntityRepository {
             ->getSingleScalarResult();
   }
 
+    public function countNbUserMeetingRegister($seminar) {
+    return $this->getEntityManager()
+            ->createQuery(
+                'SELECT COUNT(DISTINCT r.user) FROM Sio\SemiBundle\Entity\Registration r, '
+                .' Sio\SemiBundle\Entity\Meeting m '
+                .' WHERE r.meeting = m.id '
+                .' AND m.seminar = :seminar '
+                
+            )
+            ->setParameter('seminar', $seminar)
+            ->getSingleScalarResult();
+  }
+  
   /**
    * Used to DELETE a Registering Object using \DateTime
    * (Maybe we should place this function in RegistrationRepository ?)
